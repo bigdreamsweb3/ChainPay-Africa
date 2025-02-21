@@ -42,16 +42,6 @@ export function Account() {
     return () => clearTimeout(timer);
   }, [submitStatus]);
 
-  if (!address) return null;
-
-  const shortenedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
-
-  const handleSwitchChain = (chain: (typeof SUPPORTED_CHAIN_IDS)[number]) => {
-    switchChain({ chainId: chain.id });
-    setIsNetworkDropdownOpen(false);
-  };
-
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -66,6 +56,15 @@ export function Account() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (!address) return null;
+
+  const shortenedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
+
+  const handleSwitchChain = (chain: (typeof SUPPORTED_CHAIN_IDS)[number]) => {
+    switchChain({ chainId: chain.id });
+    setIsNetworkDropdownOpen(false);
+  };
 
   return (
     <div className="relative" ref={dropdownRef}>

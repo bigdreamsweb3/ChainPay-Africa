@@ -69,12 +69,12 @@ export default function BillPaymentForm() {
     register,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors },
     reset,
   } = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
+      serviceType: undefined,
       paymentToken: "BNB",
     },
   });
@@ -143,13 +143,13 @@ export default function BillPaymentForm() {
                               nextStep();
                             }}
                             aria-label={`Select ${service.name}`}
-                            className={`p-2 rounded-xl transition-all duration-300 ease-in-out flex flex-col items-center w-full bg-blue-200/50 border-2 border-blue-200 ${
+                            className={`p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full bg-blue-200/50 border-2 border-blue-200 ${
                               field.value === service.id
                                 ? "border-2 border-blue-500 bg-blue-50 transform scale-105"
                                 : "border-2 border-transparent bg-white hover:bg-gray-50 hover:shadow-xl"
                             }`}
                           >
-                            <service.icon className="w-12 h-12 text-brand-primary  rounded-full p-2 shadow-sm" />
+                            <service.icon className="w-10 h-10 text-brand-primary  rounded-full p-2 shadow-sm" />
                           </button>
                           <span className="mt-2 text-sm font-medium text-gray-700 text-center">
                             {service.name}
