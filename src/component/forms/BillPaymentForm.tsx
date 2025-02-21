@@ -143,9 +143,9 @@ export default function BillPaymentForm() {
                               nextStep();
                             }}
                             aria-label={`Select ${service.name}`}
-                            className={`p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full bg-blue-200/50 border-2 border-blue-200 ${
+                            className={`p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full border-2 bg-blue-200/50 border-blue-200" ${
                               field.value === service.id
-                                ? "border-2 border-blue-500 bg-blue-50 transform scale-105"
+                                ? "bg-blue-50 transform scale-105"
                                 : "border-2 border-transparent bg-white hover:bg-gray-50 hover:shadow-xl"
                             }`}
                           >
