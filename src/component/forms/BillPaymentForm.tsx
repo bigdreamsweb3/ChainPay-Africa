@@ -143,13 +143,13 @@ export default function BillPaymentForm() {
                               nextStep();
                             }}
                             aria-label={`Select ${service.name}`}
-                            className={`p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full border-2 bg-blue-200/50 border-blue-200" ${
+                            className={`p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full border-2 border-blue-200 bg-blue-200/70 " ${
                               field.value === service.id
                                 ? "bg-blue-50 transform scale-105"
                                 : "border-2 border-transparent bg-white hover:bg-gray-50 hover:shadow-xl"
                             }`}
                           >
-                            <service.icon className="w-10 h-10 text-brand-primary  rounded-full p-2 shadow-sm" />
+                            <service.icon className="w-10 h-10 text-brand-primary  rounded-full p-2" />
                           </button>
                           <span className="mt-2 text-sm font-medium text-gray-700 text-center">
                             {service.name}
