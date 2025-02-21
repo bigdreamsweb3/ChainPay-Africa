@@ -143,7 +143,7 @@ export default function BillPaymentForm() {
                               nextStep();
                             }}
                             aria-label={`Select ${service.name}`}
-                            className="p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full border-2 border-blue-200 bg-blue-200/70"
+                            className="p-2 rounded-full transition-all duration-300 ease-in-out flex flex-col items-center w-full border-2 border-blue-100/50 bg-blue-200/70"
                           >
                             <service.icon className="w-10 h-10 text-brand-primary  rounded-full p-2" />
                           </button>
