@@ -22,6 +22,7 @@ export function Account() {
   const [isOpen, setIsOpen] = useState(false);
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [submitStatus, setSubmitStatus] = useState("idle");
 
   useEffect(() => {
     if (!address) {
@@ -30,6 +31,16 @@ export function Account() {
 
     // Your effect logic here
   }, [address, chain]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (submitStatus !== "idle") {
+        setSubmitStatus("idle");
+      }
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [submitStatus]);
 
   if (!address) return null;
 

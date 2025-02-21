@@ -16,7 +16,7 @@ export function Layout({ children }: LayoutProps) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="min-h-screen bg-gray-50 relative">
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <Header />
