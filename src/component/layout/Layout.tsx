@@ -5,6 +5,7 @@ import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/utils/web3/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import NetworkSwitchNotification from "../web3/network-switch-notification";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,10 +16,11 @@ export function Layout({ children }: LayoutProps) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white relative">
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <Header />
+          <NetworkSwitchNotification className="container" />
 
           <main className="container w-full max-w-md mx-auto px-4 py-8 lg:px-8 min-h-screen">
             {children}
