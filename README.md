@@ -1,7 +1,3 @@
-It looks like you’re building an exciting platform, **ChainPay Africa**, with the goal of enabling cryptocurrency-based bill payments on the **CrossFi Chain**. Below is a polished version of your project documentation with some minor formatting and additional clarifications to make it more cohesive:
-
----
-
 # ChainPay Africa
 
 **ChainPay Africa** is a decentralized bill payment platform that allows users to pay for services like electricity, internet, and more using cryptocurrency wallets instead of traditional banks. Built on the **CrossFi Chain**, it enables fast, low-cost, and borderless transactions.
