@@ -1,24 +1,49 @@
-# ChainPay NG
+# ChainPay Africa
 
-ChainPay NG is a blockchain-based bill payment platform enabling Nigerians to pay for utilities and services using stablecoins and cryptocurrencies on a low-fee, scalable blockchain network.
+ChainPay Africa is a decentralized bill payment platform that allows users to pay for services like electricity, internet, and more using cryptocurrency wallets instead of traditional banks. Built on the CrossFi Chain, it enables fast, low-cost, and borderless transactions.
 
-## Features
+## 🚀 Features
 
-- **Fast, low-fee transactions**: Designed for microtransactions, enabling payments as low as 10 cents.
-- **Wallet-based payments**: No need for bank accounts; users can pay directly from their crypto wallets.
-- **Smart contract security**: Transparent and tamper-proof transactions powered by blockchain.
-- **Multi-service support**: Pay for utilities, airtime, data bundles, and more.
+- **Crypto Payments** – Pay bills using supported cryptocurrencies.
+- **Decentralized & Secure** – No banks required; transactions are recorded on-chain.
+- **Fast & Low Fees** – CrossFi Chain ensures efficient transactions with minimal costs.
+- **User-Friendly Interface** – Easy-to-use dApp for seamless bill payments.
 
-## Getting Started
+## 📜 Smart Contract
 
+This project includes a Solidity smart contract deployed on the CrossFi Chain testnet.
 
-## Contributing
+## 🔗 Links
 
-We welcome contributions from the community! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines on:
+- **GitHub Repo**: [Coming Soon]
+- **Live Demo**: [Coming Soon]
+- **Project Website**: [Coming Soon]
+- **Demo Video**: [Coming Soon]
 
-- Code standards and best practices.
-- Pull request process and code reviews.
-- Development setup and environment configuration.
-- Testing requirements and quality assurance.
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js, TypeScript
+- **Smart Contracts**: Solidity, CrossFi Chain (EVM-compatible)
+- **Wallet Integration**: MetaMask, WalletConnect
+
+## 🚧 Roadmap
+
+- [x] Develop smart contract
+- [ ] Build Next.js frontend
+- [ ] Integrate wallet connections
+- [ ] Enable bill payment transactions
+- [ ] Deploy live on CrossFi Chain
+
+## 📜 License
+
+This project is licensed under the MIT License.
 
 ---
+
+### 👥 Contributors
+
+- [Your Name](https://github.com/yourgithub) – Founder & Developer
+
+---
+
+🚀 **ChainPay Africa – Pay Bills with Crypto, No Banks Needed!**
