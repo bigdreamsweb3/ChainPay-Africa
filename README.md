@@ -6,7 +6,7 @@
 
 ## 🚀 Features
 
-- **Crypto Payments**: Pay bills using supported cryptocurrencies such as Bitcoin, Ethereum, or other tokens supported by the CrossFi Chain.
+- **Crypto Payments**: Pay bills using supported cryptocurrencies such as Ethereum, or other tokens supported by the CrossFi Chain.
 - **Decentralized & Secure**: No intermediaries; transactions are securely recorded on-chain, ensuring transparency and immutability.
 - **Fast & Low Fees**: The CrossFi Chain ensures efficient transactions with minimal costs, making bill payments faster and more affordable.
 - **User-Friendly Interface**: An easy-to-use decentralized application (dApp) for seamless bill payments directly from your crypto wallet.
