@@ -15,7 +15,7 @@ This project includes a Solidity smart contract deployed on the CrossFi Chain te
 
 ## 🔗 Links
 
-- **GitHub Repo**: [Coming Soon]
+- **GitHub Repo**: [GitHub](https://github.com/italiancode/ChainPay-Africa.git)
 - **Live Demo**: [Coming Soon]
 - **Project Website**: [Coming Soon]
 - **Demo Video**: [Coming Soon]
