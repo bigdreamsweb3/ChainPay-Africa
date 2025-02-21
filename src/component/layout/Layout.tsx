@@ -16,13 +16,13 @@ export function Layout({ children }: LayoutProps) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
+    <div className="min-h-screen bg-gray-100 relative">
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <Header />
           <NetworkSwitchNotification className="container" />
 
-          <main className="container w-full max-w-md mx-auto px-4 py-8 lg:px-8 min-h-screen bg-gray-50">
+          <main className="container w-full max-w-md mx-auto px-4 py-8 lg:px-8 min-h-screen bg-gray-100">
             {children}
           </main>
 
