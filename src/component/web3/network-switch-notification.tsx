@@ -9,7 +9,7 @@ interface NetworkSwitchNotificationProps {
   className?: string;
 }
 
-function NetworkSwitchNotification({
+export default function NetworkSwitchNotification({
   className,
 }: NetworkSwitchNotificationProps) {
   const { address, chain } = useAccount();
@@ -19,7 +19,7 @@ function NetworkSwitchNotification({
   const onSwitch = async () => {
     if (chain?.id !== DEFAULT_CHAIN.id) {
       try {
-        await switchChain({ chainId: DEFAULT_CHAIN.id });
+        switchChain({ chainId: DEFAULT_CHAIN.id });
         setShowNotification(true);
       } catch (error) {
         console.error("Failed to switch chain:", error);
@@ -28,18 +28,12 @@ function NetworkSwitchNotification({
   };
 
   useEffect(() => {
-    if (!address || chain?.id === DEFAULT_CHAIN.id) {
-      setShowNotification(false);
-    } else {
-      setShowNotification(true);
-    }
+    setShowNotification(!!address && chain?.id !== DEFAULT_CHAIN.id);
   }, [address, chain]);
 
   return (
     <div
-      className={`${className} ${
-        showNotification ? "" : "hidden"
-      } z-50 flex items-center justify-end w-full max-w-md mx-auto px-4 py-4 lg:px-8`}
+      className={`${className} flex items-center justify-end w-full max-w-sm mx-auto px-4 pt-4 lg:px-8 ${showNotification ? "block" : "hidden"}`}
     >
       <AnimatePresence>
         {showNotification && (
@@ -48,29 +42,23 @@ function NetworkSwitchNotification({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.3 }}
-            className={`bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 border-l-4 border-brand-primary p-4 rounded-lg shadow-sm`}
+            className="bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 border-l-4 border-brand-primary p-4 rounded-lg shadow-md max-w-sm"
           >
-            <div className="">
-              <h2 className="font-bold text-lg text-brand-primary">
-                Switch to {DEFAULT_CHAIN.name}
-              </h2>
-              <p className="text-sm text-gray-600 mt-1">
-                This application is only available on the {DEFAULT_CHAIN.name}{" "}
-                network. Please switch to the {DEFAULT_CHAIN.name} network to
-                continue using the app.
-              </p>
-              <button
-                onClick={onSwitch}
-                className="mt-3 bg-gradient-to-r from-brand-primary to-brand-accent text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all duration-200"
-              >
-                Switch Network
-              </button>
-            </div>
+            <h2 className="font-semibold text-brand-primary text-lg">
+              Switch to {DEFAULT_CHAIN.name}
+            </h2>
+            <p className="text-sm text-gray-600 mt-1">
+              This application is only available on the {DEFAULT_CHAIN.name} network. Please switch to continue.
+            </p>
+            <button
+              onClick={onSwitch}
+              className="mt-3 bg-gradient-to-r from-brand-primary to-brand-accent text-white px-4 py-2 rounded-lg hover:opacity-90 transition duration-200"
+            >
+              Switch Network
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-
-export default NetworkSwitchNotification;

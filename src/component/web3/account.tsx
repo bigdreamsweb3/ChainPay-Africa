@@ -23,6 +23,14 @@ export function Account() {
   const [isNetworkDropdownOpen, setIsNetworkDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!address) {
+      return;
+    }
+
+    // Your effect logic here
+  }, [address, chain]);
+
   if (!address) return null;
 
   const shortenedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;

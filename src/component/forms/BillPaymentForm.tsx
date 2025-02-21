@@ -13,6 +13,7 @@ import {
   DollarSign,
   CheckCircle,
   AlertCircle,
+  ArrowLeft,
 } from "lucide-react";
 
 const billPaymentSchema = z.object({
@@ -74,7 +75,6 @@ export default function BillPaymentForm() {
   } = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
-      serviceType: "airtime",
       paymentToken: "BNB",
     },
   });
@@ -112,211 +112,240 @@ export default function BillPaymentForm() {
   }, [submitStatus]);
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <motion.div
-        className="bg-white rounded-3xl shadow-lg overflow-hidden"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="py-4 px-6 border-b border-gray-100 flex justify-between items-center">
-          <h2 className="tex-lg font-semibold text-gray-800">Bill Payment</h2>
-          <p className="text-sm text-gray-500">
-            Step {step + 1} of {steps.length}
-          </p>
-        </div>
+    <motion.div
+      className="overflow-hidden w-full max-w-md mx-auto bg-white rounded-xl shadow-sm"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      {/* <div className="py-4 px-6 border-b border-gray-100 flex justify-between items-center">
+        <h2 className="tex-lg font-semibold text-gray-800">Select Service</h2>
+      </div> */}
 
-        <div className="p-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
-            >
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {step === 0 && (
-                  <div className="flex flex-col items-start gap-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Service
-                    </label>
-
-                    <div className="flex flex-wrap gap-7">
-                      {services.map((service) => (
-                        <Controller
-                          key={service.id}
-                          name="serviceType"
-                          control={control}
-                          render={({ field }) => (
-                            <div className="flex flex-col items-center w-fit">
-                              <button
-                                type="button"
-                                onClick={() => field.onChange(service.id)}
-                                className={`p-4 rounded-lg transition-all flex flex-col items-center border-2 ${
-                                  field.value === service.id
-                                    ? "bg-blue-100 border-2 border-blue-500"
-                                    : "bg-gray-100 border-2 border-transparent hover:bg-gray-200"
-                                }`}
-                              >
-                                <service.icon className="w-6 h-6" />
-                              </button>
-                              <span className="text-sm">{service.name}</span>
-                            </div>
-                          )}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {step === 1 && (
-                  <>
-                    <div>
-                      <label
-                        htmlFor="input"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        {selectedService === "electricity"
-                          ? "Meter Number"
-                          : "Phone Number"}
-                      </label>
-                      <input
-                        id="input"
-                        type={
-                          selectedService === "electricity" ? "text" : "tel"
-                        }
-                        placeholder={`Enter ${
-                          selectedService === "electricity"
-                            ? "meter number"
-                            : "phone number"
-                        }`}
-                        {...register(
-                          selectedService === "electricity"
-                            ? "meterNumber"
-                            : "phoneNumber"
+      <div className="p-4">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              {step === 0 && (
+                <div className="flex flex-col items-start gap-6">
+                  {/* <h2 className="text-lg font-semibold text-gray-800">
+                    Select Service
+                  </h2> */}
+                  <div className="flex flex-wrap gap-7">
+                    {services.map((service) => (
+                      <Controller
+                        key={service.id}
+                        name="serviceType"
+                        control={control}
+                        render={({ field }) => (
+                          <div className="flex flex-col items-center w-fit">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                field.onChange(service.id);
+                                nextStep();
+                              }}
+                              className={`p-4 rounded-lg transition-all flex flex-col items-center border-2 ${
+                                field.value === service.id
+                                  ? "bg-blue-100 border-2 border-blue-500"
+                                  : "bg-gray-100 border-2 border-transparent hover:bg-gray-200"
+                              }`}
+                            >
+                              <service.icon className="w-6 h-6" />
+                            </button>
+                            <span className="text-sm">{service.name}</span>
+                          </div>
                         )}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
-                      {errors[
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {step === 1 && (
+                <>
+                  {/* Back button for selected service */}
+                  <div className="flex items-center gap-2 bg-gray-100 w-fit p-2 text-gray-800 rounded-lg hover:opacity-90 transition-opacity">
+                    <button onClick={prevStep} className="">
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-sm text-gray-700 capitalize">
+                      {watch("serviceType")}
+                    </span>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="input"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      {selectedService === "electricity"
+                        ? "Meter Number"
+                        : "Phone Number"}
+                    </label>
+                    <input
+                      id="input"
+                      type={selectedService === "electricity" ? "text" : "tel"}
+                      placeholder={`Enter ${
+                        selectedService === "electricity"
+                          ? "meter number"
+                          : "phone number"
+                      }`}
+                      {...register(
                         selectedService === "electricity"
                           ? "meterNumber"
                           : "phoneNumber"
-                      ] && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {
-                            errors[
-                              selectedService === "electricity"
-                                ? "meterNumber"
-                                : "phoneNumber"
-                            ]?.message
-                          }
-                        </p>
                       )}
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="amount"
-                        className="block text-sm font-medium text-gray-700 mb-2"
-                      >
-                        Amount
-                      </label>
-                      <input
-                        id="amount"
-                        type="number"
-                        step="0.01"
-                        placeholder="Enter amount"
-                        {...register("amount")}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                      {errors.amount && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {errors.amount.message}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex gap-2">
-                      {["10", "20", "50", "100"].map((amount) => (
-                        <button
-                          key={amount}
-                          type="button"
-                          onClick={() => setValue("amount", amount)}
-                          className="px-3 py-1 text-sm bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
-                        >
-                          {amount}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {step === 2 && (
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors[
+                      selectedService === "electricity"
+                        ? "meterNumber"
+                        : "phoneNumber"
+                    ] && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {
+                          errors[
+                            selectedService === "electricity"
+                              ? "meterNumber"
+                              : "phoneNumber"
+                          ]?.message
+                        }
+                      </p>
+                    )}
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Select Payment Token
+                    <label
+                      htmlFor="amount"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Amount
                     </label>
-                    <div className="grid grid-cols-2 gap-4">
-                      {paymentTokens.map((token) => (
-                        <div key={token.id}>
-                          <input
-                            type="radio"
-                            id={token.id}
-                            value={token.id}
-                            {...register("paymentToken")}
-                            className="sr-only"
-                          />
-                          <label
-                            htmlFor={token.id}
-                            className={`flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                              selectedToken === token.id
-                                ? "bg-blue-100 border-blue-500"
-                                : "bg-white border-gray-200 hover:bg-gray-50"
-                            }`}
-                          >
-                            <token.icon className="w-6 h-6 mb-2" />
-                            <span className="text-lg font-semibold">
-                              {token.name}
-                            </span>
-                            <span className="text-sm text-gray-600">
-                              {token.description}
-                            </span>
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+                    <input
+                      id="amount"
+                      type="number"
+                      step="0.01"
+                      placeholder="Enter amount"
+                      {...register("amount")}
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    {errors.amount && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.amount.message}
+                      </p>
+                    )}
                   </div>
-                )}
+                  <div className="flex gap-2">
+                    {["10", "20", "50", "100"].map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        onClick={() => setValue("amount", amount)}
+                        className="px-3 py-1 text-sm bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                      >
+                        {amount}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
 
-                {step === 3 && (
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Confirm Payment</h3>
-                    <div className="bg-gray-100 p-4 rounded-lg">
-                      <p>
-                        <strong>Service:</strong> {watch("serviceType")}
-                      </p>
-                      <p>
-                        <strong>
-                          {watch("serviceType") === "electricity"
-                            ? "Meter Number"
-                            : "Phone Number"}
-                        </strong>
-                        :{" "}
-                        {watch("serviceType") === "electricity"
-                          ? watch("meterNumber")
-                          : watch("phoneNumber")}
-                      </p>
-                      <p>
-                        <strong>Amount:</strong> {watch("amount")}
-                      </p>
-                      <p>
-                        <strong>Payment Token:</strong> {watch("paymentToken")}
-                      </p>
-                    </div>
+              {step === 2 && (
+                <div className="flex flex-col gap-4">
+                  {/* Back button for selected service */}
+                  <div className="flex items-center gap-2 bg-gray-100 w-fit p-2 text-gray-800 rounded-lg hover:opacity-90 transition-opacity">
+                    <button onClick={prevStep} className="">
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-sm text-gray-700 capitalize">
+                      {watch("serviceType")}
+                    </span>
                   </div>
-                )}
-              </form>
-            </motion.div>
-          </AnimatePresence>
-        </div>
+
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select Payment Token
+                  </label>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {paymentTokens.map((token) => (
+                      <div key={token.id}>
+                        <input
+                          type="radio"
+                          id={token.id}
+                          value={token.id}
+                          {...register("paymentToken")}
+                          className="sr-only"
+                        />
+                        <label
+                          htmlFor={token.id}
+                          className={`flex flex-col items-center justify-center p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                            selectedToken === token.id
+                              ? "bg-blue-100 border-blue-500"
+                              : "bg-white border-gray-200 hover:bg-gray-50"
+                          }`}
+                        >
+                          <token.icon className="w-6 h-6 mb-2" />
+                          <span className="text-lg font-semibold">
+                            {token.name}
+                          </span>
+                          <span className="text-sm text-gray-600">
+                            {token.description}
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {step === 3 && (
+                <div className="space-y-4">
+                  {/* Back button for selected service */}
+                  <div className="flex items-center gap-2 bg-gray-100 w-fit p-2 text-gray-800 rounded-lg hover:opacity-90 transition-opacity">
+                    <button onClick={prevStep} className="">
+                      <ArrowLeft className="w-4 h-4" />
+                    </button>
+                    <span className="text-sm text-gray-700 capitalize">
+                      {watch("serviceType")}
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg font-semibold">Confirm Payment</h3>
+                  <div className="bg-gray-100 p-4 rounded-lg">
+                    <p>
+                      <strong>Service:</strong> {watch("serviceType")}
+                    </p>
+                    <p>
+                      <strong>
+                        {watch("serviceType") === "electricity"
+                          ? "Meter Number"
+                          : "Phone Number"}
+                      </strong>
+                      :{" "}
+                      {watch("serviceType") === "electricity"
+                        ? watch("meterNumber")
+                        : watch("phoneNumber")}
+                    </p>
+                    <p>
+                      <strong>Amount:</strong> {watch("amount")}
+                    </p>
+                    <p>
+                      <strong>Payment Token:</strong> {watch("paymentToken")}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </form>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {selectedService && step > 0 && step < steps.length - 1 ? (
         <div className="px-6 py-4 flex justify-between">
           {step > 0 && (
             <button
@@ -327,48 +356,53 @@ export default function BillPaymentForm() {
               Previous
             </button>
           )}
-          {step < steps.length - 1 ? (
+          {step < steps.length - 1 && (
             <button
               onClick={nextStep}
               className="lex items-center gap-2 px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-accent text-white rounded-xl hover:opacity-90 transition-opacity"
             >
               Next
             </button>
-          ) : (
-            <button
-              onClick={handleSubmit(onSubmit)}
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition-opacity"
-            >
-              {isSubmitting ? "Processing..." : "Confirm Payment"}
-            </button>
           )}
         </div>
-        <AnimatePresence>
-          {submitStatus !== "idle" && (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              className={`p-4 ${
-                submitStatus === "success" ? "bg-green-100" : "bg-red-100"
-              }`}
-            >
-              {submitStatus === "success" ? (
-                <div className="flex items-center text-status-success">
-                  <CheckCircle className="w-5 h-5 mr-2" />
-                  Payment successful!
-                </div>
-              ) : (
-                <div className="flex items-center text-status-error">
-                  <AlertCircle className="w-5 h-5 mr-2" />
-                  Payment failed. Please try again.
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </div>
+      ) : null}
+
+      {step === steps.length - 1 && (
+        <div className="px-6 py-4 flex justify-between">
+          <button
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
+            className="px-6 py-2 bg-gradient-to-r from-brand-primary to-brand-accent text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition-opacity"
+          >
+            {isSubmitting ? "Processing..." : "Confirm Payment"}
+          </button>
+        </div>
+      )}
+
+      <AnimatePresence>
+        {submitStatus !== "idle" && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className={`p-4 ${
+              submitStatus === "success" ? "bg-green-100" : "bg-red-100"
+            }`}
+          >
+            {submitStatus === "success" ? (
+              <div className="flex items-center text-status-success">
+                <CheckCircle className="w-5 h-5 mr-2" />
+                Payment successful!
+              </div>
+            ) : (
+              <div className="flex items-center text-status-error">
+                <AlertCircle className="w-5 h-5 mr-2" />
+                Payment failed. Please try again.
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

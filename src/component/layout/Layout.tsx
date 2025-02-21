@@ -22,7 +22,7 @@ export function Layout({ children }: LayoutProps) {
           <Header />
           <NetworkSwitchNotification className="container" />
 
-          <main className="container w-full max-w-md mx-auto px-4 py-8 lg:px-8 min-h-screen">
+          <main className="container w-full max-w-md mx-auto px-4 py-8 lg:px-8 min-h-screen bg-gray-50">
             {children}
           </main>
 
