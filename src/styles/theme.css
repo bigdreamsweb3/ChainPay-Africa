@@ -19,6 +19,8 @@
     /* Border Colors */
     --color-border-light: #E2E8F0;
     --color-border-dark: #CBD5E1;
+    --color-border-custom: #E2E8F0;
+    /* Example color */
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, #0066CC 0%, #0091EA 100%);
     --gradient-secondary: linear-gradient(135deg, #FF9900 0%, #FFB300 100%);

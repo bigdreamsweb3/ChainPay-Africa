@@ -29,6 +29,7 @@ export const theme = {
     border: {
       light: '#E2E8F0',
       dark: '#CBD5E1',
+      custom: '#E2E8F0',
     },
   },
   // Gradients
