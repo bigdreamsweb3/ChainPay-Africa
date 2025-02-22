@@ -41,7 +41,7 @@ const billPaymentSchema = z.object({
 type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
 
 const BillPaymentForm: React.FC = () => {
-  const { address, chain } = useAccount();
+  const { address } = useAccount();
   const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<

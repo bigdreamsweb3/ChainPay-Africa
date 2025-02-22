@@ -30,7 +30,7 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
   walletAddress,
   onReset,
 }) => {
-  const { address, chain } = useAccount();
+  const { chain } = useAccount();
 
   return (
     <motion.div

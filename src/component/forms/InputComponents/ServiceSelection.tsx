@@ -1,6 +1,6 @@
 import React from "react";
 import { Controller } from "react-hook-form";
-import { Smartphone, Wifi, Zap } from "lucide-react";
+import { Smartphone, Wifi } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
 
