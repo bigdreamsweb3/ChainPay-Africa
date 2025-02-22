@@ -1,7 +1,3 @@
-It looks like you’re building an exciting platform, **ChainPay Africa**, with the goal of enabling cryptocurrency-based bill payments on the **CrossFi Chain**. Below is a polished version of your project documentation with some minor formatting and additional clarifications to make it more cohesive:
-
----
-
 # ChainPay Africa
 
 **ChainPay Africa** is a decentralized bill payment platform that allows users to pay for services like electricity, internet, and more using cryptocurrency wallets instead of traditional banks. Built on the **CrossFi Chain**, it enables fast, low-cost, and borderless transactions.
@@ -10,7 +6,7 @@ It looks like you’re building an exciting platform, **ChainPay Africa**, with 
 
 ## 🚀 Features
 
-- **Crypto Payments**: Pay bills using supported cryptocurrencies such as Bitcoin, Ethereum, or other tokens supported by the CrossFi Chain.
+- **Crypto Payments**: Pay bills using supported cryptocurrencies such as Ethereum, or other tokens supported by the CrossFi Chain.
 - **Decentralized & Secure**: No intermediaries; transactions are securely recorded on-chain, ensuring transparency and immutability.
 - **Fast & Low Fees**: The CrossFi Chain ensures efficient transactions with minimal costs, making bill payments faster and more affordable.
 - **User-Friendly Interface**: An easy-to-use decentralized application (dApp) for seamless bill payments directly from your crypto wallet.
@@ -27,7 +23,7 @@ This project includes a **Solidity** smart contract deployed on the **CrossFi Ch
 
 - **GitHub Repo**: [ChainPay Africa GitHub](https://github.com/italiancode/ChainPay-Africa.git)
 - **Live Demo**: [Coming Soon]
-- **Project Website**: [Coming Soon]
+- **Project Website**: [ChainPay Africa](https://chainpay-africa.vercel.app/)
 - **Demo Video**: [Coming Soon]
 
 ---

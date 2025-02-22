@@ -13,17 +13,9 @@ interface PhoneNumberInputProps {
 
 const networks = [
   { id: "mtn", name: "MTN Nigeria", iconUrl: "/network-icons/mtn.jpg" },
-  {
-    id: "airtel",
-    name: "Airtel Nigeria",
-    iconUrl: "/network-icons/airtel.jpg",
-  },
+  { id: "airtel", name: "Airtel Nigeria", iconUrl: "/network-icons/airtel.jpg" },
   { id: "glo", name: "Glo Nigeria", iconUrl: "/network-icons/glo.png" },
-  {
-    id: "9mobile",
-    name: "9mobile Nigeria",
-    iconUrl: "/network-icons/9mobile.png",
-  },
+  { id: "9mobile", name: "9mobile Nigeria", iconUrl: "/network-icons/9mobile.png" },
   // Add more networks as needed
 ];
 
@@ -119,28 +111,13 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center bg-white border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:border-blue-500 cursor-pointer"
+            className="flex items-center justify-center bg-white border border-gray-300 rounded-l-lg h-12 w-16 focus:outline-none focus:border-blue-500 cursor-pointer hover:bg-gray-50 transition-colors"
           >
             <img
               src={selectedNetwork.iconUrl}
               alt={selectedNetwork.name}
-              className="w-6 h-6 "
+              className="w-6 h-6 rounded-full" // Adjusted icon size
             />
-
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
           </button>
           {isDropdownOpen && (
             <div className="absolute z-10 mt-1 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
@@ -153,9 +130,9 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                   <img
                     src={network.iconUrl}
                     alt={network.name}
-                    className="w-6 h-6"
+                    className="w-6 h-6 rounded-full" // Icon size in dropdown
                   />
-                  <span className="ml-2 text-sm">{network.name}</span>
+                  <span className="ml-2 text-sm text-gray-700">{network.name}</span>
                 </div>
               ))}
             </div>
@@ -166,7 +143,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           type="tel"
           placeholder="Enter phone number"
           {...register("phoneNumber", { validate: validatePhoneNumber })}
-          className="flex-1 px-4 py-2 rounded-r-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+          className="flex-1 px-4 py-2 h-12 border border-gray-300 focus:outline-none focus:border-blue-500 rounded-r-lg"
         />
       </div>
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
@@ -175,7 +152,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           <img
             src={carrier.iconUrl || ""}
             alt={carrier.name || "Unknown Carrier"}
-            className="w-4 h-4 mr-2"
+            className="w-4 h-4 mr-2 rounded-full"
           />
           <span>
             This number belongs to <strong>{carrier.name}</strong>
