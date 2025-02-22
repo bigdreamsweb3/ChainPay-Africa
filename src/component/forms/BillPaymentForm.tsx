@@ -67,7 +67,12 @@ const BillPaymentForm: React.FC = () => {
 
   const [paymentTokens, setPaymentTokens] = useState([
     { id: "BNB", name: "BNB", description: "Pay with BNB", icon: CreditCard },
-    { id: "USDC", name: "USDC", description: "Pay with USDC", icon: DollarSign },
+    {
+      id: "USDC",
+      name: "USDC",
+      description: "Pay with USDC",
+      icon: DollarSign,
+    },
   ]);
 
   const methods = useForm<BillPaymentFormData>({
@@ -95,19 +100,29 @@ const BillPaymentForm: React.FC = () => {
 
   const updatePaymentTokens = useCallback(async () => {
     if (!address) {
-      throw new Error("Address is undefined. Please connect your wallet.");
+      console.error("Address is undefined. Please connect your wallet.");
+      return;
     }
 
-    const balance = await getBalance(wagmiConfig, {
-      address: address,
-    });
+    try {
+      const balance = await getBalance(wagmiConfig, {
+        address: address,
+      });
 
-    const networkTokenSymbol = balance.symbol;
+      const networkTokenSymbol = balance.symbol;
 
-    setPaymentTokens((prevTokens) => [
-      { id: networkTokenSymbol, name: networkTokenSymbol, description: `Pay with ${networkTokenSymbol}`, icon: CreditCard },
-      ...prevTokens.slice(1),
-    ]);
+      setPaymentTokens((prevTokens) => [
+        {
+          id: networkTokenSymbol,
+          name: networkTokenSymbol,
+          description: `Pay with ${networkTokenSymbol}`,
+          icon: CreditCard,
+        },
+        ...prevTokens.slice(1),
+      ]);
+    } catch (error) {
+      console.error("Error fetching balance:", error);
+    }
   }, [address]);
 
   useEffect(() => {
@@ -177,8 +192,8 @@ const BillPaymentForm: React.FC = () => {
           setStep={setStep}
         />
 
-        <AnimatePresence>
-          {selectedService && (
+        {selectedService && (
+          <AnimatePresence>
             <motion.div
               className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-100 to-blue-100 rounded-2xl shadow-sm p-3"
               initial={{ opacity: 0, y: 20 }}
@@ -448,8 +463,8 @@ const BillPaymentForm: React.FC = () => {
                 </>
               )}
             </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        )}
       </div>
     </FormProvider>
   );
