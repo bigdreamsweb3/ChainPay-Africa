@@ -13,6 +13,7 @@ import { User, LogOut, ChevronDown, ExternalLink } from "lucide-react";
 import { SUPPORTED_CHAIN_IDS } from "@/utils/web3/config";
 import Image from "next/image";
 
+
 export function Account() {
   const { address, chain } = useAccount();
   const { disconnect } = useDisconnect();

@@ -2,15 +2,15 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { appConfig } from "@/app-config";
 
 export default function ChainPayInfoCard() {
   return (
-    <div className="w-full max-w-md mx-auto mb-8">
+    <div className="w-full max-w-md mx-auto mb-4">
       <motion.div
         className="relative bg-gradient-to-br from-brand-primary to-brand-accent rounded-xl shadow-sm overflow-hidden p-6 flex flex-col gap-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ scale: 1.02 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
         {/* Background Gradient */}
@@ -33,7 +33,7 @@ export default function ChainPayInfoCard() {
               />
             </motion.div>
             <span className="text-lg font-bold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
-              Chain<span className="text-brand-secondary">Pay</span>
+              {appConfig.appName}<span className="text-brand-secondary">{appConfig.appSubName}</span>
             </span>
           </div>
 
@@ -44,7 +44,7 @@ export default function ChainPayInfoCard() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Africa 🌍
+            {appConfig.appRegion} 🌍
           </motion.div>
         </div>
 

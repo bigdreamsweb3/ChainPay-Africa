@@ -1,8 +1,8 @@
-// import { InjectedConnector } from "@web3-react/injected-connector";  s
 import { http, createConfig } from "wagmi";
 import { base, mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 import { crossfiTestnet } from "./chains/crossfiChain";
+
 
 export const SUPPORTED_CHAIN_IDS = [mainnet, crossfiTestnet, base];
 
@@ -30,3 +30,15 @@ export const wagmiConfig = createConfig({
     [crossfiTestnet.id]: http(),
   },
 });
+
+// // Example usage in a React component
+// const BalanceComponent = () => {
+//   const { fetchBalance } = useBalance();
+
+//   const balance = fetchBalance();
+//   console.log("Balance:", balance);
+
+//   return balance;
+// };
+
+// export default BalanceComponent;

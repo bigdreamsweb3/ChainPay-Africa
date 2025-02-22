@@ -1,14 +1,15 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useAccount } from "wagmi"
-import { Account } from "@/component/web3/account"
-import { WalletOptions } from "@/component/web3/wallet-options"
-import { MapPin } from "lucide-react"
+import Image from "next/image";
+import { useAccount } from "wagmi";
+import { Account } from "@/component/web3/account";
+import { WalletOptions } from "@/component/web3/wallet-options";
+import { MapPin } from "lucide-react";
+import { appConfig } from "@/app-config";
 
 function ConnectWallet() {
-  const { isConnected } = useAccount()
-  return isConnected ? <Account /> : <WalletOptions />
+  const { isConnected } = useAccount();
+  return isConnected ? <Account /> : <WalletOptions />;
 }
 
 export function Header() {
@@ -33,11 +34,14 @@ export function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
-                Chain<span className="text-brand-secondary">Pay</span>
+                {appConfig.appName}
+                <span className="text-brand-secondary">
+                  {appConfig.appSubName}
+                </span>
               </span>
               <div className="flex items-center gap-1 text-xs text-gray-500">
                 <MapPin size={12} />
-                <span>Africa</span>
+                <span>{appConfig.appRegion}</span>
               </div>
             </div>
           </div>
@@ -47,6 +51,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
-

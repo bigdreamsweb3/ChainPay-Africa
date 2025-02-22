@@ -1,9 +1,28 @@
-const carrierIconMap = {
-    mtn: "/network-icons/mtn.jpg",
-    airtel: "/network-icons/airtel.jpg",
-    glo: "/network-icons/glo.png",
-    "9mobile": "/network-icons/9mobile.png",
-};
+export const networks = [{
+        id: "mtn",
+        iconUrl: "/network-icons/mtn.jpg",
+        name: "MTN Nigeria",
+        color: "#FCE29A",
+    },
+    {
+        id: "airtel",
+        iconUrl: "/network-icons/airtel.jpg",
+        name: "Airtel Nigeria",
+        color: "#FF0000",
+    },
+    {
+        id: "glo",
+        iconUrl: "/network-icons/glo.png",
+        name: "Glo Nigeria",
+        color: "#228B22",
+    },
+    {
+        id: "9mobile",
+        iconUrl: "/network-icons/9mobile.png",
+        name: "9mobile Nigeria",
+        color: "#00FF00", // Light Green
+    },
+];
 
 const phoneCarriers = [
     { prefix: "+234903", carrier: "MTN Nigeria", id: "mtn" },
@@ -20,14 +39,12 @@ const phoneCarriers = [
     { prefix: "+234812", carrier: "Airtel Nigeria", id: "airtel" },
     { prefix: "+234701", carrier: "Airtel Nigeria", id: "airtel" },
     { prefix: "+234902", carrier: "Airtel Nigeria", id: "airtel" },
-    { prefix: "+234808", carrier: "Glo Nigeria", id: "glo" },
     { prefix: "+234807", carrier: "Glo Nigeria", id: "glo" },
     { prefix: "+234815", carrier: "Glo Nigeria", id: "glo" },
     { prefix: "+234905", carrier: "Glo Nigeria", id: "glo" },
     { prefix: "+234909", carrier: "Glo Nigeria", id: "glo" },
     { prefix: "+234818", carrier: "9mobile Nigeria", id: "9mobile" },
     { prefix: "+234817", carrier: "9mobile Nigeria", id: "9mobile" },
-    { prefix: "+234909", carrier: "9mobile Nigeria", id: "9mobile" },
     { prefix: "+234908", carrier: "9mobile Nigeria", id: "9mobile" },
 ];
 
@@ -42,13 +59,21 @@ export function detectCarrier(phoneNumber) {
         phoneNumber = "+234" + phoneNumber;
     }
 
+    // Find the carrier based on the prefix
     for (let { prefix, carrier, id }
         of phoneCarriers) {
         if (phoneNumber.startsWith(prefix)) {
-            return { carrier, id, iconUrl: carrierIconMap[id] }; // Return carrier info including id and iconUrl
+            const network = networks.find((network) => network.id === id);
+            return {
+                carrier,
+                id,
+                iconUrl: network ? network.iconUrl : null, // Return iconUrl if network is found
+            };
         }
     }
-    return { carrier: "Unknown Carrier", id: null, iconUrl: null }; // Return unknown carrier info
+
+    // Return unknown carrier info if no match is found
+    return { carrier: "Unknown Carrier", id: null, iconUrl: null };
 }
 
 // // Example Usage:
