@@ -1,5 +1,5 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Controller, Control } from "react-hook-form";
 import { Smartphone, Wifi } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
@@ -10,11 +10,13 @@ const services = [
   // { id: "electricity", name: "Electricity", icon: Zap, color: "yellow" },
 ] as const;
 
-const ServiceSelection: React.FC<{
-  control: any;
+interface ServiceSelectionProps {
+  control: Control<any>;
   selectedService: string;
   setStep: (step: number) => void;
-}> = ({ control, selectedService, setStep }) => {
+}
+
+const ServiceSelection: React.FC<ServiceSelectionProps> = ({ control, selectedService, setStep }) => {
   return (
     <motion.div
       className="w-full max-w-md mx-auto bg-white rounded-lg shadow-sm"
@@ -25,8 +27,7 @@ const ServiceSelection: React.FC<{
       <div className="p-4">
         <div className="flex flex-wrap justify-start gap-4">
           {services.map((service) => {
-
-            const isAvailable = appConfig.availableServices.includes(service.name)
+            const isAvailable = appConfig.availableServices.includes(service.name);
             const colorClasses = {
               blue: {
                 bg: "bg-blue-50",
@@ -41,7 +42,6 @@ const ServiceSelection: React.FC<{
                 hover: "hover:bg-green-100",
                 text: "text-white",
                 icon: "text-green-500",
-
               },
               yellow: {
                 bg: "bg-yellow-50",
@@ -50,9 +50,8 @@ const ServiceSelection: React.FC<{
                 text: "text-white",
                 icon: "text-yellow-500",
               },
-            }
-            const { bg, border, hover, text, icon } = colorClasses[service.color]
-
+            };
+            const { bg, border, hover, text, icon } = colorClasses[service.color];
 
             return (
               <Controller

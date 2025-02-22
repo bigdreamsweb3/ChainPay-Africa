@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -102,18 +102,18 @@ const BillPaymentForm: React.FC = () => {
     return balance.symbol;
   };
 
-  const updatePaymentTokens = async () => {
+  const updatePaymentTokens = useCallback(async () => {
     const networkTokenSymbol = await Balance();
     
     setPaymentTokens((prevTokens) => [
       { id: networkTokenSymbol, name: networkTokenSymbol, description: `Pay with ${networkTokenSymbol}`, icon: CreditCard },
       ...prevTokens.slice(1),
     ]);
-  };
+  }, [Balance]);
 
   useEffect(() => {
     updatePaymentTokens();
-  }, [address]);
+  }, [address, updatePaymentTokens]);
 
   const steps = ["Service", "Details", "Payment", "Confirm"];
 
