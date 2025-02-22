@@ -4,14 +4,14 @@ import { Smartphone, Wifi } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
 
-// Define your form data type
-interface BillPaymentFormData {
-  serviceType: string;
-  phoneNumber?: string;
-  meterNumber?: string;
-  amount: string;
-  paymentToken: string;
-}
+// // Define your form data type
+// interface BillPaymentFormData {
+//   serviceType: string;
+//   phoneNumber?: string;
+//   meterNumber?: string;
+//   amount: string;
+//   paymentToken: string;
+// }
 
 const services = [
   { id: "airtime", name: "Airtime", icon: Smartphone, color: "blue" },
@@ -20,7 +20,7 @@ const services = [
 ] as const;
 
 interface ServiceSelectionProps {
-  control: Control<BillPaymentFormData>; // Use the specific type here
+  control: Control<any>;
   selectedService: string;
   setStep: (step: number) => void;
 }

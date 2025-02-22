@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, Control } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -73,8 +73,11 @@ const BillPaymentForm: React.FC = () => {
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
-      serviceType: undefined,
+      serviceType: "airtime",
       paymentToken: "BNB",
+      amount: "",
+      phoneNumber: undefined,
+      meterNumber: undefined,
     },
   });
 
