@@ -23,8 +23,8 @@ const client = createPublicClient({
   transport: http(),
 });
 
-const blockNumber = await client.getBlockNumber();
+// const blockNumber = await client.getBlockNumber();
 
-console.log(blockNumber);
+// console.log(blockNumber);
 
-export default `Block number: ${blockNumber}`;
+// export default `Block number: ${blockNumber}`;
