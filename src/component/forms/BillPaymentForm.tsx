@@ -90,7 +90,7 @@ const BillPaymentForm: React.FC = () => {
   const selectedService = watch("serviceType");
   const selectedToken = watch("paymentToken");
 
-  const Balance = async () => {
+  const updatePaymentTokens = useCallback(async () => {
     if (!address) {
       throw new Error("Address is undefined. Please connect your wallet.");
     }
@@ -99,17 +99,13 @@ const BillPaymentForm: React.FC = () => {
       address: address,
     });
 
-    return balance.symbol;
-  };
+    const networkTokenSymbol = balance.symbol;
 
-  const updatePaymentTokens = useCallback(async () => {
-    const networkTokenSymbol = await Balance();
-    
     setPaymentTokens((prevTokens) => [
       { id: networkTokenSymbol, name: networkTokenSymbol, description: `Pay with ${networkTokenSymbol}`, icon: CreditCard },
       ...prevTokens.slice(1),
     ]);
-  }, [Balance]);
+  }, [address]);
 
   useEffect(() => {
     updatePaymentTokens();
