@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { detectCarrier } from "@/utils/getPhoneCarrierInfo";
+import Image from 'next/image';
 
 interface PhoneNumberInputProps {
   error?: string;
@@ -111,13 +112,25 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="flex items-center justify-center bg-white border border-gray-300 rounded-l-lg h-12 w-16 focus:outline-none focus:border-blue-500 cursor-pointer hover:bg-gray-50 transition-colors"
+            className="flex items-center bg-white border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:border-blue-500 cursor-pointer"
           >
-            <img
+            <Image
               src={selectedNetwork.iconUrl}
               alt={selectedNetwork.name}
-              className="w-6 h-6 rounded-full" // Adjusted icon size
+              width={16}
+              height={16}
+              className="w-6 h-6"
             />
+          
+            <svg
+              className="w-4 h-4 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </button>
           {isDropdownOpen && (
             <div className="absolute z-10 mt-1 w-48 bg-white border border-gray-300 rounded-lg shadow-lg">
@@ -127,12 +140,14 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                   onClick={() => handleNetworkSelect(network)}
                   className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
                 >
-                  <img
+                  <Image
                     src={network.iconUrl}
                     alt={network.name}
-                    className="w-6 h-6 rounded-full" // Icon size in dropdown
+                    width={24}
+                    height={24}
+                    className="w-6 h-6 rounded-full"
                   />
-                  <span className="ml-2 text-sm text-gray-700">{network.name}</span>
+                  <span className="ml-2">{network.name}</span>
                 </div>
               ))}
             </div>
@@ -143,15 +158,17 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           type="tel"
           placeholder="Enter phone number"
           {...register("phoneNumber", { validate: validatePhoneNumber })}
-          className="flex-1 px-4 py-2 h-12 border border-gray-300 focus:outline-none focus:border-blue-500 rounded-r-lg"
+          className="flex-1 px-4 py-2 rounded-r-lg border border-gray-300 focus:outline-none focus:border-blue-500"
         />
       </div>
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
       {carrier.id && !isManualSelection && (
         <div className="mt-1 text-sm text-gray-600 flex items-center">
-          <img
+          <Image
             src={carrier.iconUrl || ""}
             alt={carrier.name || "Unknown Carrier"}
+            width={16}
+            height={16}
             className="w-4 h-4 mr-2 rounded-full"
           />
           <span>
