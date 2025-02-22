@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { useForm, FormProvider, Control } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,7 +38,7 @@ const billPaymentSchema = z.object({
   paymentToken: z.enum(["BNB", "USDC"]),
 });
 
-type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
+export type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
 
 const BillPaymentForm: React.FC = () => {
   const { address } = useAccount();

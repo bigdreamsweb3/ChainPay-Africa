@@ -3,6 +3,7 @@ import { Controller, Control } from "react-hook-form";
 import { Smartphone, Wifi } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
+import { BillPaymentFormData } from "../BillPaymentForm";
 
 // // Define your form data type
 // interface BillPaymentFormData {
@@ -20,7 +21,7 @@ const services = [
 ] as const;
 
 interface ServiceSelectionProps {
-  control: Control<any>;
+  control: Control<BillPaymentFormData>;
   selectedService: string;
   setStep: (step: number) => void;
 }
