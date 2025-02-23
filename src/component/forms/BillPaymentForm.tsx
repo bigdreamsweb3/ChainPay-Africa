@@ -6,12 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  CreditCard,
-  AlertCircle,
-  Loader2,
-  ArrowLeft,
-} from "lucide-react";
+import { CreditCard, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import PaymentReceipt from "../PaymentReceipt";
@@ -34,7 +29,7 @@ const billPaymentSchema = z.object({
         message: "Amount must be a positive number",
       }
     ),
-  paymentToken: z.enum(["pNGN", "USDC", "ETH"]), // Add main network token (e.g., ETH)
+  paymentToken: z.enum(["pNGN", "USDC", "ETH"]),
 });
 
 type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
@@ -77,7 +72,7 @@ const BillPaymentForm: React.FC = () => {
       icon: CreditCard,
     },
     {
-      id: "ETH", // Add main network token (e.g., ETH)
+      id: "ETH",
       name: "ETH",
       description: "Pay with ETH",
       icon: CreditCard,
@@ -88,7 +83,7 @@ const BillPaymentForm: React.FC = () => {
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
       serviceType: "airtime",
-      paymentToken: "pNGN", // Default to main network token
+      paymentToken: "pNGN",
     },
   });
 
@@ -210,14 +205,14 @@ const BillPaymentForm: React.FC = () => {
         <AnimatePresence>
           {selectedService && (
             <motion.div
-              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-100 to-blue-100 rounded-2xl shadow-sm p-4"
+              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg p-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.3 }}
             >
               {unavailableServiceMessage ? (
-                <div className="text-center bg-gray-100 rounded-lg shadow-inner">
+                <div className="text-center bg-gray-50 rounded-lg p-6">
                   <svg
                     className="w-12 h-12 mx-auto text-gray-400 mb-4"
                     fill="none"
@@ -298,7 +293,7 @@ const BillPaymentForm: React.FC = () => {
                                 step="0.01"
                                 placeholder="Enter amount"
                                 {...register("amount")}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                               />
                               {errors.amount && (
                                 <p className="mt-1 text-sm text-red-600">
@@ -329,8 +324,8 @@ const BillPaymentForm: React.FC = () => {
                                       htmlFor={token.id}
                                       className={`p-4 rounded-lg flex flex-col items-center transition-all ${
                                         selectedToken === token.id
-                                          ? "bg-green-100 border-2 border-green-500"
-                                          : "bg-white hover:bg-gray-100"
+                                          ? "bg-blue-50 border-2 border-blue-500"
+                                          : "bg-white hover:bg-gray-50"
                                       }`}
                                     >
                                       <token.icon className="w-8 h-8 text-blue-600" />
@@ -351,7 +346,7 @@ const BillPaymentForm: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={prevStep}
-                                className="p-2 rounded-md bg-green-400 text-white hover:bg-green-500 transition-colors duration-200 flex items-center gap-2"
+                                className="p-2 rounded-md bg-brand-secondary text-gray-700 hover:bg-green-200 transition-colors duration-200 flex items-center gap-2"
                               >
                                 <ArrowLeft className="w-5 h-5" />
                               </button>
@@ -407,7 +402,7 @@ const BillPaymentForm: React.FC = () => {
                               type="button"
                               onClick={prevStep}
                               disabled={isSubmitting}
-                              className="px-4 py-2 text-sm bg-white p-2 text-blue-600 hover:bg-gray-100 rounded-lg"
+                              className="px-4 py-2 text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg"
                             >
                               Previous
                             </button>
@@ -417,7 +412,7 @@ const BillPaymentForm: React.FC = () => {
                             <button
                               type="button"
                               onClick={nextStep}
-                              className="px-4 py-2 p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
+                              className="px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
                             >
                               Next
                             </button>
