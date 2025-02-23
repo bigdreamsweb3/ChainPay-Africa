@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useEffect } from "react";
-import { Controller, type Control, FieldValues } from "react-hook-form";
+import { Controller, type Control } from "react-hook-form";
 import { Smartphone, Wifi, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
