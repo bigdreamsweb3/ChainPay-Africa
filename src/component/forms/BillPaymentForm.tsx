@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import React, { useState, useEffect } from "react";
+import { useForm, Controller, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,6 +21,7 @@ import ServiceSelection from "./InputComponents/ServiceSelection";
 import { getBalance } from "@wagmi/core";
 import { useAccount } from "wagmi";
 import { wagmiConfig } from "@/utils/web3/config";
+import { appConfig } from "@/app-config";
 
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
@@ -38,10 +39,17 @@ const billPaymentSchema = z.object({
   paymentToken: z.enum(["BNB", "USDC"]),
 });
 
-export type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
+type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
+
+const paymentTokens = [
+  { id: "BNB", name: "BNB", description: "Pay with BNB", icon: CreditCard },
+  { id: "USDC", name: "USDC", description: "Pay with USDC", icon: DollarSign },
+];
+
+const steps = ["Service", "Details", "Payment", "Confirm"];
 
 const BillPaymentForm: React.FC = () => {
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const [step, setStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
@@ -64,25 +72,13 @@ const BillPaymentForm: React.FC = () => {
     name: null,
     iconUrl: null,
   });
-
-  const [paymentTokens, setPaymentTokens] = useState([
-    { id: "BNB", name: "BNB", description: "Pay with BNB", icon: CreditCard },
-    {
-      id: "USDC",
-      name: "USDC",
-      description: "Pay with USDC",
-      icon: DollarSign,
-    },
-  ]);
+  const [unavailableServiceMessage, setUnavailableServiceMessage] = useState<string | null>(null);
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
-      serviceType: "airtime",
+      serviceType: undefined,
       paymentToken: "BNB",
-      amount: "",
-      phoneNumber: undefined,
-      meterNumber: undefined,
     },
   });
 
@@ -97,39 +93,6 @@ const BillPaymentForm: React.FC = () => {
 
   const selectedService = watch("serviceType");
   const selectedToken = watch("paymentToken");
-
-  const updatePaymentTokens = useCallback(async () => {
-    if (!address) {
-      console.error("Address is undefined. Please connect your wallet.");
-      return;
-    }
-
-    try {
-      const balance = await getBalance(wagmiConfig, {
-        address: address,
-      });
-
-      const networkTokenSymbol = balance.symbol;
-
-      setPaymentTokens((prevTokens) => [
-        {
-          id: networkTokenSymbol,
-          name: networkTokenSymbol,
-          description: `Pay with ${networkTokenSymbol}`,
-          icon: CreditCard,
-        },
-        ...prevTokens.slice(1),
-      ]);
-    } catch (error) {
-      console.error("Error fetching balance:", error);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    updatePaymentTokens();
-  }, [address, updatePaymentTokens]);
-
-  const steps = ["Service", "Details", "Payment", "Confirm"];
 
   const onSubmit = async (data: BillPaymentFormData) => {
     const purchaseData = {
@@ -183,6 +146,8 @@ const BillPaymentForm: React.FC = () => {
     }
   }, [submitStatus]);
 
+  const isAvailable = appConfig.availableServices.includes(selectedService);
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-4">
@@ -190,10 +155,11 @@ const BillPaymentForm: React.FC = () => {
           control={control}
           selectedService={selectedService}
           setStep={setStep}
+          setUnavailableServiceMessage={setUnavailableServiceMessage}
         />
 
-        {selectedService && (
-          <AnimatePresence>
+        <AnimatePresence>
+          {selectedService && (
             <motion.div
               className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-100 to-blue-100 rounded-2xl shadow-sm p-3"
               initial={{ opacity: 0, y: 20 }}
@@ -201,7 +167,12 @@ const BillPaymentForm: React.FC = () => {
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.3 }}
             >
-              {submitStatus === "success" && transactionDetails ? (
+              {unavailableServiceMessage ? (
+                <div className="text-center text-gray-500">
+                  <p>{unavailableServiceMessage}</p>
+                  <p className="text-xs">(Coming Soon)</p>
+                </div>
+              ) : submitStatus === "success" && transactionDetails ? (
                 <PaymentReceipt
                   transactionId={transactionDetails.transactionId}
                   serviceType={selectedService}
@@ -229,170 +200,138 @@ const BillPaymentForm: React.FC = () => {
                       exit={{ opacity: 0, x: -50 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6"
-                      >
-                        {step === 1 && (
-                          <div className="space-y-6">
-                            <div className="flex items-center">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  prevStep();
-                                  reset({ serviceType: undefined });
-                                }}
-                                className="p-2 rounded-md bg-gray-400 text-white hover:bg-red-500 transition-colors duration-200 flex items-center gap-2"
-                              >
-                                {step === 1 ? (
-                                  <X className="w-5 h-5" />
-                                ) : (
-                                  <ArrowLeft className="w-5 h-5" />
-                                )}
-                              </button>
-
-                              <span className="text-sm bg-white p-2 rounded-lg text-blue-600 font-bold capitalize ml-2">
-                                {selectedService}
-                              </span>
-                            </div>
-
-                            {selectedService === "electricity" ? (
-                              <MeterNumberInput
-                                error={errors.meterNumber?.message}
-                              />
-                            ) : (
-                              <PhoneNumberInput
-                                error={errors.phoneNumber?.message}
-                                onCarrierChange={(carrier) =>
-                                  setCarrier(carrier)
-                                }
-                              />
-                            )}
-
-                            <div>
-                              <label className="block text-sm text-gray-700 mb-2">
-                                Amount
-                              </label>
-                              <input
-                                type="number"
-                                step="0.01"
-                                placeholder="Enter amount"
-                                {...register("amount")}
-                                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
-                              />
-                              {errors.amount && (
-                                <p className="mt-1 text-sm text-red-600">
-                                  {errors.amount.message}
-                                </p>
+                      {!isAvailable ? (
+                        <form
+                          onSubmit={handleSubmit(onSubmit)}
+                          className="space-y-6"
+                        >
+                          {step === 1 && (
+                            <div className="space-y-6">
+                              {selectedService === "electricity" ? (
+                                <MeterNumberInput
+                                  error={errors.meterNumber?.message}
+                                />
+                              ) : (
+                                <PhoneNumberInput
+                                  error={errors.phoneNumber?.message}
+                                  onCarrierChange={(carrier) =>
+                                    setCarrier(carrier)
+                                  }
+                                />
                               )}
-                            </div>
-                          </div>
-                        )}
 
-                        {step === 2 && (
-                          <div className="space-y-6">
-                            <div className="flex items-center">
-                              <button
-                                type="button"
-                                onClick={prevStep}
-                                className="p-2 rounded-md bg-yellow-400 text-white hover:bg-yellow-500 transition-colors duration-200 flex items-center gap-2"
-                              >
-                                <ArrowLeft className="w-5 h-5" />
-                              </button>
-
-                              <span className="text-sm bg-white p-2 rounded-lg text-blue-600 font-bold capitalize ml-2">
-                                {selectedService}
-                              </span>
-                            </div>
-
-                            <div className="space-y-4">
-                              <label className="block text-sm text-gray-700 font-bold">
-                                Select Payment Token
-                              </label>
-                              <div className="grid grid-cols-2 gap-4">
-                                {paymentTokens.map((token) => (
-                                  <div key={token.id}>
-                                    <input
-                                      type="radio"
-                                      id={token.id}
-                                      value={token.id}
-                                      {...register("paymentToken")}
-                                      className="sr-only"
-                                    />
-                                    <label
-                                      htmlFor={token.id}
-                                      className={`p-4 rounded-lg flex flex-col items-center transition-all ${
-                                        selectedToken === token.id
-                                          ? "bg-green-100 border-2 border-green-500"
-                                          : "bg-white hover:bg-gray-100"
-                                      }`}
-                                    >
-                                      <token.icon className="w-8 h-8 text-blue-600" />
-                                      <span className="mt-2 text-sm font-bold text-gray-700">
-                                        {token.name}
-                                      </span>
-                                    </label>
-                                  </div>
-                                ))}
+                              <div>
+                                <label className="block text-sm text-gray-700 mb-2">
+                                  Amount
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="Enter amount"
+                                  {...register("amount")}
+                                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+                                />
+                                {errors.amount && (
+                                  <p className="mt-1 text-sm text-red-600">
+                                    {errors.amount.message}
+                                  </p>
+                                )}
                               </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
-                        {step === 3 && (
-                          <div className="space-y-6">
-                            <div className="flex items-center">
-                              <button
-                                type="button"
-                                onClick={prevStep}
-                                className="p-2 rounded-md bg-green-400 text-white hover:bg-green-500 transition-colors duration-200 flex items-center gap-2"
-                              >
-                                <ArrowLeft className="w-5 h-5" />
-                              </button>
-
-                              <span className="text-sm bg-white p-2 rounded-lg text-blue-600 font-bold capitalize ml-2">
-                                {selectedService}
-                              </span>
+                          {step === 2 && (
+                            <div className="space-y-6">
+                              <div className="space-y-4">
+                                <label className="block text-sm text-gray-700 font-bold">
+                                  Select Payment Token
+                                </label>
+                                <div className="grid grid-cols-2 gap-4">
+                                  {paymentTokens.map((token) => (
+                                    <div key={token.id}>
+                                      <input
+                                        type="radio"
+                                        id={token.id}
+                                        value={token.id}
+                                        {...register("paymentToken")}
+                                        className="sr-only"
+                                      />
+                                      <label
+                                        htmlFor={token.id}
+                                        className={`p-4 rounded-lg flex flex-col items-center transition-all ${
+                                          selectedToken === token.id
+                                            ? "bg-green-100 border-2 border-green-500"
+                                            : "bg-white hover:bg-gray-100"
+                                        }`}
+                                      >
+                                        <token.icon className="w-8 h-8 text-blue-600" />
+                                        <span className="mt-2 text-sm font-bold text-gray-700">
+                                          {token.name}
+                                        </span>
+                                      </label>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
+                          )}
 
-                            <div className="space-y-4">
-                              <h3 className="text-lg font-semibold text-gray-800">
-                                Confirm Payment
-                              </h3>
-                              <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm text-gray-700">
-                                  <strong>Service:</strong> {selectedService}
-                                </p>
-                                <p className="text-sm text-gray-700">
-                                  <strong>
+                          {step === 3 && (
+                            <div className="space-y-6">
+                              <div className="flex items-center">
+                                <button
+                                  type="button"
+                                  onClick={prevStep}
+                                  className="p-2 rounded-md bg-green-400 text-white hover:bg-green-500 transition-colors duration-200 flex items-center gap-2"
+                                >
+                                  <ArrowLeft className="w-5 h-5" />
+                                </button>
+                              </div>
+
+                              <div className="space-y-4">
+                                <h3 className="text-lg font-semibold text-gray-800">
+                                  Confirm Payment
+                                </h3>
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                  <p className="text-sm text-gray-700">
+                                    <strong>Service:</strong> {selectedService}
+                                  </p>
+                                  <p className="text-sm text-gray-700">
+                                    <strong>
+                                      {selectedService === "electricity"
+                                        ? "Meter Number"
+                                        : "Phone Number"}
+                                    </strong>
+                                    :{" "}
                                     {selectedService === "electricity"
-                                      ? "Meter Number"
-                                      : "Phone Number"}
-                                  </strong>
-                                  :{" "}
-                                  {selectedService === "electricity"
-                                    ? watch("meterNumber")
-                                    : watch("phoneNumber")}
-                                </p>
-                                {(selectedService === "airtime" ||
-                                  selectedService === "data") &&
-                                  carrier && (
-                                    <p className="text-sm text-gray-700">
-                                      <strong>Network:</strong> {carrier.name}
-                                    </p>
-                                  )}
-                                <p className="text-sm text-gray-700">
-                                  <strong>Amount:</strong> {watch("amount")}
-                                </p>
-                                <p className="text-sm text-gray-700">
-                                  <strong>Payment Token:</strong>{" "}
-                                  {watch("paymentToken")}
-                                </p>
+                                      ? watch("meterNumber")
+                                      : watch("phoneNumber")}
+                                  </p>
+                                  {(selectedService === "airtime" ||
+                                    selectedService === "data") &&
+                                    carrier && (
+                                      <p className="text-sm text-gray-700">
+                                        <strong>Network:</strong> {carrier.name}
+                                      </p>
+                                    )}
+                                  <p className="text-sm text-gray-700">
+                                    <strong>Amount:</strong> {watch("amount")}
+                                  </p>
+                                  <p className="text-sm text-gray-700">
+                                    <strong>Payment Token:</strong>{" "}
+                                    {watch("paymentToken")}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </form>
+                          )}
+                        </form>
+                      ) : (
+                        <div className="text-center text-gray-500">
+                          <p>{selectedService} is currently unavailable.</p>
+                          <p className="text-xs">(Coming Soon)</p>
+                        </div>
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 </div>
@@ -407,7 +346,7 @@ const BillPaymentForm: React.FC = () => {
                           type="button"
                           onClick={prevStep}
                           disabled={isSubmitting}
-                          className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg"
+                          className="px-4 py-2 text-sm bg-white p-2 text-blue-600 hover:bg-gray-100 rounded-lg"
                         >
                           Previous
                         </button>
@@ -417,7 +356,7 @@ const BillPaymentForm: React.FC = () => {
                         <button
                           type="button"
                           onClick={nextStep}
-                          className="px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
+                          className="px-4 py-2 p-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
                         >
                           Next
                         </button>
@@ -463,8 +402,8 @@ const BillPaymentForm: React.FC = () => {
                 </>
               )}
             </motion.div>
-          </AnimatePresence>
-        )}
+          )}
+        </AnimatePresence>
       </div>
     </FormProvider>
   );
