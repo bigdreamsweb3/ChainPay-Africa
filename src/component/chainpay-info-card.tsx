@@ -6,7 +6,7 @@ import { appConfig } from "@/app-config";
 
 export default function ChainPayInfoCard() {
   return (
-    <div className="w-full max-w-md mx-auto mb-4">
+    <div className="w-full max-w-md mx-auto mb-8">
       <motion.div
         className="relative bg-gradient-to-br from-brand-primary to-brand-accent rounded-xl shadow-sm overflow-hidden p-6 flex flex-col gap-4"
         initial={{ opacity: 0, y: 20 }}
@@ -32,9 +32,9 @@ export default function ChainPayInfoCard() {
                 className="rounded-full border border-white/10"
               />
             </motion.div>
-            <span className="text-lg font-bold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
+            {/* <span className="text-lg font-bold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
               {appConfig.appName}<span className="text-brand-secondary">{appConfig.appSubName}</span>
-            </span>
+            </span> */}
           </div>
 
           {/* Animated Badge */}
