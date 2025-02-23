@@ -57,7 +57,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
       transition={{ type: "spring", stiffness: 500 }}
     >
       <div className="p-2 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg">
-        <div className="flex flex-wrap justify-start gap-4">
+        <div className="flex flex-wrap justify-start gap-2">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
               service.name
@@ -70,7 +70,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                 control={control}
                 render={({ field }) => (
                   <motion.div
-                    className="flex flex-col items-center w-24 md:w-28"
+                    className="flex flex-col items-center justify-start w-24 md:w-28"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -94,13 +94,13 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                       }`}
                     >
                       <div className="flex items-center gap-1">
-                        <service.icon
+                        {/* <service.icon
                           className={`w-5 h-5 md:w-6 md:h-6 ${
                             field.value === service.id
                               ? "text-white"
                               : `text-brand-border-brand-primary`
                           }`}
-                        />
+                        /> */}
                         <span
                           className={`text-sm md:text-base font-semibold ${
                             field.value === service.id

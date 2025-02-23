@@ -205,7 +205,7 @@ const BillPaymentForm: React.FC = () => {
         <AnimatePresence>
           {selectedService && (
             <motion.div
-              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg p-6"
+              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg p-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -256,7 +256,7 @@ const BillPaymentForm: React.FC = () => {
                   walletAddress={transactionDetails.walletAddress}
                 />
               ) : (
-                <div className="m-4 mb-0">
+                <div className="m-2 mb-0">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={step}
@@ -284,8 +284,8 @@ const BillPaymentForm: React.FC = () => {
                               />
                             )}
 
-                            <div>
-                              <label className="block text-sm text-gray-700 mb-2">
+                            <div className="space-y-4">
+                              <label className="block text-sm text-gray-700 font-bold">
                                 Amount
                               </label>
                               <input
@@ -293,7 +293,7 @@ const BillPaymentForm: React.FC = () => {
                                 step="0.01"
                                 placeholder="Enter amount"
                                 {...register("amount")}
-                                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none ring-2 ring-blue-300 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                               />
                               {errors.amount && (
                                 <p className="mt-1 text-sm text-red-600">
