@@ -22,7 +22,7 @@ interface ServiceSelectionProps {
 
 const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   control,
-  selectedService,
+
   setStep,
   setUnavailableServiceMessage,
 }) => {

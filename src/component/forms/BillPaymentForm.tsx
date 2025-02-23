@@ -8,7 +8,7 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CreditCard,
-  DollarSign,
+  
   AlertCircle,
   Loader2,
   ArrowLeft,
@@ -43,7 +43,7 @@ type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
 const steps = ["Service", "Details", "Payment", "Confirm"];
 
 const BillPaymentForm: React.FC = () => {
-  const { address, chain } = useAccount();
+  const { address } = useAccount();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
