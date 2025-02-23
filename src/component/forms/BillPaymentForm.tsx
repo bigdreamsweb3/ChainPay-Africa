@@ -391,8 +391,7 @@ const BillPaymentForm: React.FC = () => {
                                   <strong>Amount:</strong> {watch("amount")}
                                 </p>
                                 <p className="text-sm text-gray-700">
-                                  <strong>Payment Token:</strong>{" "}
-                                  {watch("paymentToken")}
+                                  <strong>Payment Token:</strong> {watch("paymentToken").replace(/'/g, "&apos;")}
                                 </p>
                               </div>
                             </div>
