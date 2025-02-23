@@ -96,7 +96,6 @@ const BillPaymentForm: React.FC = () => {
   });
 
   const {
-    control,
     register,
     handleSubmit,
     watch,
