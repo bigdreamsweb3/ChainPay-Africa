@@ -8,7 +8,6 @@ import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CreditCard,
-  
   AlertCircle,
   Loader2,
   ArrowLeft,
@@ -21,8 +20,6 @@ import { useAccount } from "wagmi";
 import { getBalance } from "@wagmi/core";
 import { appConfig } from "@/app-config";
 import { wagmiConfig } from "@/utils/web3/config";
-
-
 
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
@@ -239,7 +236,7 @@ const BillPaymentForm: React.FC = () => {
                     {selectedService} is currently unavailable
                   </p>
                   <p className="text-sm text-gray-500">
-                    We're working hard to bring this service to you soon!
+                    We&apos;re working hard to bring this service to you soon!
                   </p>
                   <p className="text-xs text-blue-500 mt-4 font-medium">
                     (Coming Soon)
@@ -390,7 +387,8 @@ const BillPaymentForm: React.FC = () => {
                                   <strong>Amount:</strong> {watch("amount")}
                                 </p>
                                 <p className="text-sm text-gray-700">
-                                  <strong>Payment Token:</strong> {watch("paymentToken").replace(/'/g, "&apos;")}
+                                  <strong>Payment Token:</strong>{" "}
+                                  {watch("paymentToken")}
                                 </p>
                               </div>
                             </div>
