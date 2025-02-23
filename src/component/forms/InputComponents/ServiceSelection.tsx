@@ -57,7 +57,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
       transition={{ type: "spring", stiffness: 500 }}
     >
       <div className="p-2 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg">
-        <div className="flex flex-wrap justify-start gap-2">
+        <div className="flex flex-wrap justify-start gap-3">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
               service.name
