@@ -131,7 +131,7 @@ const BillPaymentForm: React.FC = () => {
     };
 
     fetchBalance();
-  }, [address]);
+  }, [address, paymentTokens]);
 
   useEffect(() => {
     if (appConfig.availableServices.includes("Airtime")) {
