@@ -22,6 +22,7 @@ import { getBalance } from "@wagmi/core";
 import { appConfig } from "@/app-config";
 import { wagmiConfig } from "@/utils/web3/config";
 
+
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
   phoneNumber: z.string().optional(),
@@ -89,7 +90,7 @@ const BillPaymentForm: React.FC = () => {
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
       serviceType: "airtime",
-      paymentToken: "ETH", // Default to main network token
+      paymentToken: "pNGN", // Default to main network token
     },
   });
 
@@ -203,7 +204,7 @@ const BillPaymentForm: React.FC = () => {
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-6">
         <ServiceSelection
-          control={control}
+          control={methods.control}
           selectedService={selectedService}
           setStep={setStep}
           setUnavailableServiceMessage={setUnavailableServiceMessage}

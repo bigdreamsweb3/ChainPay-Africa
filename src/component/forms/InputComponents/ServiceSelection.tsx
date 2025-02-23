@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useEffect } from "react";
-import { Controller, type Control } from "react-hook-form";
+import { Controller, type Control, FieldValues } from "react-hook-form";
 import { Smartphone, Wifi, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
@@ -13,8 +13,16 @@ const services = [
   { id: "electricity", name: "Electricity", icon: Zap },
 ] as const;
 
+interface BillPaymentFormData {
+  serviceType: "airtime" | "data" | "electricity";
+  amount: string;
+  paymentToken: "pNGN" | "USDC" | "ETH";
+  phoneNumber?: string;
+  meterNumber?: string;
+}
+
 interface ServiceSelectionProps {
-  control: Control<any>;
+  control: Control<BillPaymentFormData>;
   selectedService: string;
   setStep: (step: number) => void;
   setUnavailableServiceMessage: (message: string | null) => void;
@@ -22,7 +30,6 @@ interface ServiceSelectionProps {
 
 const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   control,
-
   setStep,
   setUnavailableServiceMessage,
 }) => {
