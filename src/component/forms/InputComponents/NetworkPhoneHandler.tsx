@@ -6,7 +6,13 @@ import { useFormContext } from "react-hook-form";
 import { networks, detectCarrier } from "@/utils/getPhoneCarrierInfo";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, ChevronDown, AlertCircle, Check, ChevronRight } from "lucide-react";
+import {
+  Phone,
+  ChevronDown,
+  AlertCircle,
+  Check,
+  ChevronRight,
+} from "lucide-react";
 
 interface PhoneNumberInputProps {
   error?: string;
@@ -127,7 +133,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
         <div
           className={`relative rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
           ref={dropdownRef}
-          style={{ backgroundColor: selectedNetwork.color }}
+          style={{ backgroundColor: selectedNetwork.color + '80' }}
         >
           <motion.button
             type="button"
@@ -142,7 +148,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             <div className="flex items-center gap-2 py-1.5 px-3">
               <div
                 className="w-6 h-6 rounded-full overflow-hidden shadow-md"
-                style={{ backgroundColor: selectedNetwork.color }}
+                style={{ backgroundColor: selectedNetwork.color + '80' }}
               >
                 <Image
                   src={selectedNetwork.iconUrl || "/placeholder.svg"}
@@ -198,7 +204,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
         </div>
 
         {/* Phone Number Input */}
-        <motion.div className="flex-1 relative" >
+        <motion.div className="flex-1 relative">
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="tel"

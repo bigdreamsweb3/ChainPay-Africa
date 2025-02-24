@@ -6,7 +6,7 @@ import { appConfig } from "@/app-config"
 
 export default function ChainPayInfoCard() {
   return (
-    <div className="w-full max-w-md mx-auto mb-4">
+    <div className="w-full max-w-md mx-auto mb-2">
       <motion.div
         className="relative bg-gradient-to-br from-brand-primary to-brand-accent rounded-md shadow-sm overflow-hidden p-3 flex flex-col gap-2"
         initial={{ opacity: 0, y: 10 }}
