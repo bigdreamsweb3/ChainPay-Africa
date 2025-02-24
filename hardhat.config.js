@@ -3,7 +3,7 @@ require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 const {
     crossfiTestnetParams,
-} = require("./src/utils/web3/chains/crossfiChain.js");
+} = require("./evm-contracts/chains/crossfiChain.js");
 
 module.exports = {
     solidity: {
