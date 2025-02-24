@@ -1,22 +1,26 @@
 import { defineChain } from "viem";
 
-export const crossfiTestnet = defineChain({
-  id: 4157,
-  name: "CrossFi Testnet",
-  nativeCurrency: {
-    decimals: 18,
-    name: "XFI",
-    symbol: "XFI",
-  },
-  rpcUrls: {
-    default: {
-      http: ["https://rpc.testnet.ms/"],
+export const crossfiTestnetParams = (accounts?: string[]) =>
+  defineChain({
+    id: 4157,
+    name: "CrossFi Testnet",
+    nativeCurrency: {
+      decimals: 18,
+      name: "XFI",
+      symbol: "XFI",
     },
-  },
-  blockExplorers: {
-    default: { name: "Explorer", url: "https://test.xfiscan.com/" },
-  },
-});
+    rpcUrls: {
+      default: {
+        http: ["https://rpc.testnet.ms/"],
+      },
+    },
+    blockExplorers: {
+      default: { name: "Explorer", url: "https://test.xfiscan.com/" },
+    },
+    accounts: accounts || [],
+  });
+
+export const crossfi_testnet = crossfiTestnetParams();
 
 // const client = createPublicClient({
 //   chain: crossfiTestnet,
