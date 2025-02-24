@@ -2,7 +2,7 @@ import type React from "react";
 import { CheckCircle, ExternalLink, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
-
+// 
 interface PaymentReceiptProps {
   transactionId: string;
   serviceType: string;
