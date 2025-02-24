@@ -6,7 +6,7 @@ export const appConfig = {
   appDescription:
     "ChainPay is a platform for making payments on the blockchain.",
   appLogo: "/logo.png",
-
+// 
   // Available Regions
   availableRegions: ["Africa"],
 
