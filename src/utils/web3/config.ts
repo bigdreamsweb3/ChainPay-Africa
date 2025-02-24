@@ -2,11 +2,11 @@ import { http, createConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 import { monadTestnet } from "./chains/monadChain";
-import { crossfi_testnet } from "./chains/crossfiChain";
+import { crossfiTestnet } from "./chains";
 
-export const SUPPORTED_CHAIN_IDS = [mainnet, crossfi_testnet, monadTestnet];
+export const SUPPORTED_CHAIN_IDS = [mainnet, crossfiTestnet, monadTestnet];
 
-export const DEFAULT_CHAIN = crossfi_testnet;
+export const DEFAULT_CHAIN = crossfiTestnet;
 
 declare module "wagmi" {
   interface Register {
@@ -15,7 +15,7 @@ declare module "wagmi" {
 }
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, crossfi_testnet, monadTestnet],
+  chains: [mainnet, crossfiTestnet, monadTestnet],
   connectors: [
     injected(),
     walletConnect({
@@ -23,10 +23,10 @@ export const wagmiConfig = createConfig({
     }),
     metaMask(),
     safe(),
-  ],
+  ],    
   transports: {
     [mainnet.id]: http(),
-    [crossfi_testnet.id]: http(),
+    [crossfiTestnet.id]: http(),
     [monadTestnet.id]: http(),
   },
 });

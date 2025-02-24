@@ -7,6 +7,12 @@ const {
 
 module.exports = {
     solidity: "0.8.28",
+    paths: {
+        sources: "./evm-contracts/contracts",
+        tests: "./evm-contracts/test",
+        cache: "./evm-contracts/cache",
+        artifacts: "./evm-contracts/artifacts",
+    },
     networks: {
         // crossfi: {
         //     url: "https://rpc.testnet.ms/",
