@@ -50,13 +50,13 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
   return (
     <motion.div
-      className="w-full max-w-md mx-auto my-auto flex items-center justify-start mb-1 "
+      className="w-full max-w-md mx-auto my-auto flex items-center justify-start mb-1 gap-2"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 500 }}
     >
-      <div className="p-1 bg-gradient-to-br from-blue-50 to-blue-100 border border-brand-primary/10 rounded-lg shadow-lg">
-        <div className="w-full grid grid-cols-3 items-center h-[34px] sm:h-[46px] sm:p-1 justify-start gap-1">
+      <div className="p-1 bg-gradient-to-br from-blue-50 to-blue-100 border border-brand-primary/10 rounded-lg shadow-sm w-5/6">
+        <div className="w-full grid grid-cols-3 items-center h-fit justify-start gap-1">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
               service.name
@@ -91,6 +91,8 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                           ? "border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
                           : "hover:border-brand-primary text-gray-700 hover:text-blue-700"
                       }`}
+                      onMouseDown={(e) => e.currentTarget.classList.add('active')}
+                      onMouseUp={(e) => e.currentTarget.classList.remove('active')}
                     >
                       <div className="flex items-center justify-center gap-1 px-4 w-full">
                         <span
@@ -111,6 +113,8 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
           })}
         </div>
       </div>
+
+      <div className="w-1/6"></div>
     </motion.div>
   );
 };

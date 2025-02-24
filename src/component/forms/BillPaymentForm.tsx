@@ -205,7 +205,7 @@ const BillPaymentForm: React.FC = () => {
         <AnimatePresence>
           {selectedService && (
             <motion.div
-              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg shadow-sm p-3"
+              className="w-full max-w-md mx-auto my-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200/10 rounded-lg shadow-sm p-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -267,7 +267,7 @@ const BillPaymentForm: React.FC = () => {
                     >
                       <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6"
+                        className="space-y-6 min-h-[200px]"
                       >
                         {step === 1 && (
                           <div className="space-y-6">
@@ -310,9 +310,9 @@ const BillPaymentForm: React.FC = () => {
                               <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
                                 Select Payment Token
                               </label>
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-3 gap-3">
                                 {paymentTokens.map((token) => (
-                                  <div key={token.id}>
+                                  <div key={token.id} className="flex-1 min-w-[80px]">
                                     <input
                                       type="radio"
                                       id={token.id}
@@ -322,16 +322,20 @@ const BillPaymentForm: React.FC = () => {
                                     />
                                     <label
                                       htmlFor={token.id}
-                                      className={`p-4 rounded-lg flex flex-col items-center transition-all ${
-                                        selectedToken === token.id
-                                          ? "bg-blue-50 border-2 border-blue-500"
-                                          : "bg-white hover:bg-gray-50"
-                                      }`}
+                                      className={`rounded-lg flex flex-col items-center justify-center transition-all h-fit w-full`}
                                     >
-                                      <token.icon className="w-8 h-8 text-blue-600" />
-                                      <span className="mt-2 text-sm font-bold text-gray-700">
-                                        {token.name}
-                                      </span>
+                                      <div
+                                        className={`relative gap-2 py-2 px-4 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-row items-center justify-center w-full ${
+                                          selectedToken === token.id
+                                            ? "bg-blue-50 border-2 border-blue-500"
+                                            : "bg-white hover:bg-gray-50"
+                                        }`}
+                                      >
+                                        <token.icon className="w-4 h-4 text-blue-600 rounded-full" />
+                                        <span className="text-sm font-bold text-gray-700">
+                                          {token.name}
+                                        </span>
+                                      </div>
                                     </label>
                                   </div>
                                 ))}
@@ -409,24 +413,30 @@ const BillPaymentForm: React.FC = () => {
                           )}
 
                           <div className="flex items-center gap-2 w-full justify-end">
-                            <button
+                            <motion.button
                               type="button"
+                              whileInView={{ scale: 1.02 }}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.98 }}
                               onClick={nextStep}
-                              className="px-4 py-2 text-sm text-white bg-gradient-to-r from-[#0099FF] to-[#0066FF] hover:opacity-90 active:scale-95 rounded-lg"
+                              className="relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-24 border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
                             >
                               Next
-                            </button>
+                            </motion.button>
                           </div>
                         </div>
                       )}
 
                       {step === steps.length - 1 && (
                         <div className="pt-4 border-t border-gray-100">
-                          <button
+                          <motion.button
                             type="button"
                             onClick={handleSubmit(onSubmit)}
                             disabled={isSubmitting || !isAvailable}
-                            className="w-full px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center"
+                            className="w-full px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center relative gap-2 md:text-base transition-all duration-200 ease-in-out flex-col border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] shadow-md"
+                            whileInView={{ scale: 1.02 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.98 }}
                           >
                             {isSubmitting ? (
                               <>
@@ -436,7 +446,7 @@ const BillPaymentForm: React.FC = () => {
                             ) : (
                               "Confirm Payment"
                             )}
-                          </button>
+                          </motion.button>
                         </div>
                       )}
 
