@@ -205,7 +205,7 @@ const BillPaymentForm: React.FC = () => {
         <AnimatePresence>
           {selectedService && (
             <motion.div
-              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg shadow-sm p-6"
+              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg shadow-sm p-3"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -284,7 +284,7 @@ const BillPaymentForm: React.FC = () => {
                               />
                             )}
 
-                            <div className="space-y-4">
+                            <div className="space-y-2">
                               <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
                                 Amount
                               </label>
