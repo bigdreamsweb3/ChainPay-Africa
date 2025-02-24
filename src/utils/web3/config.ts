@@ -1,5 +1,5 @@
 import { http, createConfig } from "wagmi";
-import { base, mainnet } from "wagmi/chains";
+import { mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 import { crossfiTestnet } from "./chains/crossfiChain";
 import { monadTestnet } from "./chains/monadChain";

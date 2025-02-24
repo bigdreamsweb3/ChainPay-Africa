@@ -37,9 +37,15 @@
         "@types/react-dom": "^19",
         "eslint": "^9",
         "eslint-config-next": "15.1.7",
+        "hardhat": "^2.22.18",
         "postcss": "^8.5.2",
         "tailwindcss": "^3.4.17",
         "ts-node": "^10.9.2",
         "typescript": "^5.7.3"
-    }
+    },
+    "description": "**ChainPay Africa** is a decentralized bill payment platform that allows users to pay for services like electricity, internet, and more using cryptocurrency wallets instead of traditional banks. Built on the **CrossFi Chain**, it enables fast, low-cost, and borderless transactions.",
+    "main": "postcss.config.js",
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }
