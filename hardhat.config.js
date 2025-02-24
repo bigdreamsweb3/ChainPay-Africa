@@ -21,7 +21,8 @@ module.exports = {
         // },
 
         crossfiTestnet: crossfiTestnetParams([
-            "0x0000000000000000000000000000000000000000000000000000000000000000",
+            process.env.ACCOUNT_1,
+            process.env.ACCOUNT_2,
         ]),
     },
 };

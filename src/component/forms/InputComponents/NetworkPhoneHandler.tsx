@@ -153,7 +153,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                 />
               </div>
               {isDropdownOpen ? (
-                <ChevronDown className="w-4 h-4 text-text-primary bg-brand-secondary/90 rounded-full shadow-lg transition-transform duration-300 transform scale-110" />
+                <ChevronDown className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-lg transition-transform duration-300 transform scale-110" />
               ) : (
                 <ChevronRight className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-2xl transition-transform duration-300 transform scale-100" />
               )}
