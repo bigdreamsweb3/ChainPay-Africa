@@ -10,7 +10,7 @@ export const crossfiTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.testnet.ms/"],
+      http: ["https://rpc-t.crossfi.nodestake.org"],
     },
   },
   blockExplorers: {

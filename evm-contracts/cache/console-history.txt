@@ -1,0 +1,12 @@
+ethers.utils(balance)
+ethers.utils.formatEther(balance)
+console.log("Deployer balance:", ethers.utils.form
+const balance = await deployer.getBalance();
+const [deployer] = await ethers.getSigners();
+npx hardhat console --network crossfiTestnet
+const [deployer] = await ethers.getSigners();
+consconsole.log("Deployer balance:", ethers.utils.formatEther(balance));
+const [deployer] = await ethers.getSigners();
+npx hardhat console --network crossfiTestnet
+consconsole.log("Deployer balance:", ethers.utils.formatEther(balance));
+const [deployer] = await ethers.getSigners();

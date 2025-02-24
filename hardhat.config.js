@@ -6,7 +6,16 @@ const {
 } = require("./src/utils/web3/chains/crossfiChain.js");
 
 module.exports = {
-    solidity: "0.8.28",
+    solidity: {
+        version: "0.8.28",
+        settings: {
+            optimizer: {
+                enabled: true,
+                runs: 1000,
+            },
+        },
+    },
+
     paths: {
         sources: "./evm-contracts/contracts",
         tests: "./evm-contracts/test",
@@ -20,9 +29,6 @@ module.exports = {
         //     accounts: [process.env.ACCOUNT_1, process.env.ACCOUNT_2],
         // },
 
-        crossfiTestnet: crossfiTestnetParams([
-            process.env.ACCOUNT_1,
-            process.env.ACCOUNT_2,
-        ]),
+        crossfiTestnet: crossfiTestnetParams([process.env.NEXT_PUBLIC_ACCOUNT_1]),
     },
 };
