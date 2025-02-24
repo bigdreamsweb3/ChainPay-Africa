@@ -14,7 +14,7 @@ import ServiceSelection from "./SelectionComponents/ServiceSelection";
 // import { useAccount } from "wagmi";
 
 import { appConfig } from "@/app-config";
-import { getAcceptedTokens, PaymentToken } from "@/utils/web3/config";
+import { useAcceptedTokens, PaymentToken } from "@/utils/web3/config";
 import UnavailableServiceMessage from "./UnavailableServiceMessage";
 import PaymentTokenSelector from "./SelectionComponents/PaymentTokenSelector";
 
@@ -85,7 +85,7 @@ const BillPaymentForm: React.FC = () => {
 
   const selectedService = watch("serviceType");
 
-  const paymentTokens: PaymentToken[] = getAcceptedTokens();
+    const paymentTokens: PaymentToken[] = useAcceptedTokens();
   const selectedTokenDetails = paymentTokens.find(token => token.id === selectedTokenId);
 
   useEffect(() => {

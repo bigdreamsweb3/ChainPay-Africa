@@ -42,17 +42,15 @@ export interface PaymentToken {
   image: string;
 }
 
-// Function to get accepted tokens for the connected chain
-export const getAcceptedTokens = (): PaymentToken[] => { // Explicitly define the return type
+// Custom hook to get accepted tokens for the connected chain
+export const useAcceptedTokens = (): PaymentToken[] => {
   const { chain } = useAccount();
 
-  // console.log("chain", chain);
   if (!chain) return []; // Return empty if no chain is connected
 
   const acceptedTokens =
     chain.id === crossfiTestnet.id ? crossfiTestnet.payAcceptedTokens : {};
-  
-  // Ensure the return type is PaymentToken[]
+
   return Object.values(acceptedTokens) as PaymentToken[]; // Cast to PaymentToken[]
 };
 

@@ -27,6 +27,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   const { register } = useFormContext();
   const defaultLogo = "/images/logo.jpg"; // Path to your local fallback logo
 
+  // Create a state to hold image sources for each token
+  const [imageSources, setImageSources] = useState<{ [key: string]: string }>(
+    paymentTokens.reduce((acc, token) => {
+      acc[token.id] = token.image; // Initialize with token images
+      return acc;
+    }, {} as { [key: string]: string })
+  );
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -40,49 +48,50 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {paymentTokens.map((token: PaymentToken) => {
-              const [imageSrc, setImageSrc] = useState(token.image);
-
-              return (
-                <div key={token.id} className="w-28">
-                  <input
-                    type="radio"
-                    id={token.id}
-                    value={token.id}
-                    {...register("paymentToken")}
-                    className="sr-only"
-                    onChange={() => setSelectedToken(token.id)}
-                  />
-                  <label
-                    htmlFor={token.id}
-                    className={`block rounded-xl shadow-sm transition-all duration-200 ease-in-out cursor-pointer ${
-                      selectedToken === token.id
-                        ? "ring-2 ring-blue-500 bg-blue-50"
-                        : "bg-white hover:bg-gray-50"
-                    }`}
-                  >
-                    <div className="p-1 flex flex-col items-start">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                          <Image
-                            src={imageSrc}
-                            alt={token.name}
-                            width={24}
-                            height={24}
-                            className="w-6 h-6 rounded-full"
-                            onError={() => setImageSrc(defaultLogo)}
-                          />
-                        </div>
-                        <div className="flex flex-col items-start">
-                          <span className="text-sm font-bold text-gray-800">{token.name}</span>
-                          <span className="text-xs text-gray-500">{token.symbol}</span>
-                        </div>
+            {paymentTokens.map((token: PaymentToken) => (
+              <div key={token.id} className="w-28">
+                <input
+                  type="radio"
+                  id={token.id}
+                  value={token.id}
+                  {...register("paymentToken")}
+                  className="sr-only"
+                  onChange={() => setSelectedToken(token.id)}
+                />
+                <label
+                  htmlFor={token.id}
+                  className={`block rounded-xl shadow-sm transition-all duration-200 ease-in-out cursor-pointer ${
+                    selectedToken === token.id
+                      ? "ring-2 ring-blue-500 bg-blue-50"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  <div className="p-1 flex flex-col items-start">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                        <Image
+                          src={imageSources[token.id]}
+                          alt={token.name}
+                          width={24}
+                          height={24}
+                          className="w-6 h-6 rounded-full"
+                          onError={() => {
+                            setImageSources((prev) => ({
+                              ...prev,
+                              [token.id]: defaultLogo,
+                            }));
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-sm font-bold text-gray-800">{token.name}</span>
+                        <span className="text-xs text-gray-500">{token.symbol}</span>
                       </div>
                     </div>
-                  </label>
-                </div>
-              );
-            })}
+                  </div>
+                </label>
+              </div>
+            ))}
           </div>
         )}
       </div>
