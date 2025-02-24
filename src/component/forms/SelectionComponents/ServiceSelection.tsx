@@ -3,20 +3,19 @@
 import type React from "react";
 import { useEffect } from "react";
 import { Controller, type Control } from "react-hook-form";
-import { Smartphone, Wifi, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { appConfig } from "../../../app-config";
 
 const services = [
-  { id: "airtime", name: "Airtime", icon: Smartphone },
-  { id: "data", name: "Data", icon: Wifi },
-  { id: "electricity", name: "Electricity", icon: Zap },
+  { id: "airtime", name: "Airtime" },
+  { id: "data", name: "Data" },
+  { id: "electricity", name: "Electricity" },
 ] as const;
 
 interface BillPaymentFormData {
   serviceType: "airtime" | "data" | "electricity";
   amount: string;
-  paymentToken: "pNGN" | "USDC" | "ETH";
+  paymentToken: string;
   phoneNumber?: string;
   meterNumber?: string;
 }
@@ -91,8 +90,12 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                           ? "border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
                           : "hover:border-brand-primary text-gray-700 hover:text-blue-700"
                       }`}
-                      onMouseDown={(e) => e.currentTarget.classList.add('active')}
-                      onMouseUp={(e) => e.currentTarget.classList.remove('active')}
+                      onMouseDown={(e) =>
+                        e.currentTarget.classList.add("active")
+                      }
+                      onMouseUp={(e) =>
+                        e.currentTarget.classList.remove("active")
+                      }
                     >
                       <div className="flex items-center justify-center gap-1 px-4 w-full">
                         <span

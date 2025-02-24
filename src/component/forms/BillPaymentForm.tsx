@@ -6,15 +6,17 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { CreditCard, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
+import { AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import PaymentReceipt from "../PaymentReceipt";
 import ServiceSelection from "./SelectionComponents/ServiceSelection";
-import { useAccount } from "wagmi";
-import { getBalance } from "@wagmi/core";
+// import { useAccount } from "wagmi";
+
 import { appConfig } from "@/app-config";
-import { wagmiConfig } from "@/utils/web3/config";
+import { getAcceptedTokens, PaymentToken } from "@/utils/web3/config";
+import UnavailableServiceMessage from "./UnavailableServiceMessage";
+import PaymentTokenSelector from "./SelectionComponents/PaymentTokenSelector";
 
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
@@ -29,7 +31,7 @@ const billPaymentSchema = z.object({
         message: "Amount must be a positive number",
       }
     ),
-  paymentToken: z.enum(["pNGN", "USDC", "ETH"]),
+    paymentToken: z.string(),
 });
 
 type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
@@ -37,7 +39,6 @@ type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
 const steps = ["Service", "Details", "Payment", "Confirm"];
 
 const BillPaymentForm: React.FC = () => {
-  const { address } = useAccount();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
@@ -63,27 +64,13 @@ const BillPaymentForm: React.FC = () => {
   const [unavailableServiceMessage, setUnavailableServiceMessage] = useState<
     string | null
   >(null);
-
-  const [paymentTokens, setPaymentTokens] = useState([
-    {
-      id: "pNGN",
-      name: "pNGN",
-      description: "Pay with pNGN",
-      icon: CreditCard,
-    },
-    {
-      id: "ETH",
-      name: "ETH",
-      description: "Pay with ETH",
-      icon: CreditCard,
-    },
-  ]);
+  const [selectedToken, setSelectedToken] = useState<string>("");
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
       serviceType: "airtime",
-      paymentToken: "pNGN",
+      paymentToken: "",
     },
   });
 
@@ -97,32 +84,10 @@ const BillPaymentForm: React.FC = () => {
   } = methods;
 
   const selectedService = watch("serviceType");
-  const selectedToken = watch("paymentToken");
 
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (address) {
-        const balanceResult = await getBalance(wagmiConfig, { address });
-        const balanceSymbol = balanceResult.symbol;
-        if (
-          balanceSymbol &&
-          !paymentTokens.some((token) => token.id === balanceSymbol)
-        ) {
-          setPaymentTokens((prevTokens) => [
-            ...prevTokens,
-            {
-              id: balanceSymbol,
-              name: balanceSymbol,
-              description: `Pay with ${balanceSymbol}`,
-              icon: CreditCard,
-            },
-          ]);
-        }
-      }
-    };
-
-    fetchBalance();
-  }, [address, paymentTokens]);
+  const paymentTokens: PaymentToken[] = getAcceptedTokens();
+  const selectedTokenId = watch("paymentToken");
+  const selectedTokenDetails = paymentTokens.find(token => token.id === selectedTokenId);
 
   useEffect(() => {
     if (appConfig.availableServices.includes("Airtime")) {
@@ -192,6 +157,10 @@ const BillPaymentForm: React.FC = () => {
     selectedService.charAt(0).toUpperCase() + selectedService.slice(1)
   );
 
+  if (selectedTokenDetails) {
+    console.log("selectedTokenDetails", selectedTokenDetails);
+  }
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-5">
@@ -212,37 +181,13 @@ const BillPaymentForm: React.FC = () => {
               transition={{ duration: 0.3 }}
             >
               {unavailableServiceMessage ? (
-                <div className="text-center bg-gray-50 rounded-lg p-6">
-                  <svg
-                    className="w-12 h-12 mx-auto text-gray-400 mb-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 9l4-4 4 4m0 6l-4 4-4-4"
-                    />
-                  </svg>
-                  <p className="text-lg font-semibold text-gray-700 mb-2">
-                    {selectedService} is currently unavailable
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    We&apos;re working hard to bring this service to you soon!
-                  </p>
-                  <p className="text-xs text-blue-500 mt-4 font-medium">
-                    (Coming Soon)
-                  </p>
-                </div>
+                <UnavailableServiceMessage serviceName={selectedService} />
               ) : submitStatus === "success" && transactionDetails ? (
                 <PaymentReceipt
                   transactionId={transactionDetails.transactionId}
                   serviceType={selectedService}
                   amount={watch("amount") || ""}
-                  paymentToken={selectedToken}
+                  paymentToken={selectedTokenDetails ? selectedTokenDetails.symbol : ""}
                   recipientInfo={
                     selectedService === "electricity"
                       ? watch("meterNumber") || ""
@@ -252,8 +197,8 @@ const BillPaymentForm: React.FC = () => {
                   blockchainTxHash={transactionDetails.blockchainTxHash}
                   blockNumber={transactionDetails.blockNumber}
                   gasUsed={transactionDetails.gasUsed}
-                  onReset={resetForm}
                   walletAddress={transactionDetails.walletAddress}
+                  onReset={resetForm}
                 />
               ) : (
                 <div className="m-2 mb-0 relative flex flex-col gap-3">
@@ -284,6 +229,7 @@ const BillPaymentForm: React.FC = () => {
                               />
                             )}
 
+                            {/* Amount Input */}
                             <div className="space-y-2">
                               <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
                                 Amount
@@ -305,43 +251,11 @@ const BillPaymentForm: React.FC = () => {
                         )}
 
                         {step === 2 && (
-                          <div className="space-y-6">
-                            <div className="space-y-4">
-                              <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
-                                Select Payment Token
-                              </label>
-                              <div className="grid grid-cols-3 gap-3">
-                                {paymentTokens.map((token) => (
-                                  <div key={token.id} className="flex-1 min-w-[80px]">
-                                    <input
-                                      type="radio"
-                                      id={token.id}
-                                      value={token.id}
-                                      {...register("paymentToken")}
-                                      className="sr-only"
-                                    />
-                                    <label
-                                      htmlFor={token.id}
-                                      className={`rounded-lg flex flex-col items-center justify-center transition-all h-fit w-full`}
-                                    >
-                                      <div
-                                        className={`relative gap-2 py-2 px-4 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-row items-center justify-center w-full ${
-                                          selectedToken === token.id
-                                            ? "bg-blue-50 border-2 border-blue-500"
-                                            : "bg-white hover:bg-gray-50"
-                                        }`}
-                                      >
-                                        <token.icon className="w-4 h-4 text-blue-600 rounded-full" />
-                                        <span className="text-sm font-bold text-gray-700">
-                                          {token.name}
-                                        </span>
-                                      </div>
-                                    </label>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
+                          <PaymentTokenSelector
+                            paymentTokens={paymentTokens}
+                            selectedToken={selectedTokenId}
+                            setSelectedToken={setSelectedToken}
+                          />
                         )}
 
                         {step === 3 && (
@@ -387,7 +301,13 @@ const BillPaymentForm: React.FC = () => {
                                 </p>
                                 <p className="text-sm text-gray-700">
                                   <strong>Payment Token:</strong>{" "}
-                                  {watch("paymentToken")}
+                                  {selectedTokenDetails ? (
+                                    <>
+                                      {selectedTokenDetails.name} ({selectedTokenDetails.symbol}) - Contract: {selectedTokenDetails.contractAddress}
+                                    </>
+                                  ) : (
+                                    "None selected"
+                                  )}
                                 </p>
                               </div>
                             </div>

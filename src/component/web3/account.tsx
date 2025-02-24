@@ -60,6 +60,7 @@ export function Account() {
 
   if (!address) return null;
 
+
   const shortenedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
 
   const handleSwitchChain = (chain: (typeof SUPPORTED_CHAIN_IDS)[number]) => {
