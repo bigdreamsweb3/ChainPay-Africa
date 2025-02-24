@@ -133,7 +133,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
         <div
           className={`relative rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
           ref={dropdownRef}
-          style={{ backgroundColor: selectedNetwork.color + '80' }}
+          // style={{ backgroundColor: selectedNetwork.color + '80' }}
         >
           <motion.button
             type="button"
