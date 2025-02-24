@@ -134,7 +134,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             aria-label="Select network"
             aria-expanded={isDropdownOpen}
-            className="flex items-center inset-0 rounded-lg bg-gradient-to-r from-transparent to-brand-primary/80 border-gray-300"
+            className="flex items-center inset-0 rounded-lg bg-gradient-to-r from-transparent/10 via-brand-primary/70 to-brand-accent border-gray-300"
             whileInView={{ scale: 1.02 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}

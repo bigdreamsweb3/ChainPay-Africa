@@ -9,16 +9,18 @@ async function main() {
     // Get the contract factory
     const Contract = await ethers.getContractFactory("ChainPay_Airtime");
 
-    // // 
-    // console.log("Gas price set to:", gasPrice);
-    // const maxPriorityFeePerGas = ethers.parseUnits("2", "gwei"); // Adjust as necessary
-    console.log("Max priority fee per gas set to:", maxPriorityFeePerGas);
+    // Set EIP-1559 gas fee settings
+    const maxPriorityFeePerGas = ethers.parseUnits("2", "gwei"); // Adjust as necessary
     const maxFeePerGas = ethers.parseUnits("30", "gwei"); // Adjust as necessary
-    console.log("Max fee per gas set to:", maxFeePerGas);
+
+    console.log(
+        "Max priority fee per gas set to:",
+        maxPriorityFeePerGas.toString()
+    );
+    console.log("Max fee per gas set to:", maxFeePerGas.toString());
 
     // Deploy the contract and pass the address of the accepted token to the constructor
     const contract = await Contract.deploy(usdcTokenAddress, {
-        gasPrice,
         maxPriorityFeePerGas,
         maxFeePerGas,
     });
