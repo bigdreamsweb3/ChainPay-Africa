@@ -1,8 +1,8 @@
 import { http, createConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
-import { crossfi_testnet } from "./chains/crossfiChain";
 import { monadTestnet } from "./chains/monadChain";
+import { crossfi_testnet } from "./chains/crossfiChain";
 
 export const SUPPORTED_CHAIN_IDS = [mainnet, crossfi_testnet, monadTestnet];
 

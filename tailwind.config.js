@@ -12,8 +12,10 @@ module.exports = {
             colors: {
                 brand: theme.colors.brand,
                 status: theme.colors.status,
-                bg: theme.colors.background,
+                background: theme.colors.background,
+
                 text: theme.colors.text,
+                border: theme.colors.border,
             },
             gradientColorStops: theme.colors,
             backgroundImage: theme.gradients,

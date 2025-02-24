@@ -24,6 +24,7 @@ export const theme = {
       primary: '#1E293B',
       secondary: '#64748B',
       light: '#FFFFFF',
+      dark: '#000000',
     },
     // Border colors
     border: {

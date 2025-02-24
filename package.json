@@ -13,6 +13,7 @@
     "dependencies": {
         "@ethersproject/providers": "^5.7.2",
         "@hookform/resolvers": "^4.1.0",
+        "@openzeppelin/contracts": "^5.2.0",
         "@rainbow-me/rainbowkit": "^2.2.3",
         "@tanstack/react-query": "^5.66.7",
         "@types/react-redux": "^7.1.34",

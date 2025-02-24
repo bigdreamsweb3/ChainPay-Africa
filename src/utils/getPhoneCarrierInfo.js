@@ -1,12 +1,12 @@
 export const networks = [{
         id: "mtn",
-        iconUrl: "/network-icons/mtn.jpg",
+        iconUrl: "/network-icons/mtn-new-logo.svg",
         name: "MTN Nigeria",
         color: "#FCE29A",
     },
     {
         id: "airtel",
-        iconUrl: "/network-icons/airtel.jpg",
+        iconUrl: "/network-icons/airtel.png",
         name: "Airtel Nigeria",
         color: "#FF0000",
     },

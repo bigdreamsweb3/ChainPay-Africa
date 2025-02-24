@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { networks, detectCarrier } from "@/utils/getPhoneCarrierInfo";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, ChevronDown, AlertCircle, Check } from "lucide-react";
+import { Phone, ChevronDown, AlertCircle, Check, ChevronRight } from "lucide-react";
 
 interface PhoneNumberInputProps {
   error?: string;
@@ -124,14 +124,19 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
       </label>
       <div className="flex items-center gap-2">
         {/* Network Selection Button */}
-        <div className="relative" ref={dropdownRef}>
+        <div
+          className={`relative rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+          ref={dropdownRef}
+          style={{ backgroundColor: selectedNetwork.color }}
+        >
           <motion.button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             aria-label="Select network"
             aria-expanded={isDropdownOpen}
-            className="flex items-center inset-0 bg-gradient-to-r from-background-dark/80 to-brand-primary/80 border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            whileHover={{ scale: 1.02 }}
+            className="flex items-center inset-0 rounded-lg bg-gradient-to-r from-transparent to-brand-primary/80 border-gray-300"
+            whileInView={{ scale: 1.02 }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
           >
             <div className="flex items-center gap-2 py-1.5 px-3">
@@ -147,7 +152,11 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <ChevronDown className="w-4 h-4 text-white bg-brand-secondary rounded-full" />
+              {isDropdownOpen ? (
+                <ChevronDown className="w-4 h-4 text-text-primary bg-brand-secondary/90 rounded-full shadow-lg transition-transform duration-300 transform scale-110" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-2xl transition-transform duration-300 transform scale-100" />
+              )}
             </div>
           </motion.button>
 
@@ -189,7 +198,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
         </div>
 
         {/* Phone Number Input */}
-        <motion.div className="flex-1 relative" whileHover={{ scale: 1.01 }}>
+        <motion.div className="flex-1 relative" >
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="tel"
