@@ -433,7 +433,7 @@ const BillPaymentForm: React.FC = () => {
                             type="button"
                             onClick={handleSubmit(onSubmit)}
                             disabled={isSubmitting || !isAvailable}
-                            className="w-full px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center relative gap-2 md:text-base transition-all duration-200 ease-in-out flex-col border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] shadow-md"
+                            className="w-full px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center relative gap-2 md:text-base transition-all duration-200 ease-in-out flex-row border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] shadow-md"
                             whileInView={{ scale: 1.02 }}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.98 }}
