@@ -133,23 +133,21 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
         <div
           className={`relative rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
           ref={dropdownRef}
-          // style={{ backgroundColor: selectedNetwork.color + '80' }}
+          style={{ backgroundColor: selectedNetwork.color + '60', border: '1px solid ' + selectedNetwork.color + '80' }}
         >
           <motion.button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             aria-label="Select network"
             aria-expanded={isDropdownOpen}
-            className="flex items-center inset-0 rounded-lg bg-gradient-to-r from-transparent/10 via-brand-primary/70 to-brand-accent border-gray-300"
+            className="flex items-center inset-0 rounded-lg bg-gradient-to-r from-brand-primary/40 via-brand-primary/70 to-brand-accent border-gray-300"
             whileInView={{ scale: 1.02 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
+           
           >
-            <div className="flex items-center gap-2 py-1.5 px-3">
-              <div
-                className="w-6 h-6 rounded-full overflow-hidden shadow-md"
-                style={{ backgroundColor: selectedNetwork.color + '80' }}
-              >
+            <div className="flex items-center gap-2 py-1.5 px-3" >
+              <div className="w-6 h-6 rounded-full overflow-hidden shadow-md"  style={{ border: "1px solid " + selectedNetwork.color + '80' }}>
                 <Image
                   src={selectedNetwork.iconUrl || "/placeholder.svg"}
                   alt={selectedNetwork.name}

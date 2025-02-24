@@ -50,12 +50,12 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
   return (
     <motion.div
-      className="w-full max-w-md mx-auto flex items-center justify-start mb-1"
+      className="w-full max-w-md mx-auto my-auto flex items-center justify-start mb-1 "
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 500 }}
     >
-      <div className="p-1 bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg border border-brand-primary/10 rounded-lg">
+      <div className="p-1 bg-gradient-to-br from-blue-50 to-blue-100 border border-brand-primary/10 rounded-lg shadow-lg">
         <div className="w-full grid grid-cols-3 items-center h-[34px] sm:h-[46px] sm:p-1 justify-start gap-1">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
