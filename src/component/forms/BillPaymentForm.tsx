@@ -267,7 +267,7 @@ const BillPaymentForm: React.FC = () => {
                     >
                       <form
                         onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6 min-h-[200px]"
+                        className="space-y-6 min-h-[180px]"
                       >
                         {step === 1 && (
                           <div className="space-y-6">
