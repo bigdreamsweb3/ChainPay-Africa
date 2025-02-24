@@ -56,8 +56,11 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 500 }}
     >
-      <div className="p-2 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg">
-        <div className="flex flex-wrap justify-start gap-3">
+      <div
+        className="p-1 rounded-lg  
+      "
+      >
+        <div className="flex flex-wrap bg-gradient-to-br from-blue-50 to-blue-100 shadow-lg border border-brand-primary/10 p-[3px] rounded-lg sm:p-1 justify-start gap-2">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
               service.name
@@ -70,9 +73,9 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                 control={control}
                 render={({ field }) => (
                   <motion.div
-                    className="flex flex-col items-center justify-start w-24 md:w-28"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="flex flex-col items-center justify-start w-20 lg:w-24"
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 1.05 }}
                   >
                     <button
                       type="button"
@@ -87,10 +90,10 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                         }
                       }}
                       aria-label={`Select ${service.name}`}
-                      className={`relative gap-2 px-3 py-2 rounded-md text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-full borde bg-blue-50 ${
+                      className={`relative gap-2 px-3 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-full inset-0 ${
                         field.value === service.id
                           ? `border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white`
-                          : `border-gray-200 hover:border-brand-primary text-gray-700 hover:text-brand-border-brand-primary`
+                          : `hover:border-brand-primary text-gray-700 hover:text-brand- `
                       }`}
                     >
                       <div className="flex items-center gap-1">
@@ -102,7 +105,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                           }`}
                         /> */}
                         <span
-                          className={`text-sm md:text-base font-semibold ${
+                          className={`text-sm md:text-base font-bold ${
                             field.value === service.id
                               ? "text-white"
                               : `text-brand-border-brand-primary`

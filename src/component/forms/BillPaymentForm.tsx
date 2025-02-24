@@ -10,7 +10,7 @@ import { CreditCard, AlertCircle, Loader2, ArrowLeft } from "lucide-react";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import PaymentReceipt from "../PaymentReceipt";
-import ServiceSelection from "./InputComponents/ServiceSelection";
+import ServiceSelection from "./SelectionComponents/ServiceSelection";
 import { useAccount } from "wagmi";
 import { getBalance } from "@wagmi/core";
 import { appConfig } from "@/app-config";
@@ -194,7 +194,7 @@ const BillPaymentForm: React.FC = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col items-center justify-center gap-6">
+      <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-5">
         <ServiceSelection
           control={methods.control}
           selectedService={selectedService}
@@ -205,7 +205,7 @@ const BillPaymentForm: React.FC = () => {
         <AnimatePresence>
           {selectedService && (
             <motion.div
-              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg p-3"
+              className="w-full max-w-md mx-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200 rounded-lg shadow-sm p-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
@@ -256,7 +256,7 @@ const BillPaymentForm: React.FC = () => {
                   walletAddress={transactionDetails.walletAddress}
                 />
               ) : (
-                <div className="m-2 mb-0">
+                <div className="m-2 mb-0 relative flex flex-col gap-3">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={step}
@@ -285,7 +285,7 @@ const BillPaymentForm: React.FC = () => {
                             )}
 
                             <div className="space-y-4">
-                              <label className="block text-sm text-gray-700 font-bold">
+                              <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
                                 Amount
                               </label>
                               <input
@@ -293,7 +293,7 @@ const BillPaymentForm: React.FC = () => {
                                 step="0.01"
                                 placeholder="Enter amount"
                                 {...register("amount")}
-                                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none ring-2 ring-blue-300 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
+                                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
                               />
                               {errors.amount && (
                                 <p className="mt-1 text-sm text-red-600">
@@ -307,7 +307,7 @@ const BillPaymentForm: React.FC = () => {
                         {step === 2 && (
                           <div className="space-y-6">
                             <div className="space-y-4">
-                              <label className="block text-sm text-gray-700 font-bold">
+                              <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
                                 Select Payment Token
                               </label>
                               <div className="grid grid-cols-2 gap-4">
@@ -346,7 +346,7 @@ const BillPaymentForm: React.FC = () => {
                               <button
                                 type="button"
                                 onClick={prevStep}
-                                className="p-2 rounded-md bg-brand-secondary text-gray-700 hover:bg-green-200 transition-colors duration-200 flex items-center gap-2"
+                                className="p-2 rounded-md bg-brand-secondary text-white hover:bg-green-200 transition-colors duration-200 flex items-center gap-2"
                               >
                                 <ArrowLeft className="w-5 h-5" />
                               </button>
@@ -396,7 +396,7 @@ const BillPaymentForm: React.FC = () => {
                   {submitStatus !== "success" && isAvailable && (
                     <>
                       {step > 0 && step < steps.length - 1 && (
-                        <div className="p-4 border-t border-gray-100 flex justify-between w-full max-w-md mx-auto">
+                        <div className="pt-4 border-t border-gray-100 flex justify-between w-full max-w-md mx-auto">
                           {step > 1 && (
                             <button
                               type="button"
@@ -412,7 +412,7 @@ const BillPaymentForm: React.FC = () => {
                             <button
                               type="button"
                               onClick={nextStep}
-                              className="px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg"
+                              className="px-4 py-2 text-sm text-white bg-gradient-to-r from-[#0099FF] to-[#0066FF] hover:opacity-90 active:scale-95 rounded-lg"
                             >
                               Next
                             </button>
@@ -421,7 +421,7 @@ const BillPaymentForm: React.FC = () => {
                       )}
 
                       {step === steps.length - 1 && (
-                        <div className="p-4 border-t border-gray-100">
+                        <div className="pt-4 border-t border-gray-100">
                           <button
                             type="button"
                             onClick={handleSubmit(onSubmit)}

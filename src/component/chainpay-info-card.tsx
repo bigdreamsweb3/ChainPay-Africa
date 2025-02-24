@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { appConfig } from "@/app-config";
+import { motion } from "framer-motion"
+import Image from "next/image"
+import { appConfig } from "@/app-config"
 
 export default function ChainPayInfoCard() {
   return (
-    <div className="w-full max-w-md mx-auto mb-8">
+    <div className="w-full max-w-md mx-auto">
       <motion.div
-        className="relative bg-gradient-to-br from-brand-primary to-brand-accent rounded-xl shadow-sm overflow-hidden p-6 flex flex-col gap-4"
-        initial={{ opacity: 0, y: 20 }}
+        className="relative bg-gradient-to-br from-brand-primary to-brand-accent rounded-md shadow-sm overflow-hidden p-3 flex flex-col gap-2"
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
@@ -18,31 +18,28 @@ export default function ChainPayInfoCard() {
 
         {/* Logo & Title */}
         <div className="flex items-center justify-between z-10">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
             >
               <Image
                 src="/logo-removebg.png"
                 alt="ChainPay Logo"
-                width={36}
-                height={36}
+                width={24}
+                height={24}
                 className="rounded-full border border-white/10"
               />
             </motion.div>
-            {/* <span className="text-lg font-bold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
-              {appConfig.appName}<span className="text-brand-secondary">{appConfig.appSubName}</span>
-            </span> */}
           </div>
 
           {/* Animated Badge */}
           <motion.div
-            className="bg-gradient-to-r from-green-400 to-blue-500 px-3 py-1 rounded-full text-xs font-medium text-white"
-            initial={{ opacity: 0, x: -10 }}
+            className="bg-gradient-to-r from-green-400 to-blue-500 px-2 py-0.5 rounded-full text-xs font-medium text-white"
+            initial={{ opacity: 0, x: -5 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+            transition={{ delay: 0.3, duration: 0.3 }}
           >
             {appConfig.appRegion} 🌍
           </motion.div>
@@ -50,35 +47,26 @@ export default function ChainPayInfoCard() {
 
         {/* Description */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
+          transition={{ delay: 0.4, duration: 0.3 }}
           className="z-10"
         >
-          <h2 className="text-lg sm:text-xl font-semibold text-white">
-            Fast, Reliable Payments
-          </h2>
-          <p className="text-sm sm:text-base text-gray-300">
-            Seamless transactions across Africa, anytime.
-          </p>
+          <h2 className="text-base font-semibold text-white">Fast, Reliable Payments</h2>
+          <p className="text-xs text-gray-300">Seamless transactions across Africa, anytime.</p>
         </motion.div>
 
         {/* Faded Background Logo */}
         <motion.div
-          className="absolute top-1/2 right-4 sm:right-6 -translate-y-1/2 opacity-10 sm:opacity-20"
+          className="absolute top-1/2 right-2 -translate-y-1/2 opacity-10"
           initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.15, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          animate={{ opacity: 0.1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 0.3 }}
         >
-          <Image
-            src="/logo.jpg"
-            alt="ChainPay App Logo"
-            width={64}
-            height={64}
-            className="rounded-full"
-          />
+          <Image src="/logo.jpg" alt="ChainPay App Logo" width={40} height={40} className="rounded-full" />
         </motion.div>
       </motion.div>
     </div>
-  );
+  )
 }
+

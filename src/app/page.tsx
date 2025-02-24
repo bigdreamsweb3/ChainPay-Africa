@@ -11,9 +11,10 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <ChainPayInfoCard />
-
-      <BillPaymentForm />
+      <div className="flex flex-col gap-2.5 sm:gap-5">
+        <ChainPayInfoCard />
+        <BillPaymentForm />
+      </div>
     </>
   );
 }
