@@ -17,5 +17,5 @@ export const appConfig = {
   availableServices: ["Airtime"],
 
   // Available Networks
-  availableNetworks: ["MTN", "Airtel"],
+  availableNetworks: ["MTN", "Airtel", "Glo", "9Mobile"],
 };
