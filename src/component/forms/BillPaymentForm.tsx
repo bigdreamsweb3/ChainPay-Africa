@@ -64,7 +64,7 @@ const BillPaymentForm: React.FC = () => {
   const [unavailableServiceMessage, setUnavailableServiceMessage] = useState<
     string | null
   >(null);
-  const [selectedToken, setSelectedToken] = useState<string>("");
+  const [selectedTokenId, setSelectedTokenId] = useState<string>("");
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
@@ -86,7 +86,6 @@ const BillPaymentForm: React.FC = () => {
   const selectedService = watch("serviceType");
 
   const paymentTokens: PaymentToken[] = getAcceptedTokens();
-  const selectedTokenId = watch("paymentToken");
   const selectedTokenDetails = paymentTokens.find(token => token.id === selectedTokenId);
 
   useEffect(() => {
@@ -254,7 +253,7 @@ const BillPaymentForm: React.FC = () => {
                           <PaymentTokenSelector
                             paymentTokens={paymentTokens}
                             selectedToken={selectedTokenId}
-                            setSelectedToken={setSelectedToken}
+                            setSelectedToken={setSelectedTokenId}
                           />
                         )}
 

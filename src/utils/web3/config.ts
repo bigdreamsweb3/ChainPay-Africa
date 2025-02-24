@@ -43,7 +43,7 @@ export interface PaymentToken {
 }
 
 // Function to get accepted tokens for the connected chain
-export function getAcceptedTokens(): PaymentToken[] { // Explicitly define the return type
+export const getAcceptedTokens = (): PaymentToken[] => { // Explicitly define the return type
   const { chain } = useAccount();
 
   // console.log("chain", chain);

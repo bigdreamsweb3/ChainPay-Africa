@@ -30,16 +30,13 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
+        <label className="text-tertiary text-[13px] font-bold leading-[16.25px]">
           Select Payment Token
         </label>
 
         {paymentTokens.length === 0 ? (
           <div className="p-4 bg-yellow-100 text-yellow-800 rounded-md">
-            <p>
-              No supported payment tokens available for the connected network.
-              Please check your network settings.
-            </p>
+            <p>No supported payment tokens available for the connected network.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -77,20 +74,10 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           />
                         </div>
                         <div className="flex flex-col items-start">
-                          <span className="text-sm font-bold text-gray-800">
-                            {token.name}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {token.symbol}
-                          </span>
+                          <span className="text-sm font-bold text-gray-800">{token.name}</span>
+                          <span className="text-xs text-gray-500">{token.symbol}</span>
                         </div>
                       </div>
-                      {/* <div className="mt-3 text-sm text-gray-600">
-                        <p>Contract Address:</p>
-                        <p className="text-xs font-mono text-gray-500 truncate">
-                          {token.contractAddress}
-                        </p>
-                      </div> */}
                     </div>
                   </label>
                 </div>
