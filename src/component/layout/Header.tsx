@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useAccount } from "wagmi"
-import { Account } from "@/component/web3/account"
-import { WalletOptions } from "@/component/web3/wallet-options"
-import { MapPin } from "lucide-react"
-import { appConfig } from "@/app-config"
+import Image from "next/image";
+import { useAccount } from "wagmi";
+import { Account } from "@/component/web3/account";
+import { WalletOptions } from "@/component/web3/wallet-options";
+import { MapPin } from "lucide-react";
+import { appConfig } from "@/app-config";
 
 function ConnectWallet() {
-  const { isConnected } = useAccount()
-  return isConnected ? <Account /> : <WalletOptions />
+  const { isConnected } = useAccount();
+  return isConnected ? <Account /> : <WalletOptions />;
 }
 
 export function Header() {
@@ -21,7 +21,7 @@ export function Header() {
           <div className="flex items-center gap-1">
             <div className="relative">
               <Image
-                src="/logo.jpg"
+                src={appConfig.appLogo}
                 alt="ChainPay"
                 width={32}
                 height={32}
@@ -35,7 +35,9 @@ export function Header() {
             <div className="flex flex-col">
               <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-brand-primary to-brand-accent bg-clip-text text-transparent">
                 {appConfig.appName}
-                <span className="text-brand-secondary">{appConfig.appSubName}</span>
+                <span className="text-brand-secondary">
+                  {appConfig.appSubName}
+                </span>
               </span>
               <div className="flex items-center gap-0.5 text-[10px] sm:text-xs text-gray-500">
                 <MapPin size={10} />
@@ -49,6 +51,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }
-

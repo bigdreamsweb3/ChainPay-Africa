@@ -25,7 +25,7 @@ export default function ChainPayInfoCard() {
               transition={{ delay: 0.2, duration: 0.3 }}
             >
               <Image
-                src="/logo-removebg.png"
+                src="/images/logo-removebg.png"
                 alt="ChainPay Logo"
                 width={24}
                 height={24}
