@@ -44,12 +44,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
         {paymentTokens.length === 0 ? (
           <div className="p-4 bg-yellow-100 text-yellow-800 rounded-md">
-            <p>No supported payment tokens available for the connected network.</p>
+            <p>
+              No supported payment tokens available for the connected network.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             {paymentTokens.map((token: PaymentToken) => (
-              <div key={token.id} className="w-28">
+              <div key={token.id} className="w-full">
                 <input
                   type="radio"
                   id={token.id}
@@ -60,15 +62,15 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 />
                 <label
                   htmlFor={token.id}
-                  className={`block rounded-xl shadow-sm transition-all duration-200 ease-in-out cursor-pointer ${
+                  className={`block w-full rounded-xl shadow-sm transition-all duration-200 ease-in-out cursor-pointer ${
                     selectedToken === token.id
                       ? "ring-2 ring-blue-500 bg-blue-50"
                       : "bg-white hover:bg-gray-50"
                   }`}
                 >
-                  <div className="p-1 flex flex-col items-start">
+                  <div className="p-2 items-start">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                         <Image
                           src={imageSources[token.id]}
                           alt={token.name}
@@ -84,8 +86,12 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                         />
                       </div>
                       <div className="flex flex-col items-start">
-                        <span className="text-sm font-bold text-gray-800">{token.name}</span>
-                        <span className="text-xs text-gray-500">{token.symbol}</span>
+                        <span className="text-sm font-bold text-gray-800">
+                          {token.name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {token.symbol}
+                        </span>
                       </div>
                     </div>
                   </div>

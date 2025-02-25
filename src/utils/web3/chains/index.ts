@@ -19,10 +19,10 @@ export const crossfiTestnet = defineChain({
   },
 
   payAcceptedTokens: {
-    xFI: {
+    XFI: {
       id: "0x0000000000000000000000000000000000000000",
-      name: "xFI",
-      symbol: "xFI",
+      name: "XFI",
+      symbol: "XFI",
       decimals: 18,
       contractAddress: "0x0000000000000000000000000000000000000000",
       image: "https://example.com/xFI.png",
@@ -39,7 +39,7 @@ export const crossfiTestnet = defineChain({
 
     xUSD: {
       id: "0x0000000000000000000000000000000000000002",
-      name: "xUSD",
+      name: "XUSD",
       symbol: "xUSD",
       decimals: 18,
       contractAddress: "0x0000000000000000000000000000000000000000",
@@ -48,8 +48,8 @@ export const crossfiTestnet = defineChain({
 
     xUSDT: {
       id: "0x0000000000000000000000000000000000000003",
-      name: "xUSDT",
-      symbol: "xUSDT",
+      name: "XUSDT",
+      symbol: "XUSDT",
       decimals: 18,
       contractAddress: "0x0000000000000000000000000000000000000000",
       image: "https://example.com/USDT.png",
@@ -57,8 +57,8 @@ export const crossfiTestnet = defineChain({
 
     xUSDC: {
       id: "0x0000000000000000000000000000000000000004",
-      name: "xUSDC",
-      symbol: "xUSDC",
+      name: "XUSDC",
+      symbol: "XUSDC",
       decimals: 18,
       contractAddress: "0x0000000000000000000000000000000000000000",
       image: "https://example.com/USDC.png",
