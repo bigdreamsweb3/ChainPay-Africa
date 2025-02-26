@@ -5,7 +5,6 @@ import { monadTestnet } from "./chains/monadChain";
 import { crossfiTestnet } from "./chains";
 import { useAccount } from "wagmi";
 
-
 export const SUPPORTED_CHAIN_IDS = [mainnet, crossfiTestnet, monadTestnet];
 
 export const DEFAULT_CHAIN = crossfiTestnet;
@@ -20,6 +19,7 @@ export const wagmiConfig = createConfig({
   chains: [mainnet, crossfiTestnet, monadTestnet],
   connectors: [
     injected(),
+
     walletConnect({
       projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
     }),

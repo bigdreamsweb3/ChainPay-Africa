@@ -3,8 +3,14 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { appConfig } from "@/app-config"
+import { useIsTokenAccepted } from "@/hooks/interact/TokenContract";
+
 
 export default function ChainPayInfoCard() {
+  const isTokenAccepted = useIsTokenAccepted();
+  console.log(isTokenAccepted);
+
+
   return (
     <div className="w-full max-w-md mx-auto mb-2">
       <motion.div

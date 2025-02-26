@@ -6,7 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, Loader2, ArrowLeft } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import PaymentReceipt from "../PaymentReceipt";
@@ -17,6 +17,7 @@ import { appConfig } from "@/app-config";
 import { useAcceptedTokens, PaymentToken } from "@/utils/web3/config";
 import UnavailableServiceMessage from "./UnavailableServiceMessage";
 import PaymentTokenSelector from "./SelectionComponents/PaymentTokenSelector";
+import PaymentConfirmation from "./PaymentConfirmation";
 
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
@@ -31,7 +32,7 @@ const billPaymentSchema = z.object({
         message: "Amount must be a positive number",
       }
     ),
-    paymentToken: z.string(),
+  paymentToken: z.string(),
 });
 
 type BillPaymentFormData = z.infer<typeof billPaymentSchema>;
@@ -85,8 +86,10 @@ const BillPaymentForm: React.FC = () => {
 
   const selectedService = watch("serviceType");
 
-    const paymentTokens: PaymentToken[] = useAcceptedTokens();
-  const selectedTokenDetails = paymentTokens.find(token => token.id === selectedTokenId);
+  const paymentTokens: PaymentToken[] = useAcceptedTokens();
+  const selectedTokenDetails = paymentTokens.find(
+    (token) => token.id === selectedTokenId
+  );
 
   useEffect(() => {
     if (appConfig.availableServices.includes("Airtime")) {
@@ -156,9 +159,9 @@ const BillPaymentForm: React.FC = () => {
     selectedService.charAt(0).toUpperCase() + selectedService.slice(1)
   );
 
-  if (selectedTokenDetails) {
-    console.log("selectedTokenDetails", selectedTokenDetails);
-  }
+  // if (selectedTokenDetails) {
+  //   console.log("selectedTokenDetails", selectedTokenDetails);
+  // }
 
   return (
     <FormProvider {...methods}>
@@ -186,7 +189,9 @@ const BillPaymentForm: React.FC = () => {
                   transactionId={transactionDetails.transactionId}
                   serviceType={selectedService}
                   amount={watch("amount") || ""}
-                  paymentToken={selectedTokenDetails ? selectedTokenDetails.symbol : ""}
+                  paymentToken={
+                    selectedTokenDetails ? selectedTokenDetails.symbol : ""
+                  }
                   recipientInfo={
                     selectedService === "electricity"
                       ? watch("meterNumber") || ""
@@ -258,59 +263,12 @@ const BillPaymentForm: React.FC = () => {
                         )}
 
                         {step === 3 && (
-                          <div className="space-y-6">
-                            <div className="flex items-center">
-                              <button
-                                type="button"
-                                onClick={prevStep}
-                                className="p-2 rounded-md bg-brand-secondary text-white hover:bg-green-200 transition-colors duration-200 flex items-center gap-2"
-                              >
-                                <ArrowLeft className="w-5 h-5" />
-                              </button>
-                            </div>
-
-                            <div className="space-y-4">
-                              <h3 className="text-lg font-semibold text-gray-800">
-                                Confirm Payment
-                              </h3>
-                              <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-sm text-gray-700">
-                                  <strong>Service:</strong> {selectedService}
-                                </p>
-                                <p className="text-sm text-gray-700">
-                                  <strong>
-                                    {selectedService === "electricity"
-                                      ? "Meter Number"
-                                      : "Phone Number"}
-                                  </strong>
-                                  :{" "}
-                                  {selectedService === "electricity"
-                                    ? watch("meterNumber")
-                                    : watch("phoneNumber")}
-                                </p>
-                                {(selectedService === "airtime" ||
-                                  selectedService === "data") &&
-                                  carrier && (
-                                    <p className="text-sm text-gray-700">
-                                      <strong>Network:</strong> {carrier.name}
-                                    </p>
-                                  )}
-                                <p className="text-sm text-gray-700">
-                                  <strong>Amount:</strong> {watch("amount")}
-                                </p>
-                                <p className="text-sm text-gray-700">
-                                  <strong>Payment Token:</strong>{" "}
-                                  {selectedTokenDetails ? (
-                                    <>
-                                      {selectedTokenDetails.name} ({selectedTokenDetails.symbol}) - Contract: {selectedTokenDetails.contractAddress}
-                                    </>
-                                  ) : (
-                                    "None selected"
-                                  )}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
+                          <PaymentConfirmation
+                            selectedService={selectedService}
+                            watch={watch}
+                            carrier={carrier}
+                            selectedTokenDetails={selectedTokenDetails}
+                          />
                         )}
                       </form>
                     </motion.div>
@@ -343,29 +301,6 @@ const BillPaymentForm: React.FC = () => {
                               Next
                             </motion.button>
                           </div>
-                        </div>
-                      )}
-
-                      {step === steps.length - 1 && (
-                        <div className="pt-4 border-t border-gray-100">
-                          <motion.button
-                            type="button"
-                            onClick={handleSubmit(onSubmit)}
-                            disabled={isSubmitting || !isAvailable}
-                            className="w-full px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center relative gap-2 md:text-base transition-all duration-200 ease-in-out flex-row border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] shadow-md"
-                            whileInView={{ scale: 1.02 }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            {isSubmitting ? (
-                              <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Processing...
-                              </>
-                            ) : (
-                              "Confirm Payment"
-                            )}
-                          </motion.button>
                         </div>
                       )}
 

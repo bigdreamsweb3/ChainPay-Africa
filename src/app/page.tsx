@@ -1,6 +1,7 @@
 import BillPaymentForm from "@/component/forms/BillPaymentForm";
 import ChainPayInfoCard from "@/component/chainpay-info-card";
 import type { Metadata } from "next";
+// import { isTokenAccepted } from "@/interact/TokenCheck";
 
 export const metadata: Metadata = {
   title: "ChainPay Africa - Home",
