@@ -44,7 +44,7 @@ export function useBuyAirtime() {
 }
 
 // Custom hook for token approval
-export const useTokenApproval = () => {
+export function useTokenApproval() {
     const { writeContract } = useWriteContract();
 
     const approve = async(tokenAddress, amount, spender) => {
