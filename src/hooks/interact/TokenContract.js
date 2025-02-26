@@ -42,10 +42,11 @@ export const useBuyAirtime = () => {
     return { buyAirtime, isPending, error, data };
 };
 
-export const getTokenApproval = async(tokenAddress, amount, spender) => {
+// Custom hook for token approval
+export const useTokenApproval = () => {
     const { writeContract } = useWriteContract();
 
-    const approve = async() => {
+    const approve = async(tokenAddress, amount, spender) => {
         try {
             await writeContract({
                 abi,
@@ -60,3 +61,8 @@ export const getTokenApproval = async(tokenAddress, amount, spender) => {
 
     return { approve };
 };
+
+// const { approve } = useTokenApproval();
+
+// // Call approve when needed
+// await approve(TOKEN_ADDRESS, amount, spender);
