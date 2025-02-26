@@ -28,7 +28,7 @@ export const useBuyAirtime = () => {
 
     const buyAirtime = async(phoneNumber, amount, network, tokenAddress) => {
         try {
-            writeContract({
+            await writeContract({
                 abi,
                 address: CONTRACT_ADDRESS,
                 functionName: "buyAirtime",
@@ -40,4 +40,23 @@ export const useBuyAirtime = () => {
     };
 
     return { buyAirtime, isPending, error, data };
+};
+
+export const getTokenApproval = async(tokenAddress, amount, spender) => {
+    const { writeContract } = useWriteContract();
+
+    const approve = async() => {
+        try {
+            await writeContract({
+                abi,
+                address: tokenAddress,
+                functionName: "approve",
+                args: [spender, amount],
+            });
+        } catch (err) {
+            console.error("Error approving token:", err);
+        }
+    };
+
+    return { approve };
 };
