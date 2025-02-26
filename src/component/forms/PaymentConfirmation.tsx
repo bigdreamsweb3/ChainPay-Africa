@@ -29,6 +29,13 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       carrier.name,
       selectedTokenDetails?.contractAddress
     );
+
+    if (error) {
+      console.error("Error buying airtime:", error);
+    }   
+    if (data) {
+      console.log("Airtime bought successfully:", data);
+    }
   };
 
   return (
