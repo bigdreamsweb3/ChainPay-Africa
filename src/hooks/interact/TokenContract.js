@@ -23,24 +23,25 @@ export const useIsTokenAccepted = () => {
 };
 
 // Custom hook to buy airtime
-export const useBuyAirtime = () => {
+export function useBuyAirtime() {
     const { writeContract, isPending, error, data } = useWriteContract();
 
     const buyAirtime = async(phoneNumber, amount, network, tokenAddress) => {
         try {
-            await writeContract({
+            const result = writeContract({
                 abi,
                 address: CONTRACT_ADDRESS,
                 functionName: "buyAirtime",
                 args: [phoneNumber, amount, network, tokenAddress],
             });
+            return result;
         } catch (err) {
             console.error("Error buying airtime:", err);
         }
     };
 
-    return { buyAirtime, isPending, error, data };
-};
+    return { buyAirtime, isPending, error, data }; // Ensure this returns an object
+}
 
 // Custom hook for token approval
 export const useTokenApproval = () => {
