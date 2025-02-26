@@ -3,9 +3,15 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import React from "react";
 
+interface FormData {
+  phoneNumber: string;
+  meterNumber: string;
+  amount: string;
+}
+
 interface PaymentConfirmationProps {
   selectedService: string;
-  watch: (field: string) => any;
+  watch: (field: keyof FormData) => FormData[keyof FormData];
   carrier: { name: string | null };
   selectedTokenDetails:
     | { name: string; symbol: string; contractAddress: string }
