@@ -15,9 +15,10 @@
 
 ## 📜 Smart Contract
 
-This project includes a **Solidity** smart contract deployed on the **CrossFi Chain** testnet. It handles the bill payment logic, supporting the interaction between users, services, and cryptocurrencies.
+This project includes a **Solidity** smart contract deployed on the **CrossFi Chain** testnet: [View Transaction on CrossFi Explorer](https://test.xfiscan.com/tx/0xbde8d5047dab4c5955249e34c34641837ddf19a564c34cef39a51425bcdff30f). It handles the bill payment logic, supporting the interaction between users, services, and cryptocurrencies.
 
 ### ✅ Deployment Status
+
 - **Smart Contract Deployed**: The ChainPay Africa smart contract is now live on the CrossFi Chain testnet.
 
 ---
@@ -68,4 +69,3 @@ This project is licensed under the **MIT License**.
 ---
 
 🚀 **ChainPay Africa – Pay Bills with Crypto, No Banks Needed!**
-
