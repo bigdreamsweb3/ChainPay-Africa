@@ -17,6 +17,9 @@
 
 This project includes a **Solidity** smart contract deployed on the **CrossFi Chain** testnet. It handles the bill payment logic, supporting the interaction between users, services, and cryptocurrencies.
 
+### ✅ Deployment Status
+- **Smart Contract Deployed**: The ChainPay Africa smart contract is now live on the CrossFi Chain testnet.
+
 ---
 
 ## 🔗 Links
@@ -25,6 +28,7 @@ This project includes a **Solidity** smart contract deployed on the **CrossFi Ch
 - **Live Demo**: [Coming Soon]
 - **Project Website**: [ChainPay Africa](https://chainpay-africa.vercel.app/)
 - **Demo Video**: [Coming Soon]
+- **Smart Contract Explorer**: [View on CrossFi Testnet](https://test.xfiscan.com/address/0x101c154ec2b82fbd05768546fef19bd3ef9c37b5)
 
 ---
 
@@ -39,10 +43,15 @@ This project includes a **Solidity** smart contract deployed on the **CrossFi Ch
 ## 🚧 Roadmap
 
 - [x] **Build Next.js frontend**: Design and implement the user interface for interacting with the platform.
-- [ ] **Develop smart contract**: The core functionality of the decentralized bill payment system.
-- [ ] **Integrate wallet connections**: Enable users to connect MetaMask, WalletConnect, and other wallets to the platform.
+- [x] **Integrate wallet connections**: Enable users to connect MetaMask, WalletConnect, and other wallets to the platform.
+- [x] **Develop smart contract**: The core functionality of the decentralized bill payment system.
+- [x] **Deploy smart contract on CrossFi Chain**: The contract is now live on the CrossFi Chain testnet.
 - [ ] **Enable bill payment transactions**: Integrate service providers (e.g., utilities, internet) to allow bill payments through the platform.
-- [ ] **Deploy live on CrossFi Chain**: Launch the platform on the mainnet for live use.
+- [ ] **Mainnet Deployment**: Deploy the contract on the CrossFi mainnet for full production use.
+- [ ] **Expand Crypto Payment Support**: Add support for more cryptocurrencies.
+- [ ] **User Dashboard & Analytics**: Implement a dashboard for users to track their bill payment history and analytics.
+- [ ] **Mobile App Development**: Develop a mobile application for enhanced accessibility.
+- [ ] **Partnerships & Integrations**: Collaborate with more service providers to expand bill payment options.
 
 ---
 
@@ -60,4 +69,3 @@ This project is licensed under the **MIT License**.
 
 🚀 **ChainPay Africa – Pay Bills with Crypto, No Banks Needed!**
 
----
