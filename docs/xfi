@@ -63,3 +63,18 @@
     "coinMinimalDenom": "mpx"
   }
 }
+
+
+
+> chainpay-africa@0.1.0 deploy-evm-contracts
+> npx hardhat run evm-contracts/scripts/deploy.js --network 
+crossfiTestnet
+
+🔍 Fetching network details...
+🔗 Network details: Network {}
+🔍 Fetching contract factory...
+🔍 Deploying contract...
+🔍 Waiting for deployment...
+✅ Contract deployed successfully!
+📍 Contract Address: 0x147C0BE455151f7A610733413da07F04A3aD0fd4
+ *  Terminal will be reused by tasks, press any key to close it. 

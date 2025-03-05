@@ -74,7 +74,7 @@ const defaultTokenABI = [
 ];
 
 const abi = contractArtifact.abi; // Extract only the ABI array
-const CONTRACT_ADDRESS = "0xdfc211dd46a168ac0352b149ad8bf49ff24716dd";
+const CONTRACT_ADDRESS = "0x147C0BE455151f7A610733413da07F04A3aD0fd4";
 const TOKEN_ADDRESS = "0x12e048d4f26f54c0625ef34fabd365e4f925f2ff";
 
 // Convert this into a custom hook

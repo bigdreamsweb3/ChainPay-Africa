@@ -54,14 +54,3 @@ export const useAcceptedTokens = (): PaymentToken[] => {
   return Object.values(acceptedTokens) as PaymentToken[]; // Cast to PaymentToken[]
 };
 
-// // Example usage in a React component
-// const BalanceComponent = () => {
-//   const { fetchBalance } = useBalance();
-
-//   const balance = fetchBalance();
-//   console.log("Balance:", balance);
-
-//   return balance;
-// };
-
-// export default BalanceComponent;

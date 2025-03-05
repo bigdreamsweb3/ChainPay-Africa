@@ -15,7 +15,7 @@
 
 ## 📜 Smart Contract
 
-This project includes a **Solidity** smart contract deployed on the **CrossFi Chain** testnet: [View Transaction on CrossFi Explorer](https://test.xfiscan.com/tx/0x4ac8976214afcc508ac269ace59d38101a7906a73bc68c0518e9273af8e8ffdb). It handles the bill payment logic, supporting the interaction between users, services, and cryptocurrencies.
+This project includes a **Solidity** smart contract deployed on the **CrossFi Chain** testnet: [View Transaction on CrossFi Explorer](https://test.xfiscan.com/tx/0x17e50f62c927b6a2e14f2e034cd84f12853903dc2e4117348d7f19890030273d). It handles the bill payment logic, supporting the interaction between users, services, and cryptocurrencies.
 
 ### ✅ Deployment Status
 
@@ -29,7 +29,7 @@ This project includes a **Solidity** smart contract deployed on the **CrossFi Ch
 - **Project Website**: [ChainPay Africa](https://chainpay-africa.vercel.app/)
 - **Demo Video**: [Coming Soon]
 - **Pitch Deck**: [Coming Soon]
-- **Smart Contract Explorer**: [View on CrossFi Testnet](https://test.xfiscan.com/address/0xdfc211dd46a168ac0352b149ad8bf49ff24716dd)
+- **Smart Contract Explorer**: [View on CrossFi Testnet](https://test.xfiscan.com/address/0x147C0BE455151f7A610733413da07F04A3aD0fd4)
 
 ---
 
