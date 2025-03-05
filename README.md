@@ -26,9 +26,9 @@ This project includes a **Solidity** smart contract deployed on the **CrossFi Ch
 ## 🔗 Links
 
 - **GitHub Repo**: [ChainPay Africa GitHub](https://github.com/italiancode/ChainPay-Africa.git)
-- **Live Demo**: [Coming Soon]
 - **Project Website**: [ChainPay Africa](https://chainpay-africa.vercel.app/)
 - **Demo Video**: [Coming Soon]
+- **Pitch Deck**: [Coming Soon]
 - **Smart Contract Explorer**: [View on CrossFi Testnet](https://test.xfiscan.com/address/0xdfc211dd46a168ac0352b149ad8bf49ff24716dd)
 
 ---
