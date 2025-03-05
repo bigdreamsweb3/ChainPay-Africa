@@ -1,6 +1,6 @@
 "use client"; // Ensure it's a Client Component
 
-import { useReadContract, useWalletClient, useWriteContract, usePrepareContractWrite } from "wagmi";
+import { useReadContract, useWalletClient, useWriteContract } from "wagmi";
 import contractArtifact from "../../../evm-contracts/artifacts/evm-contracts/contracts/chainpay_airtime.sol/ChainPay_Airtime.json";
 
 // ERC20 Standard token ABI

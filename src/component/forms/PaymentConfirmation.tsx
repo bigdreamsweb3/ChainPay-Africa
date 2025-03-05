@@ -78,7 +78,11 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         carrier.enum_value,
         selectedTokenDetails.contractAddress
       );
+
+      console.log(data)
+
     } catch (err) {
+      console.log(error, data)
       console.error("Error executing buyAirtime:", err);
       setErrorMessage("Transaction failed. Please try again.");
     }
