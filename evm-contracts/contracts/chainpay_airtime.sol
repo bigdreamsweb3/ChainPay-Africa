@@ -2,29 +2,40 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title ChainPay
- * @dev A blockchain-based payment system that allows users to purchase airtime, data, and pay bills
- * using multiple accepted ERC-20 tokens. The owner can add or remove supported tokens.
+ * @title ChainPay_Airtime
+ * @dev A blockchain-based payment system for purchasing airtime using multiple ERC-20 tokens.
+ * The contract owner can add/remove accepted tokens and manage withdrawals.
  */
-contract ChainPay_Airtime is Ownable {
+contract ChainPay_Airtime is Ownable, ReentrancyGuard {
+    using SafeERC20 for IERC20;
+
+    // Enum for supported networks
+    enum Network {
+        MTN,
+        Airtel,
+        Glo,
+        Etisalat
+    }
+
     // Mapping of accepted ERC-20 tokens
     mapping(address => bool) public acceptedTokens;
 
-    // Transaction structure to log service purchases
+    // Transaction structure for logging purchases
     struct Transaction {
         address user;
         string phoneNumber;
         uint256 amount;
-        string serviceType;
-        string network;
-        string dataPlan;
-        string billType;
+        Network network;
+        address token;
         uint256 timestamp;
         bool completed;
-        address token;
     }
 
     // Storage for transactions
@@ -35,59 +46,54 @@ contract ChainPay_Airtime is Ownable {
     event TokenAdded(address indexed token);
     event TokenRemoved(address indexed token);
     event AirtimePurchase(
+        uint256 indexed txId,
         address indexed user,
         string phoneNumber,
         uint256 amount,
-        string network,
+        Network network,
         address token,
         uint256 timestamp
     );
-    event Withdrawal(
-        address indexed admin,
-        address token,
-        uint256 amount,
-        uint256 timestamp
-    );
+    event Withdrawal(address indexed admin, address token, uint256 amount, uint256 timestamp);
 
     /**
-     * @dev Constructor initializes the contract with an initial accepted token and sets the owner.
-     * @param _usdcToken Address of the initial accepted token.
+     * @dev Constructor initializes the contract with an initial accepted token.
+     * @param _initialToken Address of the initial accepted token.
      */
-    constructor(address _usdcToken) Ownable(msg.sender) {
-        acceptedTokens[_usdcToken] = true;
+    constructor(address _initialToken) Ownable(msg.sender) {
+        require(_initialToken != address(0), "Invalid token address");
+        acceptedTokens[_initialToken] = true;
     }
 
     /**
-     * @dev Adds a new ERC-20 token to the accepted payment options.
+     * @dev Adds a new ERC-20 token to the accepted tokens list.
      */
     function addAcceptedToken(address token) external onlyOwner {
-        require(
-            token != address(0) && !acceptedTokens[token],
-            "Invalid or already accepted token"
-        );
+        require(token != address(0), "Invalid token address");
+        require(!acceptedTokens[token], "Token already accepted");
+
         acceptedTokens[token] = true;
         emit TokenAdded(token);
     }
 
     /**
-     * @dev Removes an accepted ERC-20 token from the payment options.
+     * @dev Removes an accepted ERC-20 token from the list.
      */
     function removeAcceptedToken(address token) external onlyOwner {
         require(acceptedTokens[token], "Token not accepted");
+
         delete acceptedTokens[token];
         emit TokenRemoved(token);
     }
 
     /**
-     * @dev Internal function to process token payments.
+     * @dev Internal function to process token payments securely.
      */
     function processPayment(address token, uint256 amount) internal {
         require(acceptedTokens[token], "Token not supported");
         require(amount > 0, "Invalid amount");
-        require(
-            IERC20(token).transferFrom(msg.sender, address(this), amount),
-            "Payment failed"
-        );
+
+        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
     }
 
     /**
@@ -96,23 +102,27 @@ contract ChainPay_Airtime is Ownable {
     function buyAirtime(
         string calldata phoneNumber,
         uint256 amount,
-        string calldata network,
+        Network network,
         address token
-    ) external {
+    ) external nonReentrant {
         processPayment(token, amount);
-        transactions[++transactionCounter] = Transaction(
+
+        unchecked {
+            transactionCounter++;
+        }
+
+        transactions[transactionCounter] = Transaction(
             msg.sender,
             phoneNumber,
             amount,
-            "airtime",
             network,
-            "",
-            "",
+            token,
             block.timestamp,
-            false,
-            token
+            false
         );
+
         emit AirtimePurchase(
+            transactionCounter,
             msg.sender,
             phoneNumber,
             amount,
@@ -123,14 +133,12 @@ contract ChainPay_Airtime is Ownable {
     }
 
     /**
-     * @dev Allows the contract owner to withdraw collected funds.
+     * @dev Allows the owner to withdraw collected funds.
      */
-    function withdrawFunds(address token, uint256 amount) external onlyOwner {
+    function withdrawFunds(address token, uint256 amount) external onlyOwner nonReentrant {
         require(acceptedTokens[token], "Token not supported");
-        require(
-            IERC20(token).transfer(msg.sender, amount),
-            "Withdrawal failed"
-        );
+
+        IERC20(token).safeTransfer(msg.sender, amount);
         emit Withdrawal(msg.sender, token, amount, block.timestamp);
     }
 }

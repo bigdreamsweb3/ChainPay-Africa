@@ -31,4 +31,8 @@ module.exports = {
 
         crossfiTestnet: crossfiTestnetParams([process.env.NEXT_PUBLIC_ACCOUNT_1]),
     },
+
+    mocha: {
+        timeout: 200000,  // Increase timeout if needed
+    },
 };

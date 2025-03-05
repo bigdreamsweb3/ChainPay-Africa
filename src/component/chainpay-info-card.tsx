@@ -69,7 +69,7 @@ export default function ChainPayInfoCard() {
           animate={{ opacity: 0.1, scale: 1 }}
           transition={{ delay: 0.5, duration: 0.3 }}
         >
-          <Image src="/logo.jpg" alt="ChainPay App Logo" width={40} height={40} className="rounded-full" />
+          <Image src="/images/logo.jpg" alt="ChainPay App Logo" width={40} height={40} className="rounded-full" />
         </motion.div>
       </motion.div>
     </div>

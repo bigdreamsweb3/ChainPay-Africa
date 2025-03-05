@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import { networks, detectCarrier } from "@/utils/getPhoneCarrierInfo";
 import Image from "next/image";
@@ -20,6 +20,7 @@ interface PhoneNumberInputProps {
     id: string | null;
     name: string | null;
     iconUrl: string | null;
+    enum_value: number;
   }) => void;
 }
 
@@ -32,10 +33,12 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
     id: string | null;
     name: string | null;
     iconUrl: string | null;
+    enum_value: number;
   }>({
     id: null,
     name: null,
     iconUrl: null,
+    enum_value: 0,
   });
   const [selectedNetwork, setSelectedNetwork] = useState(networks[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -44,6 +47,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Handle clicks outside the dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
@@ -63,53 +67,82 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
     };
   }, []);
 
+  // Detect carrier based on phone number
   useEffect(() => {
     if (isManualSelection) return;
 
     if (phoneNumber) {
       const detectedCarrier = detectCarrier(phoneNumber);
       if (detectedCarrier) {
-        setCarrier({
+        const selected = networks.find(
+          (network) => network.id === detectedCarrier.id
+        );
+
+        const newCarrier = {
           id: detectedCarrier.id,
           name: detectedCarrier.carrier,
           iconUrl: detectedCarrier.iconUrl,
-        });
+          enum_value: selected ? selected.enum_value : 0,
+        };
 
-        if (detectedCarrier.id) {
-          const selected = networks.find(
-            (network) => network.id === detectedCarrier.id
-          );
-          if (selected) {
+        // Only update state if the carrier has changed
+        if (
+          newCarrier.id !== carrier.id ||
+          newCarrier.name !== carrier.name ||
+          newCarrier.iconUrl !== carrier.iconUrl ||
+          newCarrier.enum_value !== carrier.enum_value
+        ) {
+          setCarrier(newCarrier);
+
+          if (detectedCarrier.id && selected) {
             setSelectedNetwork(selected);
-            onCarrierChange(selected);
+            onCarrierChange(newCarrier);
+          } else {
+            onCarrierChange({
+              ...selectedNetwork,
+              enum_value: selectedNetwork.enum_value,
+            });
           }
-        } else {
-          onCarrierChange(selectedNetwork);
         }
       }
     } else {
-      setCarrier({ id: null, name: null, iconUrl: null });
-      onCarrierChange(selectedNetwork);
+      const newCarrier = { id: null, name: null, iconUrl: null, enum_value: 0 };
+      if (
+        newCarrier.id !== carrier.id ||
+        newCarrier.name !== carrier.name ||
+        newCarrier.iconUrl !== carrier.iconUrl ||
+        newCarrier.enum_value !== carrier.enum_value
+      ) {
+        setCarrier(newCarrier);
+        onCarrierChange({ ...selectedNetwork, enum_value: selectedNetwork.enum_value });
+      }
     }
-  }, [phoneNumber, onCarrierChange, selectedNetwork, isManualSelection]);
+  }, [phoneNumber, onCarrierChange, selectedNetwork, isManualSelection, carrier]);
 
+  // Reset manual selection flag when phone number changes
   useEffect(() => {
     setIsManualSelection(false);
-  }, []);
+  }, [phoneNumber]);
 
-  const handleNetworkSelect = (network: {
-    id: string;
-    name: string;
-    iconUrl: string;
-    color: string;
-  }) => {
-    setSelectedNetwork(network);
-    onCarrierChange(network);
-    setIsDropdownOpen(false);
-    setIsManualSelection(true);
-  };
+  // Handle manual network selection
+  const handleNetworkSelect = useCallback(
+    (network: {
+      id: string;
+      name: string;
+      iconUrl: string;
+      color: string;
+      enum_value: number;
+    }) => {
+      setSelectedNetwork(network);
+      onCarrierChange(network);
+      setIsDropdownOpen(false);
+      setIsManualSelection(true);
+    },
+    [onCarrierChange]
+  );
 
-  const validatePhoneNumber = (value: string) => {
+  // Validate phone number format
+  const validatePhoneNumber = useCallback((value: string) => {
     const isValid =
       /^\d{10}$/.test(value) ||
       /^234\d{10}$/.test(value) ||
@@ -121,7 +154,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
       return "Please enter a valid phone number";
     }
     return true;
-  };
+  }, [setValue]);
 
   return (
     <div className="relative space-y-2">
@@ -133,7 +166,10 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
         <div
           className={`relative rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
           ref={dropdownRef}
-          style={{ backgroundColor: selectedNetwork.color + '60', border: '1px solid ' + selectedNetwork.color + '80' }}
+          style={{
+            backgroundColor: selectedNetwork.color + "60",
+            border: "1px solid " + selectedNetwork.color + "80",
+          }}
         >
           <motion.button
             type="button"
@@ -144,10 +180,12 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             whileInView={{ scale: 1.02 }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-           
           >
-            <div className="flex items-center gap-2 py-1.5 px-3" >
-              <div className="w-6 h-6 rounded-full overflow-hidden shadow-md"  style={{ border: "1px solid " + selectedNetwork.color + '80' }}>
+            <div className="flex items-center gap-2 py-1.5 px-3">
+              <div
+                className="w-6 h-6 rounded-full overflow-hidden shadow-md"
+                style={{ border: "1px solid " + selectedNetwork.color + "80" }}
+              >
                 <Image
                   src={selectedNetwork.iconUrl || "/placeholder.svg"}
                   alt={selectedNetwork.name}

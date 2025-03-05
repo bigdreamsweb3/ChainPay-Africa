@@ -1,9 +1,10 @@
 const { ethers } = require("hardhat");
 
 async function main() {
-    const usdcTokenAddress = "0xea26a662333a2a5E87fB6851fc24a47fa53d98D1"; // Replace with actual token address
+    const usdcTokenAddress = "0x12e048d4f26f54c0625ef34fabd365e4f925f2ff"; // Replace with actual token address
 
     console.log("Deploying contract to network:", hre.network.name);
+    console.log("Using RPC URL:", hre.network.config.url); // Log the RPC URL
 
     const Contract = await ethers.getContractFactory("ChainPay_Airtime");
 
@@ -40,16 +41,23 @@ async function main() {
     );
 
     // Deploy the contract with dynamically set gas fees
-    const contract = await Contract.deploy(usdcTokenAddress, {
-        maxPriorityFeePerGas,
-        maxFeePerGas,
-    });
+    let contract;
+    try {
+        contract = await Contract.deploy(usdcTokenAddress, {
+            maxPriorityFeePerGas,
+            maxFeePerGas,
+        });
+    } catch (error) {
+        console.error("Contract deployment failed:", error);
+        process.exit(1);
+    }
 
     console.log("Deploying contract...");
 
     await contract.deployed();
 
     console.log("Contract deployed to:", contract.address);
+    console.log("Contract object:", contract);
 }
 
 main()

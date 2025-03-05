@@ -1,26 +1,31 @@
-export const networks = [{
+export const networks = [
+    {
         id: "mtn",
         iconUrl: "/network-icons/mtn-new-logo.svg",
         name: "MTN Nigeria",
         color: "#FCE29A",
+        enum_value: 0
     },
     {
         id: "airtel",
         iconUrl: "/network-icons/airtel.png",
         name: "Airtel Nigeria",
         color: "#FF0000",
+        enum_value: 1
     },
     {
         id: "glo",
         iconUrl: "/network-icons/glo.png",
         name: "Glo Nigeria",
         color: "#228B22",
+        enum_value: 2
     },
     {
         id: "9mobile",
         iconUrl: "/network-icons/9mobile.png",
         name: "9mobile Nigeria",
         color: "#00FF00", // Light Green
+        enum_value: 3
     },
 ];
 
@@ -60,23 +65,23 @@ export function detectCarrier(phoneNumber) {
     }
 
     // Find the carrier based on the prefix
-    for (let { prefix, carrier, id }
-        of phoneCarriers) {
+    for (let { prefix, carrier, id } of phoneCarriers) {
         if (phoneNumber.startsWith(prefix)) {
             const network = networks.find((network) => network.id === id);
             return {
                 carrier,
                 id,
                 iconUrl: network ? network.iconUrl : null, // Return iconUrl if network is found
+                enum_value: network ? network.enum_value : null // Return enum_value if network is found
             };
         }
     }
 
     // Return unknown carrier info if no match is found
-    return { carrier: "Unknown Carrier", id: null, iconUrl: null };
+    return { carrier: "Unknown Carrier", id: null, iconUrl: null, enum_value: null };
 }
 
 // // Example Usage:
 // const number = "+2348031234567";
 // const carrierInfo = detectCarrier(number);
-// console.log(`Carrier: ${carrierInfo.carrier}, ID: ${carrierInfo.id}, Icon URL: ${carrierInfo.iconUrl}`);
+// console.log(`Carrier: ${carrierInfo.carrier}, ID: ${carrierInfo.id}, Icon URL: ${carrierInfo.iconUrl}, Enum Value: ${carrierInfo.enum_value}`);

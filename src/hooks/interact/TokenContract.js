@@ -1,6 +1,6 @@
 "use client"; // Ensure it's a Client Component
 
-import { useReadContract, useWalletClient, useWriteContract } from "wagmi";
+import { useReadContract, useWalletClient, useWriteContract, usePrepareContractWrite } from "wagmi";
 import contractArtifact from "../../../evm-contracts/artifacts/evm-contracts/contracts/chainpay_airtime.sol/ChainPay_Airtime.json";
 
 // ERC20 Standard token ABI
@@ -74,8 +74,8 @@ const defaultTokenABI = [
 ];
 
 const abi = contractArtifact.abi; // Extract only the ABI array
-const CONTRACT_ADDRESS = "0x101c154ec2b82fbd05768546fef19bd3ef9c37b5";
-const TOKEN_ADDRESS = "0xea26a662333a2a5E87fB6851fc24a47fa53d98D1";
+const CONTRACT_ADDRESS = "0xdfc211dd46a168ac0352b149ad8bf49ff24716dd";
+const TOKEN_ADDRESS = "0x12e048d4f26f54c0625ef34fabd365e4f925f2ff";
 
 // Convert this into a custom hook
 export const useIsTokenAccepted = () => {
@@ -104,12 +104,22 @@ export function useBuyAirtime() {
         }
 
         try {
+            // Set fixed low gas parameters based on successful historical transactions
+            const optimizedGasOptions = {
+                maxFeePerGas: BigInt(1500000000),         // 1.5 Gwei
+                maxPriorityFeePerGas: BigInt(1000000000), // 1.0 Gwei
+                gas: BigInt(100000),                      // Fixed gas limit
+            };
+
+            console.log(amount);
+
             const result = writeContract({
                 abi,
                 address: CONTRACT_ADDRESS,
                 functionName: "buyAirtime",
                 args: [phoneNumber, amount, network, tokenAddress],
-                account: walletClient.account, // Ensure correct wallet is used
+                account: walletClient.account,
+                ...optimizedGasOptions
             });
             return result;
         } catch (err) {
@@ -120,7 +130,6 @@ export function useBuyAirtime() {
     return { buyAirtime, isPending, error, data };
 }
 
-// Custom hook for token approval
 export function useTokenApproval() {
     const { data: walletClient } = useWalletClient();
     const { writeContract, isPending, error, data } = useWriteContract();
@@ -132,12 +141,20 @@ export function useTokenApproval() {
         }
 
         try {
+            // Use same optimized gas parameters for approval
+            const optimizedGasOptions = {
+                maxFeePerGas: BigInt(1500000000),         // 1.5 Gwei
+                maxPriorityFeePerGas: BigInt(1000000000), // 1.0 Gwei
+                gas: BigInt(70000),                       // Lower gas limit for approvals
+            };
+
             const result = writeContract({
                 abi: defaultTokenABI,
                 address: token_address,
                 functionName: "approve",
                 args: [spender, amount],
-                account: walletClient.account, // Ensure correct wallet is used
+                account: walletClient.account,
+                ...optimizedGasOptions
             });
             return result;
         } catch (err) {
@@ -147,8 +164,3 @@ export function useTokenApproval() {
 
     return { approve, isPending, error, data };
 }
-
-// const { approve } = useTokenApproval();
-
-// // Call approve when needed
-// await approve(TOKEN_ADDRESS, amount, spender);

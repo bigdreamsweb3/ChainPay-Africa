@@ -1,7 +1,7 @@
 import { useBuyAirtime } from "@/hooks/interact/TokenContract";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2 } from "lucide-react";
-import React from "react";
+import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import React, { useState } from "react";
 
 interface FormData {
   phoneNumber: string;
@@ -12,11 +12,14 @@ interface FormData {
 interface PaymentConfirmationProps {
   selectedService: string;
   watch: (field: keyof FormData) => FormData[keyof FormData];
-  carrier: { name: string | null };
+  carrier: {
+    name: string | null;
+    enum_value: number;
+  };
   selectedTokenDetails:
-    | { name: string; symbol: string; contractAddress: string }
-    | null
-    | undefined;
+  | { name: string; symbol: string; contractAddress: string }
+  | null
+  | undefined;
 }
 
 const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
@@ -26,23 +29,63 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   selectedTokenDetails,
 }) => {
   const { buyAirtime, isPending, error, data } = useBuyAirtime();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await buyAirtime(
-      watch("phoneNumber"),
-      watch("amount"),
-      carrier.name,
-      selectedTokenDetails?.contractAddress
-    );
+    setErrorMessage(null);
 
-    if (error) {
-      console.error("Error buying airtime:", error);
-    }   
-    if (data) {
-      console.log("Airtime bought successfully:", data);
+    if (!selectedTokenDetails?.contractAddress) {
+      setErrorMessage("Please select a payment token");
+      return;
+    }
+
+    try {
+      const phoneNumber = watch("phoneNumber");
+      const amountStr = watch("amount");
+
+      if (!phoneNumber || !amountStr) {
+        setErrorMessage("Please fill in all required fields");
+        return;
+      }
+
+      // Validate carrier and network enum
+      if (!carrier || carrier.enum_value === undefined || carrier.enum_value === null) {
+        setErrorMessage("Please select a network provider");
+        return;
+      }
+
+      // Network enum should be 0-3 (MTN=0, Airtel=1, Glo=2, Etisalat=3)
+      if (carrier.enum_value < 0 || carrier.enum_value > 3) {
+        setErrorMessage("Invalid network provider selected");
+        return;
+      }
+
+      // Convert amount directly without Wei conversion
+      // This will use the amount as is for credit units
+      const amount = BigInt(Math.floor(parseFloat(amountStr)));
+
+      console.log("Sending transaction with:", {
+        phoneNumber,
+        amount: amount.toString(), // This will now be the actual credit units
+        network: carrier.enum_value,
+        token: selectedTokenDetails.contractAddress
+      });
+
+      await buyAirtime(
+        phoneNumber,
+        amount,
+        carrier.enum_value,
+        selectedTokenDetails.contractAddress
+      );
+    } catch (err) {
+      console.error("Error executing buyAirtime:", err);
+      setErrorMessage("Transaction failed. Please try again.");
     }
   };
+
+  // Check if we can enable the confirm button
+  const isConfirmDisabled = !carrier?.name || !watch("phoneNumber") || !watch("amount") || !selectedTokenDetails;
 
   return (
     <div className="space-y-6">
@@ -87,7 +130,6 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             {selectedTokenDetails ? (
               <>
                 {selectedTokenDetails.name} ({selectedTokenDetails.symbol})
-                {/* - Contract: {selectedTokenDetails.contractAddress} */}
               </>
             ) : (
               "None selected"
@@ -95,18 +137,29 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           </p>
         </div>
 
+        {errorMessage && (
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-sm text-red-600 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              {errorMessage}
+            </p>
+          </div>
+        )}
+
         <div className="pt-4 border-t border-gray-100">
           <motion.button
             type="button"
             onClick={handleBuyAirtime}
-            disabled={isPending}
-            className="w-full px-4 py-2 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center relative gap-2 md:text-base transition-all duration-200 ease-in-out flex-row border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] shadow-md"
-            whileInView={{ scale: 1.02 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
+            disabled={isPending || isConfirmDisabled}
+            className={`w-full px-4 py-2 text-sm text-white rounded-lg flex items-center justify-center relative gap-2 md:text-base transition-all duration-200 ease-in-out flex-row border-brand-primary shadow-md ${isPending || isConfirmDisabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] hover:scale-105"
+              }`}
+            whileHover={!isConfirmDisabled && !isPending ? { scale: 1.05 } : {}}
+            whileTap={!isConfirmDisabled && !isPending ? { scale: 0.98 } : {}}
           >
             {isPending ? (
-              <>    
+              <>
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 Processing...
               </>
@@ -114,7 +167,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
               "Confirm Payment"
             )}
           </motion.button>
-        </div>      
+        </div>
       </div>
     </div>
   );

@@ -57,10 +57,12 @@ const BillPaymentForm: React.FC = () => {
     id: string | null;
     name: string | null;
     iconUrl: string | null;
+    enum_value: number;
   }>({
     id: null,
     name: null,
     iconUrl: null,
+    enum_value: 0
   });
   const [unavailableServiceMessage, setUnavailableServiceMessage] = useState<
     string | null

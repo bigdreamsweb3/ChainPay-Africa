@@ -11,7 +11,7 @@ export const crossfiTestnet = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.testnet.ms"],
+      http: ["https://rpc.testnet.ms/"],
     },
   },
   blockExplorers: {
@@ -19,23 +19,23 @@ export const crossfiTestnet = defineChain({
   },
 
   payAcceptedTokens: {
-    XFI: {
-      id: "0x0000000000000000000000000000000000000000",
-      name: "XFI",
-      symbol: "XFI",
-      decimals: 18,
-      contractAddress: "0xea26a662333a2a5E87fB6851fc24a47fa53d98D1",
-      image: "https://example.com/xFI.png",
-    },
+    // XFI: {
+    //   id: "0x0000000000000000000000000000000000000000",
+    //   name: "XFI",
+    //   symbol: "XFI",
+    //   decimals: 18,
+    //   contractAddress: "",
+    //   image: "https://crossfi.org/wp-content/uploads/2024/12/xfi.svg",
+    // },
 
-    pNGN: {
-      id: "0x0000000000000000000000000000000000000001",
-      name: "pNGN",
-      symbol: "pNGN",
-      decimals: 18,
-      contractAddress: "0xea26a662333a2a5E87fB6851fc24a47fa53d98D1",
-      image: "https://example.com/pNGN.png",
-    },
+    // pNGN: {
+    //   id: "0x0000000000000000000000000000000000000001",
+    //   name: "pNGN",
+    //   symbol: "pNGN",
+    //   decimals: 18,
+    //   contractAddress: "0xea26a662333a2a5E87fB6851fc24a47fa53d98D1",
+    //   image: "https://example.com/pNGN.png",
+    // },
 
     XUSD: {
       id: "0x0000000000000000000000000000000000000002",
