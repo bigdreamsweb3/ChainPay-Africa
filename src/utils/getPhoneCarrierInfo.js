@@ -85,3 +85,5 @@ export function detectCarrier(phoneNumber) {
 // const number = "+2348031234567";
 // const carrierInfo = detectCarrier(number);
 // console.log(`Carrier: ${carrierInfo.carrier}, ID: ${carrierInfo.id}, Icon URL: ${carrierInfo.iconUrl}, Enum Value: ${carrierInfo.enum_value}`);
+
+// 
