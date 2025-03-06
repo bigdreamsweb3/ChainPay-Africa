@@ -28,7 +28,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   carrier,
   selectedTokenDetails,
 }) => {
-  const { buyAirtime, isPending, error, data } = useBuyAirtime();
+  const { buyAirtime, isPending } = useBuyAirtime();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -72,7 +72,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         token: selectedTokenDetails.contractAddress
       });
 
-      const txResult = await buyAirtime(
+      await buyAirtime(
         phoneNumber,
         amount,
         carrier.enum_value,
@@ -83,16 +83,21 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       console.log("Transaction submitted successfully");
       setErrorMessage(null);
 
-    } catch (err: any) {
-      console.error("Error executing buyAirtime:", err);
+    } catch (error: unknown) {
+      console.error("Error executing buyAirtime:", error);
       
-      // Show user-friendly error messages
-      if (err.message.includes("rejected in wallet")) {
-        setErrorMessage("Transaction was cancelled in your wallet");
-      } else if (err.message.includes("Wallet not connected")) {
-        setErrorMessage("Please connect your wallet to continue");
+      // Type guard for Error objects
+      if (error instanceof Error) {
+        // Show user-friendly error messages
+        if (error.message.includes("rejected in wallet")) {
+          setErrorMessage("Transaction was cancelled in your wallet");
+        } else if (error.message.includes("Wallet not connected")) {
+          setErrorMessage("Please connect your wallet to continue");
+        } else {
+          setErrorMessage(error.message || "Transaction failed. Please try again.");
+        }
       } else {
-        setErrorMessage(err.message || "Transaction failed. Please try again.");
+        setErrorMessage("Transaction failed. Please try again.");
       }
     }
   };
