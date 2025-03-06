@@ -151,7 +151,7 @@
       ]
     },
     "C:\\Users\\codepara\\Desktop\\ChainPay-Africa\\evm-contracts\\contracts\\chainpay_airtime.sol": {
-      "lastModificationDate": 1741170796844,
+      "lastModificationDate": 1741256730375,
       "contentHash": "f05fc2954c842b991dcacbe69a4af28a",
       "sourceName": "evm-contracts/contracts/chainpay_airtime.sol",
       "solcConfig": {
@@ -411,6 +411,84 @@
       ],
       "artifacts": [
         "IERC165"
+      ]
+    },
+    "C:\\Users\\codepara\\Desktop\\ChainPay-Africa\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\extensions\\IERC20Permit.sol": {
+      "lastModificationDate": 1741168753035,
+      "contentHash": "94ec15baf0d5df863f45b8f351937ec7",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 1000
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "IERC20Permit"
+      ]
+    },
+    "C:\\Users\\codepara\\Desktop\\ChainPay-Africa\\evm-contracts\\contracts\\chainpay_airtime_permit.sol": {
+      "lastModificationDate": 1741256695151,
+      "contentHash": "888dfd15e23edb3b5c77573b089a2ac6",
+      "sourceName": "evm-contracts/contracts/chainpay_airtime_permit.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 1000
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/access/Ownable.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ChainPay_Airtime"
       ]
     }
   }

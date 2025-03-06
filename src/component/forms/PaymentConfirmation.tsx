@@ -72,19 +72,28 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         token: selectedTokenDetails.contractAddress
       });
 
-      await buyAirtime(
+      const txResult = await buyAirtime(
         phoneNumber,
         amount,
         carrier.enum_value,
         selectedTokenDetails.contractAddress
       );
 
-      console.log(data)
+      // Transaction was successful if we got here
+      console.log("Transaction submitted successfully");
+      setErrorMessage(null);
 
-    } catch (err) {
-      console.log(error, data)
+    } catch (err: any) {
       console.error("Error executing buyAirtime:", err);
-      setErrorMessage("Transaction failed. Please try again.");
+      
+      // Show user-friendly error messages
+      if (err.message.includes("rejected in wallet")) {
+        setErrorMessage("Transaction was cancelled in your wallet");
+      } else if (err.message.includes("Wallet not connected")) {
+        setErrorMessage("Please connect your wallet to continue");
+      } else {
+        setErrorMessage(err.message || "Transaction failed. Please try again.");
+      }
     }
   };
 

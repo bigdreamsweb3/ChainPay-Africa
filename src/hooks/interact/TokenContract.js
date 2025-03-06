@@ -99,8 +99,7 @@ export function useBuyAirtime() {
 
     const buyAirtime = async (phoneNumber, amount, network, tokenAddress) => {
         if (!walletClient) {
-            console.error("Wallet not connected.");
-            return;
+            throw new Error("Wallet not connected");
         }
 
         try {
@@ -111,9 +110,7 @@ export function useBuyAirtime() {
                 gas: BigInt(100000),                      // Fixed gas limit
             };
 
-            console.log(amount);
-
-            const result = writeContract({
+            const result = await writeContract({
                 abi,
                 address: CONTRACT_ADDRESS,
                 functionName: "buyAirtime",
@@ -121,9 +118,17 @@ export function useBuyAirtime() {
                 account: walletClient.account,
                 ...optimizedGasOptions
             });
+
             return result;
         } catch (err) {
+            // Handle specific wallet errors
+            if (err.code === 4001) {
+                throw new Error("Transaction was rejected in wallet");
+            }
+            
+            // Handle other errors
             console.error("Error buying airtime:", err);
+            throw new Error(err.message || "Failed to process transaction");
         }
     };
 

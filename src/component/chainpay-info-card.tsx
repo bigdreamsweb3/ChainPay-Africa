@@ -3,12 +3,13 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { appConfig } from "@/app-config"
-import { useIsTokenAccepted } from "@/hooks/interact/TokenContract";
+// import { useIsTokenAccepted } from "@/hooks/interact/TokenContract"
+
 
 
 export default function ChainPayInfoCard() {
-  const isTokenAccepted = useIsTokenAccepted();
-  console.log(isTokenAccepted);
+  // const isTokenAccepted = useIsTokenAccepted();
+  // console.log(isTokenAccepted);
 
 
   return (
