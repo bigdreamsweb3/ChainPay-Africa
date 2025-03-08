@@ -85,7 +85,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
     } catch (error: unknown) {
       console.error("Error executing buyAirtime:", error);
-      
+
       // Type guard for Error objects
       if (error instanceof Error) {
         // Show user-friendly error messages
@@ -107,15 +107,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center">
-        <button
-          type="button"
-          // onClick={prevStep} // You can pass this as a prop if needed
-          className="p-2 rounded-md bg-brand-secondary text-white hover:bg-green-200 transition-colors duration-200 flex items-center gap-2"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-      </div>
+
 
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-800">Confirm Payment</h3>

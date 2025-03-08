@@ -11,13 +11,11 @@ import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import PaymentReceipt from "../PaymentReceipt";
 import ServiceSelection from "./SelectionComponents/ServiceSelection";
-// import { useAccount } from "wagmi";
-
-import { appConfig } from "@/app-config";
 import { useAcceptedTokens, PaymentToken } from "@/utils/web3/config";
 import UnavailableServiceMessage from "./UnavailableServiceMessage";
 import PaymentTokenSelector from "./SelectionComponents/PaymentTokenSelector";
 import PaymentConfirmation from "./PaymentConfirmation";
+import { appConfig } from "@/app-config";
 
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
@@ -62,7 +60,7 @@ const BillPaymentForm: React.FC = () => {
     id: null,
     name: null,
     iconUrl: null,
-    enum_value: 0
+    enum_value: 0,
   });
   const [unavailableServiceMessage, setUnavailableServiceMessage] = useState<
     string | null
@@ -161,10 +159,6 @@ const BillPaymentForm: React.FC = () => {
     selectedService.charAt(0).toUpperCase() + selectedService.slice(1)
   );
 
-  // if (selectedTokenDetails) {
-  //   console.log("selectedTokenDetails", selectedTokenDetails);
-  // }
-
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-5">
@@ -175,159 +169,156 @@ const BillPaymentForm: React.FC = () => {
           setUnavailableServiceMessage={setUnavailableServiceMessage}
         />
 
-        <AnimatePresence>
-          {selectedService && (
-            <motion.div
-              className="w-full max-w-md mx-auto my-auto bg-gradient-to-br from-blue-50 to-blue-100 border border-gray-200/10 rounded-lg shadow-sm p-3"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3 }}
-            >
-              {unavailableServiceMessage ? (
-                <UnavailableServiceMessage serviceName={selectedService} />
-              ) : submitStatus === "success" && transactionDetails ? (
-                <PaymentReceipt
-                  transactionId={transactionDetails.transactionId}
-                  serviceType={selectedService}
-                  amount={watch("amount") || ""}
-                  paymentToken={
-                    selectedTokenDetails ? selectedTokenDetails.symbol : ""
-                  }
-                  recipientInfo={
-                    selectedService === "electricity"
-                      ? watch("meterNumber") || ""
-                      : watch("phoneNumber") || ""
-                  }
-                  timestamp={transactionDetails.timestamp}
-                  blockchainTxHash={transactionDetails.blockchainTxHash}
-                  blockNumber={transactionDetails.blockNumber}
-                  gasUsed={transactionDetails.gasUsed}
-                  walletAddress={transactionDetails.walletAddress}
-                  onReset={resetForm}
-                />
-              ) : (
-                <div className="m-2 mb-0 relative flex flex-col gap-3">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={step}
-                      initial={{ opacity: 0, x: 50 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6 min-h-[180px]"
+        <div className="w-full max-w-md bg-white rounded-lg shadow-sm p-6">
+
+          <AnimatePresence>
+            {selectedService && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3 }}
+              >
+                {unavailableServiceMessage ? (
+                  <UnavailableServiceMessage serviceName={selectedService} />
+                ) : submitStatus === "success" && transactionDetails ? (
+                  <PaymentReceipt
+                    transactionId={transactionDetails.transactionId}
+                    serviceType={selectedService}
+                    amount={watch("amount") || ""}
+                    paymentToken={
+                      selectedTokenDetails ? selectedTokenDetails.symbol : ""
+                    }
+                    recipientInfo={
+                      selectedService === "electricity"
+                        ? watch("meterNumber") || ""
+                        : watch("phoneNumber") || ""
+                    }
+                    timestamp={transactionDetails.timestamp}
+                    blockchainTxHash={transactionDetails.blockchainTxHash}
+                    blockNumber={transactionDetails.blockNumber}
+                    gasUsed={transactionDetails.gasUsed}
+                    walletAddress={transactionDetails.walletAddress}
+                    onReset={resetForm}
+                  />
+                ) : (
+                  <div className="space-y-6">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={step}
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -50 }}
+                        transition={{ duration: 0.3 }}
                       >
-                        {step === 1 && (
-                          <div className="space-y-6">
-                            {selectedService === "electricity" ? (
-                              <MeterNumberInput
-                                error={errors.meterNumber?.message}
-                              />
-                            ) : (
-                              <PhoneNumberInput
-                                error={errors.phoneNumber?.message}
-                                onCarrierChange={(carrier) =>
-                                  setCarrier(carrier)
-                                }
-                              />
-                            )}
-
-                            {/* Amount Input */}
-                            <div className="space-y-2">
-                              <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
-                                Amount
-                              </label>
-                              <input
-                                type="number"
-                                step="0.01"
-                                placeholder="Enter amount"
-                                {...register("amount")}
-                                className="w-full px-4 py-2 rounded-lg bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300"
-                              />
-                              {errors.amount && (
-                                <p className="mt-1 text-sm text-red-600">
-                                  {errors.amount.message}
-                                </p>
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                          {step === 1 && (
+                            <>
+                              {selectedService === "electricity" ? (
+                                <MeterNumberInput
+                                  error={errors.meterNumber?.message}
+                                />
+                              ) : (
+                                <PhoneNumberInput
+                                  error={errors.phoneNumber?.message}
+                                  onCarrierChange={(carrier) => setCarrier(carrier)}
+                                />
                               )}
-                            </div>
-                          </div>
-                        )}
 
-                        {step === 2 && (
-                          <PaymentTokenSelector
-                            paymentTokens={paymentTokens}
-                            selectedToken={selectedTokenId}
-                            setSelectedToken={setSelectedTokenId}
-                          />
-                        )}
+                              <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                  Amount
+                                </label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="Enter amount"
+                                  {...register("amount")}
+                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                                {errors.amount && (
+                                  <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <AlertCircle className="w-4 h-4" />
+                                    {errors.amount.message}
+                                  </p>
+                                )}
+                              </div>
 
-                        {step === 3 && (
-                          <PaymentConfirmation
-                            selectedService={selectedService}
-                            watch={watch}
-                            carrier={carrier}
-                            selectedTokenDetails={selectedTokenDetails}
-                          />
-                        )}
-                      </form>
-                    </motion.div>
-                  </AnimatePresence>
-
-                  {submitStatus !== "success" && isAvailable && (
-                    <>
-                      {step > 0 && step < steps.length - 1 && (
-                        <div className="pt-4 border-t border-gray-100 flex justify-between w-full max-w-md mx-auto">
-                          {step > 1 && (
-                            <button
-                              type="button"
-                              onClick={prevStep}
-                              disabled={isSubmitting}
-                              className="px-4 py-2 text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg"
-                            >
-                              Previous
-                            </button>
+                              <div className="pt-2">
+                                <PaymentTokenSelector
+                                  paymentTokens={paymentTokens}
+                                  selectedToken={selectedTokenId}
+                                  setSelectedToken={setSelectedTokenId}
+                                />
+                              </div>
+                            </>
                           )}
 
-                          <div className="flex items-center gap-2 w-full justify-end">
-                            <motion.button
-                              type="button"
-                              whileInView={{ scale: 1.02 }}
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={nextStep}
-                              className="relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-24 border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
-                            >
-                              Next
-                            </motion.button>
-                          </div>
-                        </div>
-                      )}
+                          {step === 2 && (
+                            <PaymentConfirmation
+                              selectedService={selectedService}
+                              watch={watch}
+                              carrier={carrier}
+                              selectedTokenDetails={selectedTokenDetails}
+                            />
+                          )}
+                        </form>
+                      </motion.div>
+                    </AnimatePresence>
 
-                      <AnimatePresence>
-                        {submitStatus === "error" && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 50 }}
-                            className="p-4 bg-red-50"
-                          >
-                            <div className="flex items-center text-red-700">
-                              <AlertCircle className="w-5 h-5 mr-2" />
-                              Payment failed. Please try again.
+                    {submitStatus !== "success" && isAvailable && (
+                      <>
+                        {step > 0 && step < steps.length - 2 && (
+                          <div className="flex justify-between pt-3 border-t border-gray-100">
+                            {step > 1 && (
+                              <button
+                                type="button"
+                                onClick={prevStep}
+                                disabled={isSubmitting}
+                                className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                              >
+                                Previous
+                              </button>
+                            )}
+
+                            <div className="flex items-center gap-2 w-full justify-end">
+                              <motion.button
+                                type="button"
+                                whileInView={{ scale: 1.02 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={nextStep}
+                                className="relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-24 border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
+                              >
+                                Next
+                              </motion.button>
                             </div>
-                          </motion.div>
+                          </div>
                         )}
-                      </AnimatePresence>
-                    </>
-                  )}
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+                        <AnimatePresence>
+                          {submitStatus === "error" && (
+                            <motion.div
+                              initial={{ opacity: 0, y: 50 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 50 }}
+                              className="p-4 mt-4 bg-red-50 rounded-lg"
+                            >
+                              <div className="flex items-center text-red-700">
+                                <AlertCircle className="w-5 h-5 mr-2" />
+                                Payment failed. Please try again.
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </FormProvider>
   );

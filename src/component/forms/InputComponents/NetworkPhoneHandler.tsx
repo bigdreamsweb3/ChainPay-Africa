@@ -6,13 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { networks, detectCarrier } from "@/utils/getPhoneCarrierInfo";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Phone,
-  ChevronDown,
-  AlertCircle,
-  Check,
-  ChevronRight,
-} from "lucide-react";
+import { Phone, ChevronDown, AlertCircle, Check, ChevronRight } from "lucide-react";
 
 interface PhoneNumberInputProps {
   error?: string;
@@ -157,10 +151,12 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   }, [setValue]);
 
   return (
-    <div className="relative space-y-2">
-      <label className="peer-disabled:cursor-not-allowed text-text-primary dark:text-slate-400 peer-disabled:opacity-70 pl-0 text-tertiary text-[13px] font-bold leading-[16.25px] sm:pl-[15px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px]">
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700">
         Phone Number
       </label>
+
+      {/* Network Selection Button */}
       <div className="flex items-center gap-2">
         {/* Network Selection Button */}
         <div
@@ -196,8 +192,13 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
               </div>
               {isDropdownOpen ? (
                 <ChevronDown className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-lg transition-transform duration-300 transform scale-110" />
+
               ) : (
-                <ChevronRight className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-2xl transition-transform duration-300 transform scale-100" />
+                <ChevronRight className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-2xl transition-transform duration-300 transform scale-100"
+
+                  style={{
+                    color: selectedNetwork.color,
+                  }} />
               )}
             </div>
           </motion.button>
@@ -239,16 +240,17 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           </AnimatePresence>
         </div>
 
+
         {/* Phone Number Input */}
-        <motion.div className="flex-1 relative">
+        <div className="flex-1 relative">
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="tel"
             placeholder="Enter phone number"
             {...register("phoneNumber", { validate: validatePhoneNumber })}
-            className="w-full px-3 py-2 pl-10 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-gray-50"
+            className="w-full px-3 py-2 pl-10 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white"
           />
-        </motion.div>
+        </div>
       </div>
 
       {/* Error Message */}

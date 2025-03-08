@@ -17,7 +17,7 @@ export function Layout({ children }: LayoutProps) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-gray-50 ">
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           {/* Header */}

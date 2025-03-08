@@ -49,9 +49,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-3">
+          <div className="flex flex-wrap gap-3">
             {paymentTokens.map((token: PaymentToken) => (
-              <div key={token.id} className="w-full">
+              <div key={token.id} className="w-24">
                 <input
                   type="radio"
                   id={token.id}
@@ -62,14 +62,13 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 />
                 <label
                   htmlFor={token.id}
-                  className={`block w-full rounded-xl shadow-sm transition-all duration-200 ease-in-out cursor-pointer ${
-                    selectedToken === token.id
-                      ? "ring-2 ring-blue-500 bg-blue-50"
-                      : "bg-white hover:bg-gray-50"
-                  }`}
+                  className={`block w-full rounded-xl shadow-sm transition-all duration-200 ease-in-out cursor-pointer ${selectedToken === token.id
+                    ? "ring-2 ring-blue-500 bg-blue-50"
+                    : "bg-white hover:bg-gray-50"
+                    }`}
                 >
-                  <div className="p-2 items-start">
-                    <div className="flex items-center gap-3">
+                  <div className="p-2 items-start w-24">
+                    <div className="flex flex-row items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
                         <Image
                           src={imageSources[token.id]}
@@ -87,9 +86,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                       </div>
                       <div className="flex flex-col items-start">
                         <span className="text-sm font-bold text-gray-800">
-                          {token.name}
-                        </span>
-                        <span className="text-xs text-gray-500">
                           {token.symbol}
                         </span>
                       </div>

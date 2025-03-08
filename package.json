@@ -3,11 +3,11 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "dev": "next dev --turbopack",
+        "dev": "next dev",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "init-project": "npm init -y",
+        "initialize-project": "npm init -y",
         "install-hardhat": "npm install --save-dev hardhat",
         "install-hardhat-toolbox": "npm install --save-dev @nomicfoundation/hardhat-toolbox",
         "install-openzeppelin": "npm install @openzeppelin/contracts",

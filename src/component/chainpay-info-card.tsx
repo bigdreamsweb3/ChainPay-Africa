@@ -26,7 +26,7 @@ export default function ChainPayInfoCard() {
         {/* Logo & Title */}
         <div className="flex items-center justify-between z-10">
           <div className="flex items-center gap-2">
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.3 }}
@@ -38,7 +38,19 @@ export default function ChainPayInfoCard() {
                 height={24}
                 className="rounded-full border border-white/10"
               />
+
+
+            </motion.div> */}
+
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+              className="z-10"
+            >
+              <h2 className="text-base font-semibold text-white">Fast, Reliable Payments</h2>
             </motion.div>
+
           </div>
 
           {/* Animated Badge */}
@@ -59,7 +71,7 @@ export default function ChainPayInfoCard() {
           transition={{ delay: 0.4, duration: 0.3 }}
           className="z-10"
         >
-          <h2 className="text-base font-semibold text-white">Fast, Reliable Payments</h2>
+          {/* <h2 className="text-base font-semibold text-white">Fast, Reliable Payments</h2> */}
           <p className="text-xs text-gray-300">Seamless transactions across Africa, anytime.</p>
         </motion.div>
 
