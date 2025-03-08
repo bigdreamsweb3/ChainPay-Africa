@@ -34,7 +34,9 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 }) => {
   useEffect(() => {
     const defaultService = services[0];
-    const isAvailable = appConfig.availableServices.includes(defaultService.name);
+    const isAvailable = appConfig.availableServices.includes(
+      defaultService.name
+    );
 
     if (isAvailable) {
       setStep(1);
@@ -47,15 +49,17 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
   return (
     <motion.div
-      className="w-full max-w-md mx-auto flex items-center justify-center mb-4"
+      className="w-full max-w-md mx-auto my-auto flex items-center justify-start mb-1 gap-2"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 500 }}
     >
-      <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm p-2">
-        <div className="grid grid-cols-3 gap-2">
+      <div className="p-1 bg-white border border-brand-primary/10 rounded-lg shadow-sm w-5/6">
+        <div className="w-full grid grid-cols-3 items-center h-fit justify-start gap-1">
           {services.map((service) => {
-            const isAvailable = appConfig.availableServices.includes(service.name);
+            const isAvailable = appConfig.availableServices.includes(
+              service.name
+            );
 
             return (
               <Controller
@@ -81,15 +85,29 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                         }
                       }}
                       aria-label={`Select ${service.name}`}
-                      className={`w-full py-2 rounded-lg text-sm font-medium transition-all duration-200 ease-in-out ${
+                      className={`relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-full ${
                         field.value === service.id
-                          ? "bg-blue-600 text-white shadow-md"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          ? "border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
+                          : "hover:border-brand-primary text-gray-700 hover:text-blue-700"
                       }`}
+                      onMouseDown={(e) =>
+                        e.currentTarget.classList.add("active")
+                      }
+                      onMouseUp={(e) =>
+                        e.currentTarget.classList.remove("active")
+                      }
                     >
-                      <span className="text-center whitespace-nowrap">
-                        {service.name}
-                      </span>
+                      <div className="flex items-center justify-center gap-1 px-4 w-full">
+                        <span
+                          className={`text-sm md:text-base font-bold ${
+                            field.value === service.id
+                              ? "text-white"
+                              : "text-brand-border-brand-primary"
+                          } text-center whitespace-nowrap`}
+                        >
+                          {service.name}
+                        </span>
+                      </div>
                     </button>
                   </motion.div>
                 )}
@@ -98,6 +116,8 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
           })}
         </div>
       </div>
+
+      <div className="w-1/6"></div>
     </motion.div>
   );
 };

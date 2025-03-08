@@ -1,6 +1,6 @@
 import { useBuyAirtime } from "@/hooks/interact/TokenContract";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 import React, { useState } from "react";
 
 interface FormData {
