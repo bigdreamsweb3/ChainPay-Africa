@@ -40,7 +40,7 @@ export const crossfiTestnet = defineChain({
     XUSD: {
       id: "0x0000000000000000000000000000000000000002",
       name: "XUSD",
-      symbol: "xUSD",
+      symbol: "XUSD",
       decimals: 18,
       contractAddress: "0x12e048d4f26f54c0625ef34fabd365e4f925f2ff",
       image: "https://crossfi.org/wp-content/uploads/2024/12/xusd-2.svg",

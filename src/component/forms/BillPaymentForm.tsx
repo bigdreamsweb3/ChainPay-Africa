@@ -6,7 +6,8 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { useAccount, useConnect } from "wagmi";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import ServiceSelection from "./SelectionComponents/ServiceSelection";
@@ -24,9 +25,9 @@ const billPaymentSchema = z.object({
     .string()
     .min(1, "Amount is required")
     .refine(
-      (val) => !isNaN(Number.parseFloat(val)) && Number.parseFloat(val) > 0,
+      (val) => !isNaN(Number.parseFloat(val)) && Number.parseFloat(val) >= 50, // Ensure amount is at least 50
       {
-        message: "Amount must be a positive number",
+        message: "Minimum amount is 50 credit units",
       }
     ),
   paymentToken: z.string(),
@@ -59,6 +60,9 @@ const BillPaymentForm: React.FC = () => {
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
   const [isPaymentConfirmationOpen, setIsPaymentConfirmationOpen] = useState(false);
 
+  const { isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
     defaultValues: {
@@ -71,11 +75,11 @@ const BillPaymentForm: React.FC = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors },
-    reset,
+    formState: { errors, isValid },
   } = methods;
 
   const selectedService = watch("serviceType");
+  const amount = watch("amount");
 
   const paymentTokens: PaymentToken[] = useAcceptedTokens();
   const selectedTokenDetails = paymentTokens.find(
@@ -109,8 +113,6 @@ const BillPaymentForm: React.FC = () => {
       // Simulate API call and blockchain transaction
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setSubmitStatus("success");
-      // Reset the form after successful submission
-      reset();
     } catch (error) {
       console.error(error);
       setSubmitStatus("error");
@@ -118,7 +120,6 @@ const BillPaymentForm: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
 
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
@@ -138,6 +139,16 @@ const BillPaymentForm: React.FC = () => {
 
   // Close the payment confirmation modal
   const closePaymentConfirmation = () => setIsPaymentConfirmationOpen(false);
+
+  // Handle wallet connection
+  const connectWallet = () => {
+    if (connectors.length > 0) {
+      connect({ connector: connectors[0] });
+    }
+  };
+
+  // Check if the amount is valid (at least 50)
+  const isAmountValid = !isNaN(Number(amount)) && Number(amount) >= 50;
 
   return (
     <FormProvider {...methods}>
@@ -188,7 +199,10 @@ const BillPaymentForm: React.FC = () => {
                                 <PaymentTokenSelector
                                   paymentTokens={paymentTokens}
                                   selectedToken={selectedTokenId}
-                                  setSelectedToken={setSelectedTokenId}
+                                  setSelectedToken={(tokenId) => {
+                                    setSelectedTokenId(tokenId);
+                                    setValue("paymentToken", tokenId);
+                                  }}
                                 />
                               </div>
                             </>
@@ -196,10 +210,21 @@ const BillPaymentForm: React.FC = () => {
 
                           <button
                             type="button"
-                            onClick={openPaymentConfirmation}
-                            className="w-full h-[40px] rounded-md bg-blue-600 text-white font-semibold transition duration-200 hover:bg-blue-700"
+                            onClick={isConnected ? openPaymentConfirmation : connectWallet}
+                            disabled={
+                              isConnected
+                                ? !isValid || !isAmountValid || isSubmitting // Disable if amount is invalid
+                                : false
+                            }
+                            className="w-full h-[40px] rounded-md bg-blue-600 text-white font-semibold transition duration-200 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                           >
-                            Pay
+                            {isSubmitting ? (
+                              <Loader2 className="w-5 h-5 mx-auto animate-spin" />
+                            ) : isConnected ? (
+                              "Pay"
+                            ) : (
+                              "Connect Wallet"
+                            )}
                           </button>
                         </form>
                       </motion.div>

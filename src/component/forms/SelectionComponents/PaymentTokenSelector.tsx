@@ -26,13 +26,18 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   selectedToken,
   setSelectedToken,
 }) => {
-  const { register, formState: { errors } } = useFormContext();
+  const { register, formState: { errors }, setValue } = useFormContext(); // Add setValue
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isConnected } = useAccount();
 
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
   );
+
+  const handleTokenSelect = (tokenId: string) => {
+    setSelectedToken(tokenId); // Update selected token
+    setIsModalOpen(false); // Close modal
+  };
 
   return (
     <div className="space-y-3 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
@@ -44,22 +49,25 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           <input
             type="number"
             step="1"
-            min="50"
+            min="50" // Enforce minimum value of 50
             placeholder="Enter amount (min. 50)"
             {...register("amount", {
+              required: "Amount is required",
               min: {
                 value: 50,
-                message: "Minimum amount is 50 credit units"
-              }
+                message: "Minimum amount is 50 credit units",
+              },
+              validate: (value) =>
+                !isNaN(Number(value)) || "Amount must be a number", // Ensure the value is a number
             })}
-            className="w-full h-10 px-3 text-sm font-medium rounded-lg transition-all duration-200 ease-in-out
+            className="w-full h-10 px-3 pr-10 text-sm font-medium rounded-lg transition-all duration-200 ease-in-out
               border border-gray-300 
               hover:border-blue-500 hover:shadow-sm
               focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
               bg-white placeholder:text-gray-400
               [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
             Credit Units
           </div>
         </div>
@@ -148,10 +156,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 {paymentTokens.map((token: PaymentToken) => (
                   <div
                     key={token.id}
-                    onClick={() => {
-                      setSelectedToken(token.id);
-                      setIsModalOpen(false);
-                    }}
+                    onClick={() => handleTokenSelect(token.id)} // Use handleTokenSelect
                     className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all duration-200 ease-in-out 
                       ${selectedToken === token.id
                         ? "bg-gradient-to-r from-blue-100 to-blue-200 border border-blue-500"
