@@ -119,8 +119,7 @@ const BillPaymentForm: React.FC = () => {
     }
   };
 
-  const nextStep = () =>
-    setStep((prev) => Math.min(prev + 1, steps.length - 1));
+
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   useEffect(() => {
