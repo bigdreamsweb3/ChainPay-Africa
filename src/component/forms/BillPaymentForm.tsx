@@ -108,6 +108,8 @@ const BillPaymentForm: React.FC = () => {
       // Simulate API call and blockchain transaction
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setSubmitStatus("success");
+      // Reset the form after successful submission
+      reset();
     } catch (error) {
       console.error(error);
       setSubmitStatus("error");
