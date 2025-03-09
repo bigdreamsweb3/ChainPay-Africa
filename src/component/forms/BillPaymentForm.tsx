@@ -141,7 +141,7 @@ const BillPaymentForm: React.FC = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-5">
+      <div className="flex flex-col items-center justify-center gap-2 sm:gap-3">
         <ServiceSelection
           control={methods.control}
           selectedService={selectedService}
@@ -161,7 +161,7 @@ const BillPaymentForm: React.FC = () => {
                 {unavailableServiceMessage ? (
                   <UnavailableServiceMessage serviceName={selectedService} />
                 ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={step}
@@ -170,7 +170,7 @@ const BillPaymentForm: React.FC = () => {
                         exit={{ opacity: 0, x: -50 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                           {step === 1 && (
                             <>
                               {selectedService === "electricity" ? (
@@ -184,7 +184,7 @@ const BillPaymentForm: React.FC = () => {
                                 />
                               )}
 
-                              <div className="space-y-4">
+                              <div className="space-y-2">
                                 <PaymentTokenSelector
                                   paymentTokens={paymentTokens}
                                   selectedToken={selectedTokenId}
@@ -194,17 +194,13 @@ const BillPaymentForm: React.FC = () => {
                             </>
                           )}
 
-                          
-                            <button
-                              type="button"
-                              onClick={openPaymentConfirmation}
-                              className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-[38px] rounded-[13px] sm:h-[47px] sm:rounded-[15px] w-full bg-gradient-to-r from-[#0099FF] to-[#0066FF]"
-                            >
-                              <span className="text-[13px] font-bold leading-[16.25px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px] text-white">
-                                Pay
-                              </span>
-                            </button>
-                         
+                          <button
+                            type="button"
+                            onClick={openPaymentConfirmation}
+                            className="w-full h-[40px] rounded-md bg-blue-600 text-white font-semibold transition duration-200 hover:bg-blue-700"
+                          >
+                            Pay
+                          </button>
                         </form>
                       </motion.div>
                     </AnimatePresence>
@@ -212,13 +208,13 @@ const BillPaymentForm: React.FC = () => {
                     {submitStatus !== "success" && isAvailable && (
                       <>
                         {step > 0 && step < steps.length - 2 && (
-                          <div className="flex flex-col gap-4 pt-3 border-t border-gray-100">
+                          <div className="flex flex-col gap-2 pt-2 border-t border-gray-200">
                             {step > 1 && (
                               <button
                                 type="button"
                                 onClick={prevStep}
                                 disabled={isSubmitting}
-                                className="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+                                className="px-3 py-2 text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
                               >
                                 Previous
                               </button>
@@ -232,10 +228,10 @@ const BillPaymentForm: React.FC = () => {
                               initial={{ opacity: 0, y: 50 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: 50 }}
-                              className="p-4 mt-4 bg-red-50 rounded-lg"
+                              className="p-3 mt-2 bg-red-50 rounded-md"
                             >
                               <div className="flex items-center text-red-700">
-                                <AlertCircle className="w-5 h-5 mr-2" />
+                                <AlertCircle className="w-4 h-4 mr-2" />
                                 Payment failed. Please try again.
                               </div>
                             </motion.div>
@@ -250,7 +246,6 @@ const BillPaymentForm: React.FC = () => {
           </AnimatePresence>
         </div>
 
-        {/* Render the PaymentConfirmation modal conditionally */}
         {isPaymentConfirmationOpen && (
           <PaymentConfirmation
             selectedService={selectedService}

@@ -54,7 +54,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: "spring", stiffness: 500 }}
     >
-      <div className="p-1 bg-white border border-brand-primary/10 rounded-lg shadow-sm w-5/6">
+      <div className="p-1 bg-white border border-gray-200 rounded-lg shadow-sm w-5/6">
         <div className="w-full grid grid-cols-3 items-center h-fit justify-start gap-1">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
@@ -85,22 +85,16 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                         }
                       }}
                       aria-label={`Select ${service.name}`}
-                      className={`relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-full min-w-fit ${field.value === service.id
-                        ? "border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
-                        : "hover:border-brand-primary text-gray-700 hover:text-blue-700"
+                      className={`relative gap-2 py-2 rounded-lg text-sm transition-all duration-200 ease-in-out flex flex-col items-center w-full min-w-fit ${field.value === service.id
+                        ? "bg-blue-500 text-white shadow-md"
+                        : "hover:bg-gray-100 text-gray-700"
                         }`}
-                      onMouseDown={(e) =>
-                        e.currentTarget.classList.add("active")
-                      }
-                      onMouseUp={(e) =>
-                        e.currentTarget.classList.remove("active")
-                      }
                     >
                       <div className="flex items-center justify-center">
                         <span
-                          className={`text-sm md:text-base font-bold mx-4 ${field.value === service.id
+                          className={`text-sm font-medium mx-4 ${field.value === service.id
                             ? "text-white"
-                            : "text-brand-border-brand-primary"
+                            : "text-gray-700"
                             } text-center whitespace-nowrap`}
                         >
                           {service.name}

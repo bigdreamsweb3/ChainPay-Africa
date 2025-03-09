@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
-import { useAccount } from "wagmi"; // Import useAccount from wagmi
-import { AlertCircle } from "lucide-react"; // Import AlertCircle for error handling
+import { useAccount } from "wagmi";
+import { AlertCircle } from "lucide-react";
 
 interface PaymentToken {
   id: string;
@@ -27,21 +27,19 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   setSelectedToken,
 }) => {
   const { register, formState: { errors } } = useFormContext();
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-  const { isConnected } = useAccount(); // Check if wallet is connected
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isConnected } = useAccount();
 
-  // Find the selected token object
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
   );
 
   return (
-    <div className="space-y-4 bg-white rounded-[20px] p-6 shadow-sm border border-gray-100">
-      <label className="text-tertiary text-[13px] font-bold leading-[16.25px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px] text-gray-700">
+    <div className="space-y-3 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+      <label className="text-sm font-medium text-gray-700">
         Amount
       </label>
-      <div className="flex items-center gap-3">
-        {/* Amount Input */}
+      <div className="flex items-center gap-2">
         <div className="relative flex-1">
           <input
             type="number"
@@ -54,60 +52,58 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 message: "Minimum amount is 50 credit units"
               }
             })}
-            className="w-full h-[47px] px-4 text-[15px] font-medium rounded-[15px] transition-all duration-300 ease-in-out
-              border border-gray-200 
-              hover:border-[#0099FF80] hover:shadow-sm
-              focus:outline-none focus:ring-2 focus:ring-[#0099FF] focus:border-[#0099FF]
+            className="w-full h-10 px-3 text-sm font-medium rounded-lg transition-all duration-200 ease-in-out
+              border border-gray-300 
+              hover:border-blue-500 hover:shadow-sm
+              focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
               bg-white placeholder:text-gray-400
               [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           />
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
             Credit Units
           </div>
         </div>
 
-        {/* Token Selection Button */}
         <button
           onClick={() => setIsModalOpen(true)}
           disabled={!isConnected}
-          className={`inline-flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 
-            h-[47px] px-4 rounded-[15px] border border-gray-200
+          className={`inline-flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-200 
+            h-10 px-3 rounded-lg border border-gray-300
             ${isConnected
-              ? "hover:border-[#0099FF80] hover:shadow-md hover:scale-[1.02] active:scale-[0.98] bg-white"
-              : "cursor-not-allowed bg-gray-50 opacity-50"
+              ? "hover:border-blue-500 hover:shadow-md hover:scale-[1.02] active:scale-[0.98] bg-white"
+              : "cursor-not-allowed bg-gray-100 opacity-50"
             }
-            focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0099FF] focus-visible:border-[#0099FF]`}
+            focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-blue-500 focus-visible:border-blue-500`}
         >
           {isConnected ? (
             selectedTokenData ? (
               <>
-                <div className="w-7 h-7 rounded-full bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] flex items-center justify-center overflow-hidden shadow-sm border border-[#0099FF20]">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center overflow-hidden shadow-sm border border-blue-200">
                   <Image
                     src={selectedTokenData.image}
                     alt={selectedTokenData.name}
                     width={24}
                     height={24}
-                    className="w-6 h-6 rounded-full object-cover"
+                    className="w-5 h-5 rounded-full object-cover"
                   />
                 </div>
-                <span className="text-[15px] font-semibold text-gray-900">
+                <span className="text-sm font-medium text-gray-900">
                   {selectedTokenData.symbol}
                 </span>
               </>
             ) : (
-              <span className="text-[15px] font-semibold text-gray-500">
+              <span className="text-sm font-medium text-gray-500">
                 Select token
               </span>
             )
           ) : (
-            <span className="text-[15px] font-semibold text-gray-500">
+            <span className="text-sm font-medium text-gray-500">
               Connect Wallet
             </span>
           )}
         </button>
       </div>
 
-      {/* Error Message */}
       {errors.amount && (
         <div className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">
           <p className="text-sm text-red-600 flex items-center gap-2">
@@ -117,18 +113,17 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
         </div>
       )}
 
-      {/* Token Selection Modal */}
       {isModalOpen && isConnected && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-[20px] w-full max-w-md shadow-xl border border-gray-100 overflow-hidden">
-            <div className="p-6 border-b border-gray-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-lg w-full max-w-md shadow-lg border border-gray-200 overflow-hidden">
+            <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
-                <h2 className="text-[15px] font-semibold text-gray-900">
+                <h2 className="text-sm font-semibold text-gray-900">
                   Select a Token
                 </h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  className="p-1 rounded-full hover:bg-gray-100 transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -148,9 +143,8 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
               </div>
             </div>
 
-            {/* Token List */}
-            <div className="p-3 max-h-[400px] overflow-y-auto">
-              <div className="space-y-2">
+            <div className="p-2 max-h-[400px] overflow-y-auto">
+              <div className="space-y-1">
                 {paymentTokens.map((token: PaymentToken) => (
                   <div
                     key={token.id}
@@ -158,26 +152,26 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                       setSelectedToken(token.id);
                       setIsModalOpen(false);
                     }}
-                    className={`flex items-center gap-3 p-3 rounded-[15px] cursor-pointer transition-all duration-300 ease-in-out 
+                    className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all duration-200 ease-in-out 
                       ${selectedToken === token.id
-                        ? "bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] border border-[#0099FF]"
-                        : "hover:bg-gradient-to-r hover:from-[#0099FF05] hover:to-[#0066FF05] hover:shadow-sm"
+                        ? "bg-gradient-to-r from-blue-100 to-blue-200 border border-blue-500"
+                        : "hover:bg-gradient-to-r hover:from-blue-50 hover:to-blue-100 hover:shadow-sm"
                       }`}
                   >
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] flex items-center justify-center overflow-hidden border border-[#0099FF20]">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center overflow-hidden border border-blue-200">
                       <Image
                         src={token.image}
                         alt={token.name}
                         width={32}
                         height={32}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-7 h-7 rounded-full object-cover"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[15px] font-semibold text-gray-900">
+                      <span className="text-sm font-medium text-gray-900">
                         {token.symbol}
                       </span>
-                      <span className="text-sm text-gray-500">{token.name}</span>
+                      <span className="text-xs text-gray-500">{token.name}</span>
                     </div>
                   </div>
                 ))}
