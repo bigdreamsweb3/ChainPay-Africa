@@ -57,6 +57,7 @@ const BillPaymentForm: React.FC = () => {
     string | null
   >(null);
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
+  const [isPaymentConfirmationOpen, setIsPaymentConfirmationOpen] = useState(false);
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
@@ -133,6 +134,12 @@ const BillPaymentForm: React.FC = () => {
     selectedService.charAt(0).toUpperCase() + selectedService.slice(1)
   );
 
+  // Open the payment confirmation modal
+  const openPaymentConfirmation = () => setIsPaymentConfirmationOpen(true);
+
+  // Close the payment confirmation modal
+  const closePaymentConfirmation = () => setIsPaymentConfirmationOpen(false);
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-5">
@@ -188,15 +195,17 @@ const BillPaymentForm: React.FC = () => {
                             </>
                           )}
 
-                          {step === 2 && (
-                            <PaymentConfirmation
-                              selectedService={selectedService}
-                              watch={watch}
-                              carrier={carrier}
-                              selectedTokenDetails={selectedTokenDetails}
-                              onClose={() => setStep(1)}
-                            />
-                          )}
+                          
+                            <button
+                              type="button"
+                              onClick={openPaymentConfirmation}
+                              className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-[38px] rounded-[13px] sm:h-[47px] sm:rounded-[15px] w-full bg-gradient-to-r from-[#0099FF] to-[#0066FF]"
+                            >
+                              <span className="text-[13px] font-bold leading-[16.25px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px] text-white">
+                                Pay
+                              </span>
+                            </button>
+                         
                         </form>
                       </motion.div>
                     </AnimatePresence>
@@ -215,19 +224,6 @@ const BillPaymentForm: React.FC = () => {
                                 Previous
                               </button>
                             )}
-
-                            <motion.button
-                              type="button"
-                              whileInView={{ scale: 1.02 }}
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.98 }}
-                              onClick={nextStep}
-                              className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-[38px] rounded-[13px] sm:h-[47px] sm:rounded-[15px] w-full bg-gradient-to-r from-[#0099FF] to-[#0066FF]"
-                            >
-                              <span className="text-[13px] font-bold leading-[16.25px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px] text-white">
-                                Pay
-                              </span>
-                            </motion.button>
                           </div>
                         )}
 
@@ -254,6 +250,17 @@ const BillPaymentForm: React.FC = () => {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Render the PaymentConfirmation modal conditionally */}
+        {isPaymentConfirmationOpen && (
+          <PaymentConfirmation
+            selectedService={selectedService}
+            watch={watch}
+            carrier={carrier}
+            selectedTokenDetails={selectedTokenDetails}
+            onClose={closePaymentConfirmation}
+          />
+        )}
       </div>
     </FormProvider>
   );
