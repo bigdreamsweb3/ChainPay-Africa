@@ -27,7 +27,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   setSelectedToken,
 }) => {
   const { register, formState: { errors } } = useFormContext();
-  const defaultLogo = "/images/logo.jpg"; // Path to your local fallback logo
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
   const { isConnected } = useAccount(); // Check if wallet is connected
 

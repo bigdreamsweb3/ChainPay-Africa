@@ -6,7 +6,7 @@ import { wagmiConfig } from "@/utils/web3/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import NetworkSwitchNotification from "../web3/network-switch-notification";
-import { appConfig } from "@/app-config";
+// import { appConfig } from "@/app-config";
 
 interface LayoutProps {
   children: React.ReactNode;
