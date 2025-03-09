@@ -15,6 +15,7 @@ export default function Home() {
       <div className="flex flex-col gap-2.5 sm:gap-5">
         <ChainPayInfoCard />
         <BillPaymentForm />
+
       </div>
     </>
   );

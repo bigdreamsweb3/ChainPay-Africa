@@ -32,14 +32,14 @@ export function Layout({ children }: LayoutProps) {
           </main>
 
           {/* Footer */}
-          <footer className="border-t bg-white">
+          {/* <footer className="border-t bg-white">
             <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
               <p className="text-sm text-gray-600 text-center">
                 © {new Date().getFullYear()} {appConfig.appFullName}. All rights
                 reserved.
               </p>
             </div>
-          </footer>
+          </footer> */}
         </QueryClientProvider>
       </WagmiProvider>
     </div>

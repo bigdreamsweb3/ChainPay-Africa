@@ -151,54 +151,45 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   }, [setValue]);
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-gray-700">
+    <div className="space-y-4 bg-white rounded-[20px] p-6 shadow-sm border border-gray-100">
+      <label className="text-tertiary text-[13px] font-bold leading-[16.25px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px] text-gray-700">
         Phone Number
       </label>
 
-      {/* Network Selection Button */}
-      <div className="flex items-center gap-2">
+      {/* Network Selection and Phone Input Container */}
+      <div className="flex items-center gap-3">
         {/* Network Selection Button */}
         <div
-          className={`relative rounded-lg shadow-sm hover:shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
+          className="relative"
           ref={dropdownRef}
-          style={{
-            backgroundColor: selectedNetwork.color + "60",
-            border: "1px solid " + selectedNetwork.color + "80",
-          }}
         >
           <motion.button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             aria-label="Select network"
             aria-expanded={isDropdownOpen}
-            className="flex items-center inset-0 rounded-lg bg-gradient-to-r from-brand-primary/40 via-brand-primary/70 to-brand-accent border-gray-300"
-            whileInView={{ scale: 1.02 }}
-            whileHover={{ scale: 1.05 }}
+            className={`inline-flex items-center justify-center gap-2 whitespace-nowrap transition-all duration-300 
+              h-[47px] px-4 rounded-[15px] border border-gray-200
+              hover:border-[#0099FF80] hover:shadow-md hover:scale-[1.02] active:scale-[0.98]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0099FF] focus-visible:border-[#0099FF]
+              bg-gradient-to-r from-[#0099FF05] to-[#0066FF05]`}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <div className="flex items-center gap-2 py-1.5 px-3">
-              <div
-                className="w-6 h-6 rounded-full overflow-hidden shadow-md"
-                style={{ border: "1px solid " + selectedNetwork.color + "80" }}
-              >
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] flex items-center justify-center overflow-hidden shadow-sm border border-[#0099FF20]">
                 <Image
                   src={selectedNetwork.iconUrl || "/placeholder.svg"}
                   alt={selectedNetwork.name}
                   width={24}
                   height={24}
-                  className="w-full h-full object-cover"
+                  className="w-6 h-6 rounded-full object-cover"
                 />
               </div>
               {isDropdownOpen ? (
-                <ChevronDown className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-lg transition-transform duration-300 transform scale-110" />
-
+                <ChevronDown className="w-4 h-4 text-[#0099FF]" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-brand-secondary bg-background-dark/30 rounded-full shadow-2xl transition-transform duration-300 transform scale-100"
-
-                  style={{
-                    color: selectedNetwork.color,
-                  }} />
+                <ChevronRight className="w-4 h-4 text-[#0099FF]" />
               )}
             </div>
           </motion.button>
@@ -210,45 +201,51 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
-                className="absolute z-10 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+                className="absolute z-50 mt-2 w-56 bg-white rounded-[15px] shadow-xl border border-gray-100 overflow-hidden"
               >
-                {networks.map((network) => (
-                  <motion.div
-                    key={network.id}
-                    onClick={() => handleNetworkSelect(network)}
-                    className="flex items-center px-3 py-2 cursor-pointer transition-colors hover:bg-gray-50"
-                  >
-                    <div
-                      className="w-6 h-6 rounded-full overflow-hidden border border-gray-200"
-                      style={{ backgroundColor: network.color }}
+                <div className="p-2">
+                  {networks.map((network) => (
+                    <motion.div
+                      key={network.id}
+                      onClick={() => handleNetworkSelect(network)}
+                      className={`flex items-center gap-3 p-3 rounded-[13px] cursor-pointer transition-all duration-300 ease-in-out
+                        ${selectedNetwork.id === network.id
+                          ? "bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] border border-[#0099FF]"
+                          : "hover:bg-gradient-to-r hover:from-[#0099FF05] hover:to-[#0066FF05] hover:shadow-sm"
+                        }`}
                     >
-                      <Image
-                        src={network.iconUrl || "/placeholder.svg"}
-                        alt={network.name}
-                        width={24}
-                        height={24}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <span className="ml-2 text-sm font-medium text-gray-700">
-                      {network.name}
-                    </span>
-                  </motion.div>
-                ))}
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] flex items-center justify-center overflow-hidden border border-[#0099FF20]">
+                        <Image
+                          src={network.iconUrl || "/placeholder.svg"}
+                          alt={network.name}
+                          width={24}
+                          height={24}
+                          className="w-6 h-6 rounded-full object-cover"
+                        />
+                      </div>
+                      <span className="text-[15px] font-semibold text-gray-900">
+                        {network.name}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
-
         {/* Phone Number Input */}
         <div className="flex-1 relative">
-          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="tel"
             placeholder="Enter phone number"
             {...register("phoneNumber", { validate: validatePhoneNumber })}
-            className="w-full px-3 py-2 pl-10 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 bg-white"
+            className="w-full h-[47px] pl-10 pr-4 text-[15px] font-medium rounded-[15px] transition-all duration-300 ease-in-out
+              border border-gray-200 
+              hover:border-[#0099FF80] hover:shadow-sm
+              focus:outline-none focus:ring-2 focus:ring-[#0099FF] focus:border-[#0099FF]
+              bg-white placeholder:text-gray-400"
           />
         </div>
       </div>
@@ -256,15 +253,17 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
       {/* Error Message */}
       <AnimatePresence>
         {error && (
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            className="text-xs text-red-600 flex items-center mt-1"
+            className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100"
           >
-            <AlertCircle className="w-3 h-3 mr-1" />
-            {error}
-          </motion.p>
+            <p className="text-sm text-red-600 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4" />
+              {error}
+            </p>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -275,12 +274,14 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="text-xs text-green-600 flex items-center mt-1"
+            className="mt-2 px-3 py-2 rounded-lg bg-green-50 border border-green-100"
           >
-            <Check className="w-3 h-3 mr-1" />
-            <span>
-              Number detected: <strong>{carrier.name}</strong>
-            </span>
+            <p className="text-sm text-green-600 flex items-center gap-2">
+              <Check className="w-4 h-4" />
+              <span>
+                Number detected: <strong>{carrier.name}</strong>
+              </span>
+            </p>
           </motion.div>
         )}
       </AnimatePresence>

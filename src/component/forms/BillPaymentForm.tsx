@@ -9,7 +9,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
-import PaymentReceipt from "../PaymentReceipt";
 import ServiceSelection from "./SelectionComponents/ServiceSelection";
 import { useAcceptedTokens, PaymentToken } from "@/utils/web3/config";
 import UnavailableServiceMessage from "./UnavailableServiceMessage";
@@ -43,14 +42,6 @@ const BillPaymentForm: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "processing" | "success" | "error"
   >("idle");
-  const [transactionDetails, setTransactionDetails] = useState<{
-    transactionId: string;
-    timestamp: string;
-    blockchainTxHash: string;
-    blockNumber: number;
-    gasUsed: string;
-    walletAddress: string;
-  } | null>(null);
   const [carrier, setCarrier] = useState<{
     id: string | null;
     name: string | null;
@@ -118,17 +109,6 @@ const BillPaymentForm: React.FC = () => {
       // Simulate API call and blockchain transaction
       await new Promise((resolve) => setTimeout(resolve, 2000));
       setSubmitStatus("success");
-      setTransactionDetails({
-        transactionId: `TXN${Math.random()
-          .toString(36)
-          .substr(2, 9)
-          .toUpperCase()}`,
-        timestamp: new Date().toLocaleString(),
-        blockchainTxHash: `0x${Math.random().toString(36).substr(2, 40)}`,
-        blockNumber: Math.floor(Math.random() * 1000000) + 1,
-        gasUsed: (Math.random() * 0.1).toFixed(8),
-        walletAddress: `0x${Math.random().toString(36).substr(2, 40)}`,
-      });
     } catch (error) {
       console.error(error);
       setSubmitStatus("error");
@@ -145,7 +125,6 @@ const BillPaymentForm: React.FC = () => {
     reset();
     setStep(1);
     setSubmitStatus("idle");
-    setTransactionDetails(null);
   };
 
   useEffect(() => {
@@ -169,8 +148,7 @@ const BillPaymentForm: React.FC = () => {
           setUnavailableServiceMessage={setUnavailableServiceMessage}
         />
 
-        <div className="w-full max-w-md bg-white rounded-lg shadow-sm p-6">
-
+        <div className="w-full max-w-md">
           <AnimatePresence>
             {selectedService && (
               <motion.div
@@ -181,26 +159,6 @@ const BillPaymentForm: React.FC = () => {
               >
                 {unavailableServiceMessage ? (
                   <UnavailableServiceMessage serviceName={selectedService} />
-                ) : submitStatus === "success" && transactionDetails ? (
-                  <PaymentReceipt
-                    transactionId={transactionDetails.transactionId}
-                    serviceType={selectedService}
-                    amount={watch("amount") || ""}
-                    paymentToken={
-                      selectedTokenDetails ? selectedTokenDetails.symbol : ""
-                    }
-                    recipientInfo={
-                      selectedService === "electricity"
-                        ? watch("meterNumber") || ""
-                        : watch("phoneNumber") || ""
-                    }
-                    timestamp={transactionDetails.timestamp}
-                    blockchainTxHash={transactionDetails.blockchainTxHash}
-                    blockNumber={transactionDetails.blockNumber}
-                    gasUsed={transactionDetails.gasUsed}
-                    walletAddress={transactionDetails.walletAddress}
-                    onReset={resetForm}
-                  />
                 ) : (
                   <div className="space-y-6">
                     <AnimatePresence mode="wait">
@@ -225,26 +183,7 @@ const BillPaymentForm: React.FC = () => {
                                 />
                               )}
 
-                              <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">
-                                  Amount
-                                </label>
-                                <input
-                                  type="number"
-                                  step="0.01"
-                                  placeholder="Enter amount"
-                                  {...register("amount")}
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                />
-                                {errors.amount && (
-                                  <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
-                                    <AlertCircle className="w-4 h-4" />
-                                    {errors.amount.message}
-                                  </p>
-                                )}
-                              </div>
-
-                              <div className="pt-2">
+                              <div className="space-y-4">
                                 <PaymentTokenSelector
                                   paymentTokens={paymentTokens}
                                   selectedToken={selectedTokenId}
@@ -260,6 +199,7 @@ const BillPaymentForm: React.FC = () => {
                               watch={watch}
                               carrier={carrier}
                               selectedTokenDetails={selectedTokenDetails}
+                              onClose={() => setStep(1)}
                             />
                           )}
                         </form>
@@ -269,7 +209,7 @@ const BillPaymentForm: React.FC = () => {
                     {submitStatus !== "success" && isAvailable && (
                       <>
                         {step > 0 && step < steps.length - 2 && (
-                          <div className="flex justify-between pt-3 border-t border-gray-100">
+                          <div className="flex flex-col gap-4 pt-3 border-t border-gray-100">
                             {step > 1 && (
                               <button
                                 type="button"
@@ -281,18 +221,18 @@ const BillPaymentForm: React.FC = () => {
                               </button>
                             )}
 
-                            <div className="flex items-center gap-2 w-full justify-end">
-                              <motion.button
-                                type="button"
-                                whileInView={{ scale: 1.02 }}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={nextStep}
-                                className="relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-24 border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
-                              >
-                                Next
-                              </motion.button>
-                            </div>
+                            <motion.button
+                              type="button"
+                              whileInView={{ scale: 1.02 }}
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.98 }}
+                              onClick={nextStep}
+                              className="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-[38px] rounded-[13px] sm:h-[47px] sm:rounded-[15px] w-full bg-gradient-to-r from-[#0099FF] to-[#0066FF]"
+                            >
+                              <span className="text-[13px] font-bold leading-[16.25px] sm:text-[15px] sm:font-semibold sm:leading-[18.75px] text-white">
+                                Pay
+                              </span>
+                            </motion.button>
                           </div>
                         )}
 

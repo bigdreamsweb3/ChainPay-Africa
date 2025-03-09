@@ -85,11 +85,10 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                         }
                       }}
                       aria-label={`Select ${service.name}`}
-                      className={`relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-full ${
-                        field.value === service.id
-                          ? "border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
-                          : "hover:border-brand-primary text-gray-700 hover:text-blue-700"
-                      }`}
+                      className={`relative gap-2 py-2 rounded-lg text-sm md:text-base transition-all duration-200 ease-in-out flex flex-col items-center w-full min-w-fit ${field.value === service.id
+                        ? "border-brand-primary bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white shadow-md"
+                        : "hover:border-brand-primary text-gray-700 hover:text-blue-700"
+                        }`}
                       onMouseDown={(e) =>
                         e.currentTarget.classList.add("active")
                       }
@@ -97,13 +96,12 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                         e.currentTarget.classList.remove("active")
                       }
                     >
-                      <div className="flex items-center justify-center gap-1 px-4 w-full">
+                      <div className="flex items-center justify-center">
                         <span
-                          className={`text-sm md:text-base font-bold ${
-                            field.value === service.id
-                              ? "text-white"
-                              : "text-brand-border-brand-primary"
-                          } text-center whitespace-nowrap`}
+                          className={`text-sm md:text-base font-bold mx-4 ${field.value === service.id
+                            ? "text-white"
+                            : "text-brand-border-brand-primary"
+                            } text-center whitespace-nowrap`}
                         >
                           {service.name}
                         </span>
