@@ -26,7 +26,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   selectedToken,
   setSelectedToken,
 }) => {
-  const { register, formState: { errors }, setValue } = useFormContext(); // Add setValue
+  const { register, formState: { errors } } = useFormContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isConnected } = useAccount();
 
@@ -35,8 +35,8 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   );
 
   const handleTokenSelect = (tokenId: string) => {
-    setSelectedToken(tokenId); // Update selected token
-    setIsModalOpen(false); // Close modal
+    setSelectedToken(tokenId);
+    setIsModalOpen(false);
   };
 
   return (
@@ -49,7 +49,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           <input
             type="number"
             step="1"
-            min="50" // Enforce minimum value of 50
+            min="50"
             placeholder="Enter amount (min. 50)"
             {...register("amount", {
               required: "Amount is required",
@@ -58,7 +58,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 message: "Minimum amount is 50 credit units",
               },
               validate: (value) =>
-                !isNaN(Number(value)) || "Amount must be a number", // Ensure the value is a number
+                !isNaN(Number(value)) || "Amount must be a number",
             })}
             className="w-full h-10 px-3 pr-10 text-sm font-medium rounded-lg transition-all duration-200 ease-in-out
               border border-gray-300 
@@ -156,7 +156,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 {paymentTokens.map((token: PaymentToken) => (
                   <div
                     key={token.id}
-                    onClick={() => handleTokenSelect(token.id)} // Use handleTokenSelect
+                    onClick={() => handleTokenSelect(token.id)}
                     className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-all duration-200 ease-in-out 
                       ${selectedToken === token.id
                         ? "bg-gradient-to-r from-blue-100 to-blue-200 border border-blue-500"
