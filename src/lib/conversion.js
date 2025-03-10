@@ -13,7 +13,7 @@ let exchangeRateCache = {
  * @param {number} minDelay - Minimum delay in milliseconds
  * @returns {Promise} - A promise that resolves after the original promise and minimum delay
  */
-const withMinDelay = (promise, minDelay = 500) => {
+export const withMinDelay = (promise, minDelay = 500) => {
     const delay = new Promise(resolve => setTimeout(resolve, minDelay));
     return Promise.all([promise, delay]).then(([result]) => result);
 };

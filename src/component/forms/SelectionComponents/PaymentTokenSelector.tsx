@@ -112,7 +112,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [creditAmount, selectedToken]);
+  }, [creditAmount, selectedToken, debouncedUpdateAmount]);
 
   const handleTokenSelect = (tokenId: string) => {
     setSelectedToken(tokenId);
