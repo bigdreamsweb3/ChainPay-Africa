@@ -1,8 +1,9 @@
 import { useBuyAirtime } from "@/hooks/interact/TokenContract";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { convertCreditToTokenAmount, convertToTokenUnits, formatTokenAmountDisplay } from "@/lib/conversion";
 
 interface FormData {
   phoneNumber: string;
@@ -18,10 +19,20 @@ interface PaymentConfirmationProps {
     enum_value: number;
   };
   selectedTokenDetails:
-  | { name: string; symbol: string; contractAddress: string; image: string }
+  | { 
+      name: string; 
+      symbol: string; 
+      contractAddress: string; 
+      image: string;
+      decimals: number;
+    }
   | null
   | undefined;
   onClose: () => void;
+  setParentIsConverting?: (state: boolean) => void;
+  convertedAmount?: string;
+  displayAmount?: string;
+  skipInitialConversion?: boolean;
 }
 
 const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
@@ -30,9 +41,77 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   carrier,
   selectedTokenDetails,
   onClose,
+  setParentIsConverting,
+  convertedAmount: initialConvertedAmount = "0.00",
+  displayAmount: initialDisplayAmount = "0",
+  skipInitialConversion = false,
 }) => {
   const { buyAirtime, isPending } = useBuyAirtime();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [convertedAmount, setConvertedAmount] = useState<string>(initialConvertedAmount);
+  const [displayAmount, setDisplayAmount] = useState<string>(initialDisplayAmount);
+  const [isConverting, setIsConverting] = useState(false);
+  const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
+
+  const amountStr = watch("amount");
+
+  // Convert credit units to token amount whenever the amount or selected token changes
+  // or if sufficient time has passed since the last update
+  useEffect(() => {
+    // Skip initial conversion if values are provided and skipInitialConversion is true
+    if (skipInitialConversion && 
+        initialConvertedAmount !== "0.00" && 
+        initialDisplayAmount !== "0" && 
+        !isConverting) {
+      // Just update the last update time
+      setLastUpdateTime(Date.now());
+      return;
+    }
+
+    const updateConvertedAmount = async () => {
+      if (selectedTokenDetails && amountStr && !isNaN(Number(amountStr))) {
+        try {
+          setIsConverting(true);
+          if (setParentIsConverting) setParentIsConverting(true);
+          
+          const tokenAmount = await convertCreditToTokenAmount(
+            Number(amountStr),
+            selectedTokenDetails
+          );
+          
+          setConvertedAmount(tokenAmount);
+          setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
+          setLastUpdateTime(Date.now());
+        } catch (error) {
+          console.error("Error converting amount:", error);
+          setConvertedAmount("0.00");
+          setDisplayAmount("0");
+        } finally {
+          setIsConverting(false);
+          if (setParentIsConverting) setParentIsConverting(false);
+        }
+      } else {
+        setConvertedAmount("0.00");
+        setDisplayAmount("0");
+      }
+    };
+
+    // Check if we need to update based on time elapsed
+    const timeElapsed = Date.now() - lastUpdateTime;
+    const shouldUpdate = timeElapsed > 30000; // 30 seconds threshold
+
+    if (!skipInitialConversion || shouldUpdate) {
+      updateConvertedAmount();
+    }
+  }, [
+    amountStr, 
+    selectedTokenDetails, 
+    setParentIsConverting, 
+    skipInitialConversion, 
+    initialConvertedAmount, 
+    initialDisplayAmount,
+    lastUpdateTime
+  ]);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -64,20 +143,74 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         return;
       }
 
-      // Convert amount directly without Wei conversion
-      // This will use the amount as is for credit units
-      const amount = BigInt(Math.floor(parseFloat(amountStr)));
+      // Wait for conversion to complete if it's still in progress
+      if (isConverting) {
+        setErrorMessage("Please wait for price calculation to complete");
+        return;
+      }
+
+      // Check if the conversion is stale (more than 2 minutes old)
+      const timeElapsed = Date.now() - lastUpdateTime;
+      const isStale = timeElapsed > 120000; // 2 minutes threshold
+
+      // If the conversion is stale, refresh it
+      if (isStale) {
+        setErrorMessage("Refreshing price information...");
+        
+        try {
+          setIsConverting(true);
+          if (setParentIsConverting) setParentIsConverting(true);
+          
+          const tokenAmount = await convertCreditToTokenAmount(
+            Number(amountStr),
+            selectedTokenDetails
+          );
+          
+          setConvertedAmount(tokenAmount);
+          setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
+          setLastUpdateTime(Date.now());
+          setErrorMessage(null);
+        } catch (error) {
+          console.error("Error refreshing conversion:", error);
+          setErrorMessage("Failed to refresh price. Please try again.");
+          return;
+        } finally {
+          setIsConverting(false);
+          if (setParentIsConverting) setParentIsConverting(false);
+        }
+      }
+
+      // We need to use the converted token amount, not the credit units
+      // First, ensure we have a valid converted amount
+      if (!convertedAmount || parseFloat(convertedAmount) <= 0) {
+        setErrorMessage("Invalid payment amount. Please try again.");
+        return;
+      }
+
+      // Use our utility function to convert to token units
+      // Note: We use the full precision convertedAmount, not the displayAmount 
+      // to ensure accuracy in the blockchain transaction
+      const decimals = selectedTokenDetails.decimals || 18;
+      const tokenUnitsStr = convertToTokenUnits(convertedAmount, decimals);
+      const tokenAmountInWei = BigInt(tokenUnitsStr);
 
       console.log("Sending transaction with:", {
         phoneNumber,
-        amount: amount.toString(), // This will now be the actual credit units
+        originalCreditUnits: amountStr, // Original credit units (for reference)
+        tokenSymbol: selectedTokenDetails.symbol,
+        humanReadableTokenAmount: convertedAmount, // Full precision token amount (e.g., 0.071428 XUSD)
+        formattedDisplayAmount: displayAmount, // UI-friendly amount (for reference)
+        tokenAmountInWei: tokenAmountInWei.toString(), // The token amount in wei sent to contract
+        tokenDecimals: decimals,
         network: carrier.enum_value,
-        token: selectedTokenDetails.contractAddress
+        tokenAddress: selectedTokenDetails.contractAddress,
+        lastUpdateTime: new Date(lastUpdateTime).toISOString() // When the conversion was last updated
       });
 
+      // IMPORTANT: We're passing the TOKEN AMOUNT (in wei), not credit units, to the contract
       await buyAirtime(
         phoneNumber,
-        amount,
+        tokenAmountInWei, // TOKEN AMOUNT in wei with proper decimals (NOT credit units)
         carrier.enum_value,
         selectedTokenDetails.contractAddress
       );
@@ -164,7 +297,22 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
             <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
               <span className="text-sm text-gray-600">Amount</span>
-              <span className="text-[15px] font-semibold text-gray-900">{watch("amount")}</span>
+              <span className="text-[15px] font-semibold text-gray-900">{watch("amount")} Credit Units</span>
+            </div>
+
+            {/* Display the converted token amount */}
+            <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
+              <span className="text-sm text-gray-600">Pay Amount</span>
+              <span className="text-[15px] font-semibold text-gray-900">
+                {isConverting ? (
+                  <span className="flex items-center">
+                    <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+                    Calculating...
+                  </span>
+                ) : (
+                  <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
+                )}
+              </span>
             </div>
 
             <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">

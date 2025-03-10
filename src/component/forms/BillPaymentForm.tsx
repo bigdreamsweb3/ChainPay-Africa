@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -43,6 +43,9 @@ const BillPaymentForm: React.FC = () => {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "processing" | "success" | "error"
   >("idle");
+  const [isConverting, setIsConverting] = useState(false);
+  const [convertedAmount, setConvertedAmount] = useState<string>("0.00");
+  const [displayAmount, setDisplayAmount] = useState<string>("0");
   const [carrier, setCarrier] = useState<{
     id: string | null;
     name: string | null;
@@ -59,6 +62,8 @@ const BillPaymentForm: React.FC = () => {
   >(null);
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
   const [isPaymentConfirmationOpen, setIsPaymentConfirmationOpen] = useState(false);
+  const [serviceSwitchCount, setServiceSwitchCount] = useState(0);
+  const prevServiceRef = useRef<string | null>(null);
 
   const { isConnected } = useAccount();
   const { connect, connectors } = useConnect();
@@ -96,6 +101,15 @@ const BillPaymentForm: React.FC = () => {
       setUnavailableServiceMessage("Airtime");
     }
   }, [setValue]);
+
+  // Track service changes to optimize calculations
+  useEffect(() => {
+    // Only count actual changes
+    if (prevServiceRef.current !== selectedService && prevServiceRef.current !== null) {
+      setServiceSwitchCount(count => count + 1);
+    }
+    prevServiceRef.current = selectedService;
+  }, [selectedService]);
 
   const onSubmit = async (data: BillPaymentFormData) => {
     console.log("Submitting payment with data:", data);
@@ -158,6 +172,7 @@ const BillPaymentForm: React.FC = () => {
           selectedService={selectedService}
           setStep={setStep}
           setUnavailableServiceMessage={setUnavailableServiceMessage}
+          preserveCalculation={true}
         />
 
         <div className="w-full max-w-md">
@@ -203,6 +218,9 @@ const BillPaymentForm: React.FC = () => {
                                     setSelectedTokenId(tokenId);
                                     setValue("paymentToken", tokenId);
                                   }}
+                                  setIsConverting={setIsConverting}
+                                  setConvertedAmount={setConvertedAmount}
+                                  setDisplayAmount={setDisplayAmount}
                                 />
                               </div>
                             </>
@@ -213,13 +231,18 @@ const BillPaymentForm: React.FC = () => {
                             onClick={isConnected ? openPaymentConfirmation : connectWallet}
                             disabled={
                               isConnected
-                                ? !isValid || !isAmountValid || isSubmitting // Disable if amount is invalid
+                                ? !isValid || !isAmountValid || isSubmitting || isConverting // Disable if amount is invalid or conversion in progress
                                 : false
                             }
                             className="w-full h-[40px] rounded-md bg-blue-600 text-white font-semibold transition duration-200 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                           >
                             {isSubmitting ? (
                               <Loader2 className="w-5 h-5 mx-auto animate-spin" />
+                            ) : isConverting ? (
+                              <span className="flex items-center justify-center">
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Calculating price...
+                              </span>
                             ) : isConnected ? (
                               "Pay"
                             ) : (
@@ -250,19 +273,35 @@ const BillPaymentForm: React.FC = () => {
                         <AnimatePresence>
                           {submitStatus === "error" && (
                             <motion.div
-                              initial={{ opacity: 0, y: 50 }}
+                              initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: 50 }}
-                              className="p-3 mt-2 bg-red-50 rounded-md"
+                              exit={{ opacity: 0, y: -20 }}
+                              className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100"
                             >
-                              <div className="flex items-center text-red-700">
-                                <AlertCircle className="w-4 h-4 mr-2" />
-                                Payment failed. Please try again.
-                              </div>
+                              <p className="text-sm text-red-600 flex items-center gap-2">
+                                <AlertCircle className="w-4 h-4" />
+                                There was an error processing your payment. Please try
+                                again.
+                              </p>
                             </motion.div>
                           )}
                         </AnimatePresence>
                       </>
+                    )}
+
+                    {/* Payment Confirmation Modal */}
+                    {isPaymentConfirmationOpen && (
+                      <PaymentConfirmation
+                        selectedService={selectedService}
+                        watch={watch}
+                        carrier={carrier}
+                        selectedTokenDetails={selectedTokenDetails}
+                        onClose={closePaymentConfirmation}
+                        setParentIsConverting={setIsConverting}
+                        convertedAmount={convertedAmount}
+                        displayAmount={displayAmount}
+                        skipInitialConversion={true}
+                      />
                     )}
                   </div>
                 )}
@@ -270,16 +309,6 @@ const BillPaymentForm: React.FC = () => {
             )}
           </AnimatePresence>
         </div>
-
-        {isPaymentConfirmationOpen && (
-          <PaymentConfirmation
-            selectedService={selectedService}
-            watch={watch}
-            carrier={carrier}
-            selectedTokenDetails={selectedTokenDetails}
-            onClose={closePaymentConfirmation}
-          />
-        )}
       </div>
     </FormProvider>
   );

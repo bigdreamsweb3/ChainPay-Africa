@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import { useAccount } from "wagmi";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { convertCreditToTokenAmount, formatTokenAmountDisplay } from "@/lib/conversion";
 
 interface PaymentToken {
   id: string;
@@ -19,20 +20,108 @@ interface PaymentTokenSelectorProps {
   paymentTokens: PaymentToken[];
   selectedToken: string;
   setSelectedToken: (tokenId: string) => void;
+  setIsConverting?: (state: boolean) => void;
+  setConvertedAmount?: (amount: string) => void;
+  setDisplayAmount?: (amount: string) => void;
 }
 
 const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   paymentTokens,
   selectedToken,
   setSelectedToken,
+  setIsConverting: setParentIsConverting,
+  setConvertedAmount: setParentConvertedAmount,
+  setDisplayAmount: setParentDisplayAmount,
 }) => {
-  const { register, formState: { errors } } = useFormContext();
+  const { register, formState: { errors }, watch } = useFormContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [localConvertedAmount, setLocalConvertedAmount] = useState<string>("0.00");
+  const [localDisplayAmount, setLocalDisplayAmount] = useState<string>("0");
+  const [isConverting, setIsConverting] = useState(false);
   const { isConnected } = useAccount();
+  
+  // Store previous values to avoid unnecessary calculations
+  const prevAmountRef = useRef<string>("");
+  const prevTokenRef = useRef<string>("");
+  const lastCalculationTimeRef = useRef<number>(0);
 
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
   );
+
+  const creditAmount = watch("amount");
+
+  // Convert credit units to token amount whenever amount or selected token changes
+  useEffect(() => {
+    // Skip calculation if nothing relevant has changed or if it's too soon since last calculation
+    const currentTime = Date.now();
+    const timeSinceLastCalculation = currentTime - lastCalculationTimeRef.current;
+    const shouldSkipCalculation = 
+      creditAmount === prevAmountRef.current && 
+      selectedToken === prevTokenRef.current &&
+      timeSinceLastCalculation < 2000; // Skip if less than 2 seconds since last calculation
+    
+    if (shouldSkipCalculation) {
+      return;
+    }
+
+    const updateConvertedAmount = async () => {
+      if (selectedTokenData && creditAmount && !isNaN(Number(creditAmount))) {
+        try {
+          // Update state refs before calculation
+          prevAmountRef.current = creditAmount;
+          prevTokenRef.current = selectedToken;
+          
+          setIsConverting(true);
+          if (setParentIsConverting) setParentIsConverting(true);
+          
+          const tokenAmount = await convertCreditToTokenAmount(
+            Number(creditAmount),
+            selectedTokenData
+          );
+          
+          // Update local state
+          setLocalConvertedAmount(tokenAmount);
+          const formattedAmount = formatTokenAmountDisplay(tokenAmount);
+          setLocalDisplayAmount(formattedAmount);
+          
+          // Update parent state if provided
+          if (setParentConvertedAmount) setParentConvertedAmount(tokenAmount);
+          if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
+          
+          // Update calculation time
+          lastCalculationTimeRef.current = Date.now();
+        } catch (error) {
+          console.error("Error converting amount:", error);
+          setLocalConvertedAmount("0.00");
+          setLocalDisplayAmount("0");
+          
+          // Update parent state if provided
+          if (setParentConvertedAmount) setParentConvertedAmount("0.00");
+          if (setParentDisplayAmount) setParentDisplayAmount("0");
+        } finally {
+          setIsConverting(false);
+          if (setParentIsConverting) setParentIsConverting(false);
+        }
+      } else {
+        setLocalConvertedAmount("0.00");
+        setLocalDisplayAmount("0");
+        
+        // Update parent state if provided
+        if (setParentConvertedAmount) setParentConvertedAmount("0.00");
+        if (setParentDisplayAmount) setParentDisplayAmount("0");
+      }
+    };
+
+    updateConvertedAmount();
+  }, [
+    creditAmount, 
+    selectedToken, 
+    selectedTokenData, 
+    setParentIsConverting, 
+    setParentConvertedAmount, 
+    setParentDisplayAmount
+  ]);
 
   const handleTokenSelect = (tokenId: string) => {
     setSelectedToken(tokenId);
@@ -111,6 +200,23 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           )}
         </button>
       </div>
+
+      {/* Display converted amount */}
+      {selectedTokenData && creditAmount && !isNaN(Number(creditAmount)) && Number(creditAmount) >= 50 && (
+        <div className="mt-2 px-3 py-2 rounded-lg bg-blue-50 border border-blue-100">
+          <p className="text-sm text-blue-700 flex items-center gap-2">
+            <span className="font-medium">Pay:</span> 
+            {isConverting ? (
+              <span className="flex items-center">
+                <Loader2 className="w-3 h-3 mr-2 animate-spin" />
+                Calculating...
+              </span>
+            ) : (
+              <>{localDisplayAmount} {selectedTokenData.symbol}</>
+            )}
+          </p>
+        </div>
+      )}
 
       {errors.amount && (
         <div className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100">

@@ -152,7 +152,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   return (
     <div className="space-y-3 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
       <label className="text-sm font-medium text-gray-700">
-        Phone Number
+        Phone & Network
       </label>
 
       {/* Network Selection and Phone Input Container */}
