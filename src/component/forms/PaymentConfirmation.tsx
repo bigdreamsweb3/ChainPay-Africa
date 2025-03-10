@@ -110,7 +110,8 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     skipInitialConversion, 
     initialConvertedAmount, 
     initialDisplayAmount,
-    lastUpdateTime
+    lastUpdateTime,
+    isConverting
   ]);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {

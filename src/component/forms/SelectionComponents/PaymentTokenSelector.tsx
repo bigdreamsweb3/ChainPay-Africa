@@ -35,7 +35,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 }) => {
   const { register, formState: { errors }, watch } = useFormContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [localConvertedAmount, setLocalConvertedAmount] = useState<string>("0.00");
+  // Only keep one local state for display purposes and use parent state for converted amount
   const [localDisplayAmount, setLocalDisplayAmount] = useState<string>("0");
   const [isConverting, setIsConverting] = useState(false);
   const { isConnected } = useAccount();
@@ -80,8 +80,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
             selectedTokenData
           );
           
-          // Update local state
-          setLocalConvertedAmount(tokenAmount);
+          // Update display formatting
           const formattedAmount = formatTokenAmountDisplay(tokenAmount);
           setLocalDisplayAmount(formattedAmount);
           
@@ -93,7 +92,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           lastCalculationTimeRef.current = Date.now();
         } catch (error) {
           console.error("Error converting amount:", error);
-          setLocalConvertedAmount("0.00");
           setLocalDisplayAmount("0");
           
           // Update parent state if provided
@@ -104,7 +102,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           if (setParentIsConverting) setParentIsConverting(false);
         }
       } else {
-        setLocalConvertedAmount("0.00");
         setLocalDisplayAmount("0");
         
         // Update parent state if provided

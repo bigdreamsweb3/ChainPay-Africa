@@ -62,7 +62,6 @@ const BillPaymentForm: React.FC = () => {
   >(null);
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
   const [isPaymentConfirmationOpen, setIsPaymentConfirmationOpen] = useState(false);
-  const [serviceSwitchCount, setServiceSwitchCount] = useState(0);
   const prevServiceRef = useRef<string | null>(null);
 
   const { isConnected } = useAccount();
@@ -102,12 +101,8 @@ const BillPaymentForm: React.FC = () => {
     }
   }, [setValue]);
 
-  // Track service changes to optimize calculations
+  // Track service changes to optimize calculations but simplify to just update the ref
   useEffect(() => {
-    // Only count actual changes
-    if (prevServiceRef.current !== selectedService && prevServiceRef.current !== null) {
-      setServiceSwitchCount(count => count + 1);
-    }
     prevServiceRef.current = selectedService;
   }, [selectedService]);
 
