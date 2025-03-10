@@ -44,6 +44,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   const prevAmountRef = useRef<string>("");
   const prevTokenRef = useRef<string>("");
   const lastCalculationTimeRef = useRef<number>(0);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
@@ -51,32 +52,32 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const creditAmount = watch("amount");
 
-  // Convert credit units to token amount whenever amount or selected token changes
-  useEffect(() => {
-    // Skip calculation if nothing relevant has changed or if it's too soon since last calculation
-    const currentTime = Date.now();
-    const timeSinceLastCalculation = currentTime - lastCalculationTimeRef.current;
-    const shouldSkipCalculation = 
-      creditAmount === prevAmountRef.current && 
-      selectedToken === prevTokenRef.current &&
-      timeSinceLastCalculation < 2000; // Skip if less than 2 seconds since last calculation
-    
-    if (shouldSkipCalculation) {
+  // Debounce function to delay conversion until user stops typing
+  const debouncedUpdateAmount = (amount: string, token: string) => {
+    // Clear any existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Skip if nothing has changed
+    if (amount === prevAmountRef.current && token === prevTokenRef.current) {
       return;
     }
 
-    const updateConvertedAmount = async () => {
-      if (selectedTokenData && creditAmount && !isNaN(Number(creditAmount))) {
+    // Set a new timer
+    debounceTimerRef.current = setTimeout(async () => {
+      if (selectedTokenData && amount && !isNaN(Number(amount))) {
         try {
-          // Update state refs before calculation
-          prevAmountRef.current = creditAmount;
-          prevTokenRef.current = selectedToken;
+          // Update state refs
+          prevAmountRef.current = amount;
+          prevTokenRef.current = token;
+          lastCalculationTimeRef.current = Date.now();
           
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
           
           const tokenAmount = await convertCreditToTokenAmount(
-            Number(creditAmount),
+            Number(amount),
             selectedTokenData
           );
           
@@ -87,38 +88,31 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           // Update parent state if provided
           if (setParentConvertedAmount) setParentConvertedAmount(tokenAmount);
           if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
-          
-          // Update calculation time
-          lastCalculationTimeRef.current = Date.now();
         } catch (error) {
           console.error("Error converting amount:", error);
-          setLocalDisplayAmount("0");
-          
-          // Update parent state if provided
-          if (setParentConvertedAmount) setParentConvertedAmount("0.00");
-          if (setParentDisplayAmount) setParentDisplayAmount("0");
         } finally {
           setIsConverting(false);
           if (setParentIsConverting) setParentIsConverting(false);
         }
       } else {
         setLocalDisplayAmount("0");
-        
-        // Update parent state if provided
-        if (setParentConvertedAmount) setParentConvertedAmount("0.00");
+        if (setParentConvertedAmount) setParentConvertedAmount("0");
         if (setParentDisplayAmount) setParentDisplayAmount("0");
       }
-    };
+    }, 800); // Wait 800ms after user stops typing
+  };
 
-    updateConvertedAmount();
-  }, [
-    creditAmount, 
-    selectedToken, 
-    selectedTokenData, 
-    setParentIsConverting, 
-    setParentConvertedAmount, 
-    setParentDisplayAmount
-  ]);
+  // Convert credit units to token amount whenever amount or selected token changes
+  useEffect(() => {
+    debouncedUpdateAmount(creditAmount, selectedToken);
+    
+    // Cleanup function to clear the timer when component unmounts
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [creditAmount, selectedToken]);
 
   const handleTokenSelect = (tokenId: string) => {
     setSelectedToken(tokenId);
@@ -128,7 +122,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   return (
     <div className="space-y-3 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
       <label className="text-sm font-medium text-gray-700">
-        Amount
+        Amount & Token
       </label>
       <div className="flex items-center gap-2">
         <div className="relative flex-1">

@@ -157,6 +157,20 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
 
       {/* Network Selection and Phone Input Container */}
       <div className="flex items-center gap-2">
+
+        {/* Phone Number Input */}
+        <div className="flex-1 relative">
+          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <input
+            type="tel"
+            placeholder="Enter phone number"
+            {...register("phoneNumber", { validate: validatePhoneNumber })}
+            className="w-full h-10 pl-9 pr-3 text-sm font-medium rounded-lg border border-gray-300
+              hover:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
+              bg-white placeholder:text-gray-400 transition-all duration-200"
+          />
+        </div>
+
         {/* Network Selection Button */}
         <div className="relative" ref={dropdownRef}>
           <motion.button
@@ -179,6 +193,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                 className="w-5 h-5 rounded-full object-cover"
               />
             </div>
+            <span className="text-sm font-medium text-gray-900">{selectedNetwork.name?.replace(/\s?Nigeria\s?/g, '')}</span>
             <ChevronDown className="w-4 h-4 text-blue-500" />
           </motion.button>
 
@@ -222,18 +237,6 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
           </AnimatePresence>
         </div>
 
-        {/* Phone Number Input */}
-        <div className="flex-1 relative">
-          <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="tel"
-            placeholder="Enter phone number"
-            {...register("phoneNumber", { validate: validatePhoneNumber })}
-            className="w-full h-10 pl-9 pr-3 text-sm font-medium rounded-lg border border-gray-300
-              hover:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500
-              bg-white placeholder:text-gray-400 transition-all duration-200"
-          />
-        </div>
       </div>
 
       {/* Error Message */}
