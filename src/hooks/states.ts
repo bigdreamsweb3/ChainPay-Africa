@@ -15,6 +15,12 @@ interface PaymentStore {
   resetPayment: () => void;
 }
 
+// Add selected service type store
+interface ServiceTypeStore {
+  selectedServiceType: string;
+  setSelectedServiceType: (type: string) => void;
+}
+
 const usePaymentStore = create<PaymentStore>((set) => ({
   payment: {
     amount: '',
@@ -39,6 +45,16 @@ const usePaymentStore = create<PaymentStore>((set) => ({
   }),
 }));
 
+// Create the service type store
+const useServiceTypeStore = create<ServiceTypeStore>((set) => ({
+  selectedServiceType: '',
+  setSelectedServiceType: (type) => set({ selectedServiceType: type }),
+}));
+
 export const usePayment = () => usePaymentStore((state) => state.payment);
 export const useSetPayment = () => usePaymentStore((state) => state.setPayment);
-export const useResetPayment = () => usePaymentStore((state) => state.resetPayment); 
+export const useResetPayment = () => usePaymentStore((state) => state.resetPayment);
+
+// Export service type hooks
+export const useSelectedServiceType = () => useServiceTypeStore((state) => state.selectedServiceType);
+export const useSetSelectedServiceType = () => useServiceTypeStore((state) => state.setSelectedServiceType); 

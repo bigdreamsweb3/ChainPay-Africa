@@ -6,6 +6,7 @@ import { useAccount } from "wagmi";
 import { Account } from "@/component/web3/account";
 import { WalletOptions } from "@/component/web3/wallet-options";
 import { appConfig } from "@/app-config";
+import { MapPin } from "lucide-react";
 
 function ConnectWallet() {
   const { isConnected } = useAccount();
@@ -50,13 +51,18 @@ export function Header() {
 
             </motion.div>
 
-            <div className="flex items-center">
-              <span className="text-lg sm:text-xl font-semibold text-chainpay-blue-dark drop-shadow-sm">
+
+            <div className="flex flex-col">
+              <span className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-brand-primary to-chainpay-blue-light bg-clip-text text-transparent">
                 {appConfig.appName}
+                <span className="text-lg sm:text-xl font-semibold text-chainpay-orange">
+                  {appConfig.appSubName}
+                </span>
               </span>
-              <span className="text-lg sm:text-xl font-semibold text-chainpay-orange ml-1 drop-shadow-sm">
-                {appConfig.appSubName}
-              </span>
+              <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-500">
+                <MapPin size={12} />
+                <span>{appConfig.appCountry}</span>
+              </div>
             </div>
           </div>
 

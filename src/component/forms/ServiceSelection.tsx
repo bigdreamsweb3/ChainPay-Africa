@@ -12,7 +12,7 @@ export default function ServiceSelection() {
     const [hoveredService, setHoveredService] = useState<string | null>(null)
     const setSelectedServiceType = useSetSelectedServiceType()
     const router = useRouter()
-    const isChainPayTokenAccepted = useIsTokenAccepted().isAccepted
+    const isChainPayTokenAccepted = (useIsTokenAccepted() as { isAccepted: boolean }).isAccepted
     const [isLoading, setIsLoading] = useState(true)
 
     const containerVariants = {
@@ -70,7 +70,7 @@ export default function ServiceSelection() {
                         initial="hidden"
                         animate="visible"
                     >
-                        {serviceTypes.map((service) => (
+                        {serviceTypes.map((service: { id: string; label: string; description: string; icon: string }) => (
                             <motion.div
                                 key={service.id}
                                 variants={itemVariants}

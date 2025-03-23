@@ -208,20 +208,20 @@ const BillPaymentForm: React.FC = () => {
     // For airtime/data services
     if (selectedService === "airtime" || selectedService === "data") {
       return (
-        amount && 
-        parseFloat(amount) >= 50 && 
-        selectedTokenId && 
-        phoneNumber && 
+        amount &&
+        parseFloat(amount) >= 50 &&
+        selectedTokenId &&
+        phoneNumber &&
         carrier.id !== null
       );
     }
     // For electricity service
     else if (selectedService === "electricity") {
       return (
-        amount && 
-        parseFloat(amount) >= 50 && 
-        selectedTokenId && 
-        meterNumber && 
+        amount &&
+        parseFloat(amount) >= 50 &&
+        selectedTokenId &&
+        meterNumber &&
         meterNumber.length === 11
       );
     }
@@ -230,7 +230,7 @@ const BillPaymentForm: React.FC = () => {
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Check if the form is valid first
     if (isPaymentValid()) {
       // Log that we're showing the payment confirmation
@@ -238,7 +238,7 @@ const BillPaymentForm: React.FC = () => {
       setShowConfirmation(true);
       return;
     }
-    
+
     console.log("Form is not valid, cannot proceed to payment");
   };
 
@@ -331,19 +331,19 @@ const BillPaymentForm: React.FC = () => {
                               </div>
                             </>
                           )}
-                          {/*  */}
+
 
                           <div className="flex justify-center mt-6">
                             <FuturisticButton
                               type="submit"
                               data-action="submit-payment"
-                              disabled={!isPaymentValid()}
+                              disabled={!isPaymentValid() || isConverting}
                               variant="primary"
                               size="large"
                               fullWidth
                               icon={<Sparkles size={16} />}
                             >
-                             Pay
+                              Pay
                             </FuturisticButton>
                           </div>
                         </form>
