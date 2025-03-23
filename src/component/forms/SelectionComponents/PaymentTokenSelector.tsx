@@ -191,7 +191,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       if (payment.amount) {
         // Fallback to approximate conversion (1 USD ≈ 1400 NGN)
         const approxUsdValue = parseFloat(payment.amount) / 1400;
-        const formattedValue = formatTokenPrice(approxUsdValue);
         // Conversion amount calculation is still performed but not stored or displayed
       }
     } catch (error) {
@@ -201,7 +200,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       // Fallback if there's an error in the calculation
       if (payment.amount) {
         const approxUsdValue = parseFloat(payment.amount) / 1400;
-        const formattedValue = formatTokenPrice(approxUsdValue);
         // Conversion amount calculation is still performed but not stored or displayed
       }
     }
