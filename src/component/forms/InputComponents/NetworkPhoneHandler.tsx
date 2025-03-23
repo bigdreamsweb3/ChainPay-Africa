@@ -173,7 +173,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true;
 
   return (
-    <div className="space-y-3 bg-white rounded-lg p-4 shadow-md border border-chainpay-blue-light/20">
+    <div className="space-y-3 bg-white rounded-lg p-4 shadow-md border border-chainpay-blue-light/10">
       <label className="text-sm font-medium text-chainpay-blue flex items-center gap-1.5">
         <Phone className="w-4 h-4 text-chainpay-blue" />
         Phone & Network

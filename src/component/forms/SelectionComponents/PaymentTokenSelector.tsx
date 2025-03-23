@@ -233,7 +233,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   }, [payment.amount]);
 
   return (
-    <div className="space-y-3 bg-white rounded-lg p-4 shadow-md border border-chainpay-blue-light/30">
+    <div className="space-y-3 bg-white rounded-lg p-4 shadow-md border border-chainpay-blue-light/10">
       <label className="text-sm font-medium text-chainpay-blue flex items-center gap-1.5">
         <Coins className="w-4 h-4 text-chainpay-blue" />
         Amount & Token
