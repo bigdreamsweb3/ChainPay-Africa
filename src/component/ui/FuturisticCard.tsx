@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Rocket, Zap, Star } from 'lucide-react';
+import { Sparkles, Rocket, Star } from 'lucide-react';
 
 interface FuturisticCardProps {
   title: string;

@@ -1,5 +1,4 @@
 import { useBuyAirtime } from "@/hooks/interact/TokenContract";
-import { motion } from "framer-motion";
 import { Loader2, AlertCircle } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -116,7 +115,12 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     skipInitialConversion,
     initialConvertedAmount,
     initialDisplayAmount,
-    // Remove lastUpdateTime and isConverting from dependency array to prevent infinite loop
+    // Including isConverting and lastUpdateTime in deps would cause infinite loops
+    // since they are updated within the effect itself
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    isConverting,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    lastUpdateTime
   ]);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {

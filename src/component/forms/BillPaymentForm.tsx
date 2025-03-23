@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Sparkles } from "lucide-react";
-import { useAccount, useConnect } from "wagmi";
+import { useConnect } from "wagmi";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import ServiceSelection from "./SelectionComponents/ServiceSelection";
@@ -77,11 +77,10 @@ const BillPaymentForm: React.FC = () => {
     string | null
   >(null);
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
-  const [isPaymentConfirmationOpen, setIsPaymentConfirmationOpen] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const prevServiceRef = useRef<string | null>(null);
 
-  const { isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
+  const { connectors } = useConnect();
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
@@ -92,10 +91,9 @@ const BillPaymentForm: React.FC = () => {
   });
 
   const {
-    handleSubmit,
     watch,
     setValue,
-    formState: { errors, isValid },
+    formState: { errors },
   } = methods;
 
   const selectedService = watch("serviceType");
@@ -124,11 +122,6 @@ const BillPaymentForm: React.FC = () => {
     prevServiceRef.current = selectedService;
   }, [selectedService]);
 
-  const [phoneState, setPhoneState] = useState({
-    isPhoneValid: false,
-    network: appConfig.availableServices.includes("Airtime") ? "MTN" : "MTN",
-  });
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const payment = usePayment();
   const setPayment = useSetPayment();
 
@@ -144,30 +137,6 @@ const BillPaymentForm: React.FC = () => {
     });
   }, [amount, phoneNumber, meterNumber, selectedTokenId, selectedService, setPayment, payment.networkProvider]);
 
-  const onSubmit = async (data: BillPaymentFormData) => {
-    console.log("Submitting payment with data:", data);
-    const purchaseData = {
-      ...data,
-      network:
-        selectedService === "airtime" || selectedService === "data"
-          ? carrier
-          : null,
-    };
-    console.log(purchaseData);
-    setIsSubmitting(true);
-    setSubmitStatus("processing");
-    try {
-      // Simulate API call and blockchain transaction
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setSubmitStatus("success");
-    } catch (error) {
-      console.error(error);
-      setSubmitStatus("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   useEffect(() => {
@@ -180,29 +149,6 @@ const BillPaymentForm: React.FC = () => {
   const isAvailable = appConfig.availableServices.includes(
     selectedService.charAt(0).toUpperCase() + selectedService.slice(1)
   );
-
-  // Open the payment confirmation modal
-  const openPaymentConfirmation = () => setIsPaymentConfirmationOpen(true);
-
-  // Close the payment confirmation modal
-  const closePaymentConfirmation = () => setIsPaymentConfirmationOpen(false);
-
-  // Handle wallet connection
-  const connectWallet = () => {
-    if (connectors.length > 0) {
-      connect({ connector: connectors[0] });
-    }
-  };
-
-  // Check if the amount is valid (at least 50)
-  const isAmountValid = !isNaN(Number(amount)) && Number(amount) >= 50;
-
-  const handleTokenSelection = (token: PaymentToken) => {
-    setPayment({
-      ...payment,
-      tokenId: token.id
-    });
-  };
 
   const isPaymentValid = () => {
     // For airtime/data services
@@ -254,7 +200,7 @@ const BillPaymentForm: React.FC = () => {
       carrier,
       serviceType: selectedService
     });
-  }, [amount, selectedTokenId, phoneNumber, meterNumber, carrier, selectedService]);
+  }, [amount, selectedTokenId, phoneNumber, meterNumber, carrier, selectedService, isPaymentValid]);
 
   return (
     <FormProvider {...methods}>

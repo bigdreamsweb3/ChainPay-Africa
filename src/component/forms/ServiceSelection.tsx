@@ -5,14 +5,12 @@ import Image from 'next/image'
 import { serviceTypes } from '@/utils/serviceTypes'
 import { useSetSelectedServiceType } from '@/hooks/states'
 import { useRouter } from 'next/navigation'
-import { useIsTokenAccepted } from '@/hooks/interact/TokenContract'
 import ReactLoading from 'react-loading'
 
 export default function ServiceSelection() {
     const [hoveredService, setHoveredService] = useState<string | null>(null)
     const setSelectedServiceType = useSetSelectedServiceType()
     const router = useRouter()
-    const isChainPayTokenAccepted = (useIsTokenAccepted() as { isAccepted: boolean }).isAccepted
     const [isLoading, setIsLoading] = useState(true)
 
     const containerVariants = {

@@ -22,7 +22,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   error,
   onCarrierChange,
 }) => {
-  const { register, watch, setValue } = useFormContext();
+  const { register, watch } = useFormContext();
   const [carrier, setCarrier] = useState<{
     id: string | null;
     name: string | null;
@@ -39,7 +39,6 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   const [isManualSelection, setIsManualSelection] = useState(false);
   const phoneNumber = watch("phoneNumber");
   const [isFocused, setIsFocused] = useState(false);
-  const [isNetworkFocused, setIsNetworkFocused] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -166,8 +165,8 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
-  const handleNetworkFocus = () => setIsNetworkFocused(true);
-  const handleNetworkBlur = () => setIsNetworkFocused(false);
+  const handleNetworkFocus = () => {};
+  const handleNetworkBlur = () => {};
 
   // Phone validation successful
   const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true;

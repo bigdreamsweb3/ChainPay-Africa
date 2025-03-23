@@ -32,17 +32,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 }) => {
   const { register, formState: { errors }, watch } = useFormContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // Only keep one local state for display purposes and use parent state for converted amount
   const [localDisplayAmount, setLocalDisplayAmount] = useState<string>("0");
   const [isConverting, setIsConverting] = useState(false);
   const { isConnected } = useAccount();
-  const { activeWallet } = useUserWallet()
-  const [tokenImages, setTokenImages] = useState<{ [key: string]: string }>({})
-  const [fetchingRates, setFetchingRates] = useState(false)
-  const [conversionAmount, setConversionAmount] = useState<string>('Loading...')
+  const [tokenImages, setTokenImages] = useState<{ [key: string]: string }>({});
+  const [fetchingRates, setFetchingRates] = useState(false);
+  const [conversionAmount, setConversionAmount] = useState<string>('Loading...');
   const [conversionError, setConversionError] = useState<string | null>(null);
-  const payment = usePayment()
-  const setPayment = useSetPayment()
+  const payment = usePayment();
   const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Store previous values to avoid unnecessary calculations
@@ -175,6 +172,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
         clearTimeout(debounceTimerRef.current);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creditAmount, selectedToken]);
 
   const handleTokenSelect = (token: PaymentToken) => {
@@ -230,6 +228,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     } else {
       setConversionAmount("-- USD");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment.amount]);
 
   return (
