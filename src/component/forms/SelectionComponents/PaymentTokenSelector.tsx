@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { PaymentToken } from '@/constants/token'
 // import { useUserWallet } from '@/hooks/useUserWallet';
 import { usePayment } from '@/hooks/states';
-import { formatTokenPrice } from '@/utils/helper';
+// import { formatTokenPrice } from '@/utils/helper';
 import { debounce } from '@/utils/debounce';
 
 interface PaymentTokenSelectorProps {
@@ -192,6 +192,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
         // Fallback to approximate conversion (1 USD ≈ 1400 NGN)
         const approxUsdValue = parseFloat(payment.amount) / 1400;
         // Conversion amount calculation is still performed but not stored or displayed
+
+        const formattedValue = formatTokenAmountDisplay(approxUsdValue);
+        setLocalDisplayAmount(formattedValue);
       }
     } catch (error) {
       console.error("Failed to calculate conversion rate:", error);
@@ -201,6 +204,8 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       if (payment.amount) {
         const approxUsdValue = parseFloat(payment.amount) / 1400;
         // Conversion amount calculation is still performed but not stored or displayed
+        const formattedValue = formatTokenAmountDisplay(approxUsdValue);
+        setLocalDisplayAmount(formattedValue);
       }
     }
   };
