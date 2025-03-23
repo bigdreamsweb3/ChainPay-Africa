@@ -8,8 +8,8 @@ import { AlertCircle, Loader2, CreditCard, Coins } from "lucide-react";
 import { convertCreditToTokenAmount, formatTokenAmountDisplay } from "@/lib/conversion";
 import { motion, AnimatePresence } from "framer-motion";
 import { PaymentToken } from '@/constants/token'
-import { useUserWallet } from '@/hooks/useUserWallet';
-import { usePayment, useSetPayment } from '@/hooks/states';
+// import { useUserWallet } from '@/hooks/useUserWallet';
+import { usePayment } from '@/hooks/states';
 import { formatTokenPrice } from '@/utils/helper';
 import { debounce } from '@/utils/debounce';
 
@@ -41,7 +41,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   const [conversionError, setConversionError] = useState<string | null>(null);
   const payment = usePayment();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   // Store previous values to avoid unnecessary calculations
   const prevAmountRef = useRef<string>("");
   const prevTokenRef = useRef<string>("");
@@ -123,30 +123,30 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           prevAmountRef.current = amount;
           prevTokenRef.current = token;
           lastCalculationTimeRef.current = Date.now();
-          
+
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
-          
+
           const tokenAmount = await convertCreditToTokenAmount(
             Number(amount),
             selectedTokenData
           );
-          
+
           // Update display formatting
           const formattedAmount = formatTokenAmountDisplay(tokenAmount);
           setLocalDisplayAmount(formattedAmount);
-          
+
           // Update parent state if provided
           if (setParentConvertedAmount) setParentConvertedAmount(tokenAmount);
           if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
         } catch (error) {
           console.error("Error converting amount:", error);
           setConversionError("Network error. Using estimated conversion rate.");
-          
+
           // Use a fallback approximate conversion
           const fallbackAmount = (Number(amount) / 1400).toFixed(6); // Approximate USD value
           setLocalDisplayAmount(formatTokenAmountDisplay(fallbackAmount));
-          
+
           // Update parent state with fallback values
           if (setParentConvertedAmount) setParentConvertedAmount(fallbackAmount);
           if (setParentDisplayAmount) setParentDisplayAmount(formatTokenAmountDisplay(fallbackAmount));
@@ -165,14 +165,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   // Convert credit units to token amount whenever amount or selected token changes
   useEffect(() => {
     legacyUpdateAmount(creditAmount, selectedToken);
-    
+
     // Cleanup function to clear the timer when component unmounts
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creditAmount, selectedToken]);
 
   const handleTokenSelect = (token: PaymentToken) => {
@@ -202,7 +202,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     } catch (error) {
       console.error("Failed to calculate conversion rate:", error);
       setConversionError("Could not calculate rate");
-      
+
       // Fallback if there's an error in the calculation
       if (payment.amount) {
         const approxUsdValue = parseFloat(payment.amount) / 1400;
@@ -228,7 +228,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     } else {
       setConversionAmount("-- USD");
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment.amount]);
 
   return (
@@ -324,7 +324,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
             <div className="flex items-center justify-between">
               <p className="text-sm text-chainpay-blue-dark flex items-center gap-2">
                 <CreditCard className="w-3.5 h-3.5 text-chainpay-blue" />
-                <span className="font-medium">Pay:</span> 
+                <span className="font-medium">Pay:</span>
                 {isConverting ? (
                   <span className="flex items-center">
                     <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin text-chainpay-blue" />
@@ -365,7 +365,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
       <AnimatePresence>
         {isModalOpen && isConnected && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -377,7 +377,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
             }}
             data-action="token-select"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
@@ -459,11 +459,11 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                         </span>
                         <span className="text-xs text-chainpay-blue">{token.network}</span>
                       </div>
-                      
+
                       {selectedToken === token.id && (
                         <div className="ml-auto w-5 h-5 rounded-full bg-chainpay-blue flex items-center justify-center">
                           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M10 3L4.5 8.5L2 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </div>
                       )}
