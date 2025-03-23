@@ -7,7 +7,7 @@
  * @param immediate Whether to invoke the function immediately on the leading edge
  * @returns A debounced version of the original function
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -35,7 +35,7 @@ export function debounce<T extends (...args: any[]) => any>(
  * @param wait The number of milliseconds to throttle invocations to
  * @returns A throttled version of the original function
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   wait: number = 300
 ): (...args: Parameters<T>) => void {

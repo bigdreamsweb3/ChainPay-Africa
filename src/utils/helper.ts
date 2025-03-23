@@ -97,7 +97,10 @@ export function generateRandomId(length: number = 10): string {
  * @param type The expected type ('string', 'number', 'boolean', 'object', 'array')
  * @returns Boolean indicating if the value is valid
  */
-export function isValidValue(value: any, type: 'string' | 'number' | 'boolean' | 'object' | 'array'): boolean {
+export function isValidValue(
+  value: unknown, 
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array'
+): boolean {
   if (value === undefined || value === null) return false;
   
   switch (type) {

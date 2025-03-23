@@ -1,8 +1,5 @@
 import axios from "axios";
 
-// Track online status
-let isOnline = true;
-
 // Function to check if we're offline
 const isOffline = () => {
     return typeof navigator !== 'undefined' && navigator.onLine === false;
