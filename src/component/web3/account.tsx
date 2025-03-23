@@ -73,7 +73,7 @@ export function Account() {
       {/* Account Button */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white px-3 py-1.5 rounded-lg transition-all duration-200"
+        className="flex items-center space-x-2 bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white px-3 py-1.5 rounded-lg transition-all duration-200 focus:outline-none"
         whileHover={{ opacity: 0.9 }}
         whileTap={{ scale: 0.98 }}
       >
@@ -136,7 +136,7 @@ export function Account() {
                 href={`${chain?.blockExplorers?.default.url}/address/${address}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors duration-150"
+                className="flex items-center space-x-2 px-2 py-1.5 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors duration-150 focus:outline-none"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>View on Explorer</span>
@@ -148,7 +148,7 @@ export function Account() {
                   disconnect();
                   setIsOpen(false);
                 }}
-                className="flex items-center space-x-2 px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors duration-150 w-full text-left"
+                className="flex items-center space-x-2 px-2 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors duration-150 w-full text-left focus:outline-none"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Disconnect</span>
@@ -163,7 +163,7 @@ export function Account() {
                   onClick={() =>
                     setIsNetworkDropdownOpen(!isNetworkDropdownOpen)
                   }
-                  className="flex items-center space-x-2 px-2 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-150 w-full text-left"
+                  className="flex items-center space-x-2 px-2 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-md transition-colors duration-150 w-full text-left focus:outline-none"
                 >
                   <span>Switch Network</span>
                   <ChevronDown
@@ -178,7 +178,7 @@ export function Account() {
                       <button
                         key={supportedChain.id}
                         onClick={() => handleSwitchChain(supportedChain)}
-                        className="flex items-center px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        className="flex items-center px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 w-full text-left focus:outline-none"
                       >
                         {supportedChain.name}
                       </button>

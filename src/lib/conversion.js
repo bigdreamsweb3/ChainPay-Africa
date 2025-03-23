@@ -1,5 +1,13 @@
 import axios from "axios";
 
+// Track online status
+let isOnline = true;
+
+// Function to check if we're offline
+const isOffline = () => {
+    return typeof navigator !== 'undefined' && navigator.onLine === false;
+};
+
 // Cache for exchange rates with expiration
 let exchangeRateCache = {
     value: null,
@@ -34,18 +42,30 @@ const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 300) => {
         } catch (error) {
             lastError = error;
             
-            // Only retry on network errors, not on 4xx client errors
-            if (error.response && error.response.status >= 400 && error.response.status < 500) {
+            // Don't retry on 4xx client errors (except 429 Too Many Requests)
+            if (error.response && error.response.status >= 400 && error.response.status < 500 && error.response.status !== 429) {
+                console.log(`Client error ${error.response.status}, not retrying:`, error.message);
+                throw error;
+            }
+            
+            // Network errors and server errors (5xx) are candidates for retry
+            const isNetworkError = !error.response && error.request;
+            const isServerError = error.response && error.response.status >= 500;
+            const isRateLimited = error.response && error.response.status === 429;
+            
+            if (!isNetworkError && !isServerError && !isRateLimited) {
+                console.log("Unexpected error type, not retrying:", error.message);
                 throw error;
             }
 
             // Calculate delay with exponential backoff
             const delay = baseDelay * Math.pow(2, attempt);
-            console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+            console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms. Reason: ${isNetworkError ? 'Network error' : isServerError ? 'Server error' : 'Rate limited'}`);
             await new Promise(resolve => setTimeout(resolve, delay));
         }
     }
 
+    console.log("All retry attempts failed");
     throw lastError;
 };
 
@@ -63,8 +83,45 @@ export const getExchangeRate = async () => {
 
     try {
         const fetchRate = async () => {
-            const response = await axios.get("https://api.binance.com/api/v3/ticker/price?symbol=USDTNGN");
-            return parseFloat(response.data.price);
+            // Check if we're offline
+            if (isOffline()) {
+                console.log("Device is offline, using cached or fallback rate");
+                if (exchangeRateCache.value) {
+                    return exchangeRateCache.value;
+                }
+                return 1400; // Fallback rate when offline
+            }
+
+            try {
+                // Try Binance API first
+                const response = await axios.get("https://api.binance.com/api/v3/ticker/price?symbol=USDTNGN", {
+                    timeout: 10000 // 10 second timeout
+                });
+                return parseFloat(response.data.price);
+            } catch (primaryError) {
+                console.log("Primary API failed, trying backup API...", primaryError.message);
+                
+                try {
+                    // Fallback to alternative API (example using CoinGecko)
+                    const backupResponse = await axios.get(
+                        "https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=ngn", 
+                        { timeout: 10000 }
+                    );
+                    return parseFloat(backupResponse.data.tether.ngn);
+                } catch (backupError) {
+                    console.log("Backup API failed too:", backupError.message);
+                    
+                    // If both APIs fail, check if we have a cached rate (even expired)
+                    if (exchangeRateCache.value) {
+                        console.log("Using previously cached rate as fallback");
+                        return exchangeRateCache.value;
+                    }
+                    
+                    // Last resort fallback value
+                    console.log("No cached rate available, using hardcoded fallback");
+                    return 1400; // Default fallback rate
+                }
+            }
         };
         
         // Use the retry mechanism
@@ -80,7 +137,7 @@ export const getExchangeRate = async () => {
         console.log("NGN/USD Rate:", rate);
         return rate;
     } catch (error) {
-        console.error("Failed to fetch exchange rate after retries:", error);
+        console.error("Failed to fetch exchange rate:", error.message || "Unknown error");
         
         // If we have a cached value, use it even if expired
         if (exchangeRateCache.value) {
@@ -88,8 +145,9 @@ export const getExchangeRate = async () => {
             return exchangeRateCache.value;
         }
         
-        // Last resort fallback
-        return 1400; // Default fallback rate
+        // If no cached value exists, use hardcoded fallback
+        console.warn("No exchange rate data available. Using fallback rate of 1400 NGN per USD.");
+        return 1400; // Default fallback rate for USDT/NGN
     }
 };
 

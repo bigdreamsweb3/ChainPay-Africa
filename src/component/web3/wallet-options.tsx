@@ -21,16 +21,30 @@ export function WalletOptions() {
     setIsClient(true);
   }, []);
 
+  // Track connection status based on isPending
+  useEffect(() => {
+    if (selectedConnector) {
+      if (isPending) {
+        setConnectionStatus("connecting");
+      } else if (error) {
+        setConnectionStatus("error");
+      } else if (!isPending && connectionStatus === "connecting") {
+        setConnectionStatus("success");
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setConnectionStatus("idle");
+          setSelectedConnector(null);
+        }, 1500);
+      }
+    }
+  }, [isPending, error, selectedConnector, connectionStatus]);
+
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector.uid);
     setConnectionStatus("connecting");
     try {
       connect({ connector });
-      setConnectionStatus("success");
-      setTimeout(() => {
-        setIsModalOpen(false);
-        setConnectionStatus("idle");
-      }, 1500);
+      // Let the useEffect handle the status changes based on isPending
     } catch (err) {
       console.error("Connection error:", err);
       setConnectionStatus("error");
@@ -51,7 +65,7 @@ export function WalletOptions() {
       <button
         onClick={() => setIsModalOpen(true)}
         className={`relative flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
-          transition-all duration-200 ${
+          transition-all duration-200 focus:outline-none ${
             isPending
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white hover:opacity-90 active:scale-95"
@@ -88,7 +102,7 @@ export function WalletOptions() {
             >
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -106,7 +120,7 @@ export function WalletOptions() {
                       key={connector.uid}
                       onClick={() => handleConnect(connector)}
                       disabled={isPending}
-                      className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
+                      className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors focus:outline-none ${
                         selectedConnector === connector.uid
                           ? "bg-[#0099FF]/5 border border-[#0099FF]"
                           : "hover:bg-gray-50 border border-gray-100"

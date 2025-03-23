@@ -7,10 +7,12 @@ import { useAccount } from "wagmi";
 import { AlertCircle, Loader2, CreditCard, Coins } from "lucide-react";
 import { convertCreditToTokenAmount, formatTokenAmountDisplay } from "@/lib/conversion";
 import { motion, AnimatePresence } from "framer-motion";
-import { PaymentToken } from '@/constants/token'
+import { PaymentToken, supportedNetworks } from '@/constants/token'
 import { useUserWallet } from '@/hooks/useUserWallet';
 import { usePayment, useSetPayment } from '@/hooks/states';
 import { formatTokenPrice } from '@/utils/helper';
+import { USDT_ADDRESSES } from '@/constants/addresses';
+import ReactLoading from 'react-loading';
 import { debounce } from '@/utils/debounce';
 
 interface PaymentTokenSelectorProps {

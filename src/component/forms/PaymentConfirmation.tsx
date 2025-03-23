@@ -4,6 +4,8 @@ import { Loader2, AlertCircle } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { convertCreditToTokenAmount, convertToTokenUnits, formatTokenAmountDisplay } from "@/lib/conversion";
+import Button from '../ui/Button';
+import Card from '../ui/Card';
 
 interface FormData {
   phoneNumber: string;
@@ -19,13 +21,13 @@ interface PaymentConfirmationProps {
     enum_value: number;
   };
   selectedTokenDetails:
-  | { 
-      name: string; 
-      symbol: string; 
-      contractAddress: string; 
-      image: string;
-      decimals: number;
-    }
+  | {
+    name: string;
+    symbol: string;
+    contractAddress: string;
+    image: string;
+    decimals: number;
+  }
   | null
   | undefined;
   onClose: () => void;
@@ -59,26 +61,29 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   // or if sufficient time has passed since the last update
   useEffect(() => {
     // Skip initial conversion if values are provided and skipInitialConversion is true
-    if (skipInitialConversion && 
-        initialConvertedAmount !== "0.00" && 
-        initialDisplayAmount !== "0" && 
-        !isConverting) {
+    if (skipInitialConversion &&
+      initialConvertedAmount !== "0.00" &&
+      initialDisplayAmount !== "0" &&
+      !isConverting) {
       // Just update the last update time
       setLastUpdateTime(Date.now());
       return;
     }
+
+    // Prevent running this effect if we're already converting
+    if (isConverting) return;
 
     const updateConvertedAmount = async () => {
       if (selectedTokenDetails && amountStr && !isNaN(Number(amountStr))) {
         try {
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
-          
+
           const tokenAmount = await convertCreditToTokenAmount(
             Number(amountStr),
             selectedTokenDetails
           );
-          
+
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
           setLastUpdateTime(Date.now());
@@ -100,18 +105,18 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     const timeElapsed = Date.now() - lastUpdateTime;
     const shouldUpdate = timeElapsed > 30000; // 30 seconds threshold
 
-    if (!skipInitialConversion || shouldUpdate) {
+    // Only update if needed and not already converting
+    if ((!skipInitialConversion || shouldUpdate) && !isConverting) {
       updateConvertedAmount();
     }
   }, [
-    amountStr, 
-    selectedTokenDetails, 
-    setParentIsConverting, 
-    skipInitialConversion, 
-    initialConvertedAmount, 
+    amountStr,
+    selectedTokenDetails,
+    setParentIsConverting,
+    skipInitialConversion,
+    initialConvertedAmount,
     initialDisplayAmount,
-    lastUpdateTime,
-    isConverting
+    // Remove lastUpdateTime and isConverting from dependency array to prevent infinite loop
   ]);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -157,16 +162,16 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       // If the conversion is stale, refresh it
       if (isStale) {
         setErrorMessage("Refreshing price information...");
-        
+
         try {
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
-          
+
           const tokenAmount = await convertCreditToTokenAmount(
             Number(amountStr),
             selectedTokenDetails
           );
-          
+
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
           setLastUpdateTime(Date.now());
@@ -243,15 +248,29 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   const isConfirmDisabled = !carrier?.name || !watch("phoneNumber") || !watch("amount") || !selectedTokenDetails;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm">
-      <div className="bg-white rounded-[20px] w-full max-w-md shadow-xl border border-gray-100 overflow-hidden">
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 mt-0 bg-gray-900/60 backdrop-blur-sm"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onClose();
+      }}
+    >
+      <div
+        className="bg-white rounded-[20px] w-full max-w-md shadow-xl border border-gray-100 overflow-hidden"
+        onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
+      >
         {/* Header */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex items-center justify-between">
-            <h3 className="text-[15px] font-semibold text-gray-900">Confirm Transaction</h3>
+            <h3 className="text-[15px] font-semibold text-gray-900">Review Transaction</h3>
             <button
-              onClick={onClose}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-[#0099FF] focus:ring-offset-2"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onClose();
+              }}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -272,113 +291,104 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Payment Details */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
-              <span className="text-sm text-gray-600">Service</span>
-              <span className="text-[15px] font-semibold text-gray-900 capitalize">{selectedService}</span>
+        <Card
+          title=""
+          className="max-w-md w-full mx-auto"
+        >
+          <div >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
+                <span className="text-sm text-gray-600">Service</span>
+                <span className="text-[15px] font-semibold text-gray-900 capitalize">{selectedService}</span>
+              </div>
+
+              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
+                <span className="text-sm text-gray-600">
+                  {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
+                </span>
+                <span className="text-[15px] font-semibold text-gray-900">
+                  {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
+                </span>
+              </div>
+
+              {(selectedService === "airtime" || selectedService === "data") && carrier && (
+                <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
+                  <span className="text-sm text-gray-600">Network</span>
+                  <span className="text-[15px] font-semibold text-gray-900">{carrier.name || "Unknown"}</span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
+                <span className="text-sm text-gray-600">Amount</span>
+                <span className="text-[15px] font-semibold text-gray-900">{watch("amount")} Credit Units</span>
+              </div>
+
+              {/* Display the converted token amount */}
+              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
+                <span className="text-sm text-gray-600">Pay Amount</span>
+                <span className="text-[15px] font-semibold text-gray-900">
+                  {isConverting ? (
+                    <span className="flex items-center">
+                      <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
+                      Calculating...
+                    </span>
+                  ) : (
+                    <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
+                  )}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
+                <span className="text-sm text-gray-600">Payment Token</span>
+                <span className="text-[15px] font-semibold text-gray-900">
+                  {selectedTokenDetails ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-r from-chainpay-blue-light/10 to-chainpay-blue/10 flex items-center justify-center overflow-hidden border border-chainpay-blue-light/20">
+                        <Image
+                          src={selectedTokenDetails.image || "/placeholder.svg"}
+                          alt={selectedTokenDetails.name}
+                          width={16}
+                          height={16}
+                          className="w-4 h-4 rounded-full object-cover"
+                        />
+                      </div>
+                      {selectedTokenDetails.symbol}
+                    </div>
+                  ) : (
+                    "None selected"
+                  )}
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
-              <span className="text-sm text-gray-600">
-                {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
-              </span>
-              <span className="text-[15px] font-semibold text-gray-900">
-                {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
-              </span>
-            </div>
-
-            {(selectedService === "airtime" || selectedService === "data") && carrier && (
-              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
-                <span className="text-sm text-gray-600">Network</span>
-                <span className="text-[15px] font-semibold text-gray-900">{carrier.name || "Unknown"}</span>
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-100">
+                <p className="text-sm text-red-600 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  {errorMessage}
+                </p>
               </div>
             )}
-
-            <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
-              <span className="text-sm text-gray-600">Amount</span>
-              <span className="text-[15px] font-semibold text-gray-900">{watch("amount")} Credit Units</span>
-            </div>
-
-            {/* Display the converted token amount */}
-            <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
-              <span className="text-sm text-gray-600">Pay Amount</span>
-              <span className="text-[15px] font-semibold text-gray-900">
-                {isConverting ? (
-                  <span className="flex items-center">
-                    <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                    Calculating...
-                  </span>
-                ) : (
-                  <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
-                )}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-[#0099FF05] to-[#0066FF05] border border-[#0099FF20]">
-              <span className="text-sm text-gray-600">Payment Token</span>
-              <span className="text-[15px] font-semibold text-gray-900">
-                {selectedTokenDetails ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-r from-[#0099FF10] to-[#0066FF10] flex items-center justify-center overflow-hidden border border-[#0099FF20]">
-                      <Image
-                        src={selectedTokenDetails.image || "/placeholder.svg"}
-                        alt={selectedTokenDetails.name}
-                        width={16}
-                        height={16}
-                        className="w-4 h-4 rounded-full object-cover"
-                      />
-                    </div>
-                    {selectedTokenDetails.symbol}
-                  </div>
-                ) : (
-                  "None selected"
-                )}
-              </span>
-            </div>
           </div>
 
-          {/* Error Message */}
-          {errorMessage && (
-            <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-100">
-              <p className="text-sm text-red-600 flex items-center gap-2">
-                <AlertCircle className="w-4 h-4" />
-                {errorMessage}
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="p-6 border-t border-gray-100">
-          <motion.button
-            type="button"
-            onClick={handleBuyAirtime}
-            disabled={isPending || isConfirmDisabled}
-            className={`inline-flex items-center justify-center gap-2 w-full h-[47px] rounded-[15px] transition-all duration-300 
-              ${isPending || isConfirmDisabled
-                ? "bg-gray-100 cursor-not-allowed"
-                : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
-              }`}
-            whileHover={!isConfirmDisabled && !isPending ? { scale: 1.02 } : {}}
-            whileTap={!isConfirmDisabled && !isPending ? { scale: 0.98 } : {}}
-          >
-            <span className="text-[15px] font-semibold text-white">
-              {isPending ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                "Confirm Payment"
-              )}
-            </span>
-          </motion.button>
-        </div>
+          {/* Actions */}
+          <div className="p-6 border-t border-border-light">
+            <Button
+              type="button"
+              onClick={(e) => handleBuyAirtime(e)}
+              disabled={isPending || isConfirmDisabled}
+              isLoading={isPending}
+              fullWidth
+            >
+              {isPending ? "Processing..." : "Confirm Payment"}
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
   );
 };
 
 export default PaymentConfirmation;
+

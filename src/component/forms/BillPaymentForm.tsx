@@ -6,7 +6,7 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Sparkles } from "lucide-react";
 import { useAccount, useConnect } from "wagmi";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
@@ -16,6 +16,22 @@ import UnavailableServiceMessage from "./UnavailableServiceMessage";
 import PaymentTokenSelector from "./SelectionComponents/PaymentTokenSelector";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { appConfig } from "@/app-config";
+import { FuturisticButton } from "../ui";
+import { usePayment, useSetPayment } from "@/hooks/states";
+import { PaymentToken as TokenSelectorToken } from '@/constants/token';
+
+// Adapter to convert between PaymentToken interfaces
+const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
+  return tokens.map(token => ({
+    id: token.id,
+    network: token.id.split('-')[0] || 'ethereum',
+    token: token.symbol,
+    address: token.contractAddress,
+    name: token.name,
+    symbol: token.symbol,
+    image: token.image
+  }));
+};
 
 const billPaymentSchema = z.object({
   serviceType: z.enum(["airtime", "data", "electricity"]),
@@ -84,6 +100,8 @@ const BillPaymentForm: React.FC = () => {
 
   const selectedService = watch("serviceType");
   const amount = watch("amount");
+  const phoneNumber = watch("phoneNumber");
+  const meterNumber = watch("meterNumber");
 
   const paymentTokens: PaymentToken[] = useAcceptedTokens();
   const selectedTokenDetails = paymentTokens.find(
@@ -105,6 +123,26 @@ const BillPaymentForm: React.FC = () => {
   useEffect(() => {
     prevServiceRef.current = selectedService;
   }, [selectedService]);
+
+  const [phoneState, setPhoneState] = useState({
+    isPhoneValid: false,
+    network: appConfig.availableServices.includes("Airtime") ? "MTN" : "MTN",
+  });
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const payment = usePayment();
+  const setPayment = useSetPayment();
+
+  // Sync form data with payment state
+  useEffect(() => {
+    setPayment({
+      amount: amount || '',
+      phoneNumber: phoneNumber || '',
+      meterNumber: meterNumber || '',
+      tokenId: selectedTokenId || '',
+      serviceType: selectedService,
+      networkProvider: payment.networkProvider
+    });
+  }, [amount, phoneNumber, meterNumber, selectedTokenId, selectedService, setPayment, payment.networkProvider]);
 
   const onSubmit = async (data: BillPaymentFormData) => {
     console.log("Submitting payment with data:", data);
@@ -159,6 +197,65 @@ const BillPaymentForm: React.FC = () => {
   // Check if the amount is valid (at least 50)
   const isAmountValid = !isNaN(Number(amount)) && Number(amount) >= 50;
 
+  const handleTokenSelection = (token: PaymentToken) => {
+    setPayment({
+      ...payment,
+      tokenId: token.id
+    });
+  };
+
+  const isPaymentValid = () => {
+    // For airtime/data services
+    if (selectedService === "airtime" || selectedService === "data") {
+      return (
+        amount && 
+        parseFloat(amount) >= 50 && 
+        selectedTokenId && 
+        phoneNumber && 
+        carrier.id !== null
+      );
+    }
+    // For electricity service
+    else if (selectedService === "electricity") {
+      return (
+        amount && 
+        parseFloat(amount) >= 50 && 
+        selectedTokenId && 
+        meterNumber && 
+        meterNumber.length === 11
+      );
+    }
+    return false;
+  };
+
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Check if the form is valid first
+    if (isPaymentValid()) {
+      // Log that we're showing the payment confirmation
+      console.log("Form is valid, showing payment confirmation");
+      setShowConfirmation(true);
+      return;
+    }
+    
+    console.log("Form is not valid, cannot proceed to payment");
+  };
+
+  // Debug: log when the form validation state changes
+  useEffect(() => {
+    const formValid = isPaymentValid();
+    console.log("Form valid:", formValid);
+    console.log("Form data:", {
+      amount,
+      selectedTokenId,
+      phoneNumber,
+      meterNumber,
+      carrier,
+      serviceType: selectedService
+    });
+  }, [amount, selectedTokenId, phoneNumber, meterNumber, carrier, selectedService]);
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-2 sm:gap-3">
@@ -182,7 +279,7 @@ const BillPaymentForm: React.FC = () => {
                 {unavailableServiceMessage ? (
                   <UnavailableServiceMessage serviceName={selectedService} />
                 ) : (
-                  <div className="space-y-4">
+                  <div className="">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={step}
@@ -191,7 +288,7 @@ const BillPaymentForm: React.FC = () => {
                         exit={{ opacity: 0, x: -50 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+                        <form onSubmit={handleSubmitForm} className="space-y-3">
                           {step === 1 && (
                             <>
                               {selectedService === "electricity" ? (
@@ -201,17 +298,31 @@ const BillPaymentForm: React.FC = () => {
                               ) : (
                                 <PhoneNumberInput
                                   error={errors.phoneNumber?.message}
-                                  onCarrierChange={(carrier) => setCarrier(carrier)}
+                                  onCarrierChange={(carrierData) => {
+                                    setCarrier(carrierData);
+                                    // Update the network provider in payment state
+                                    if (carrierData.name) {
+                                      setPayment({
+                                        ...payment,
+                                        networkProvider: carrierData.name
+                                      });
+                                    }
+                                  }}
                                 />
                               )}
 
                               <div className="space-y-2">
                                 <PaymentTokenSelector
-                                  paymentTokens={paymentTokens}
+                                  paymentTokens={adaptPaymentTokens(paymentTokens)}
                                   selectedToken={selectedTokenId}
                                   setSelectedToken={(tokenId) => {
                                     setSelectedTokenId(tokenId);
                                     setValue("paymentToken", tokenId);
+                                    // Update payment state with the selected token
+                                    setPayment({
+                                      ...payment,
+                                      tokenId: tokenId
+                                    });
                                   }}
                                   setIsConverting={setIsConverting}
                                   setConvertedAmount={setConvertedAmount}
@@ -221,29 +332,19 @@ const BillPaymentForm: React.FC = () => {
                             </>
                           )}
 
-                          <button
-                            type="button"
-                            onClick={isConnected ? openPaymentConfirmation : connectWallet}
-                            disabled={
-                              isConnected
-                                ? !isValid || !isAmountValid || isSubmitting || isConverting // Disable if amount is invalid or conversion in progress
-                                : false
-                            }
-                            className="w-full h-[40px] rounded-md bg-blue-600 text-white font-semibold transition duration-200 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-                          >
-                            {isSubmitting ? (
-                              <Loader2 className="w-5 h-5 mx-auto animate-spin" />
-                            ) : isConverting ? (
-                              <span className="flex items-center justify-center">
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Calculating price...
-                              </span>
-                            ) : isConnected ? (
-                              "Pay"
-                            ) : (
-                              "Connect Wallet"
-                            )}
-                          </button>
+                          <div className="flex justify-center mt-6">
+                            <FuturisticButton
+                              type="submit"
+                              data-action="submit-payment"
+                              disabled={!isPaymentValid()}
+                              variant="primary"
+                              size="large"
+                              fullWidth
+                              icon={<Sparkles size={16} />}
+                            >
+                             Pay
+                            </FuturisticButton>
+                          </div>
                         </form>
                       </motion.div>
                     </AnimatePresence>
@@ -251,13 +352,13 @@ const BillPaymentForm: React.FC = () => {
                     {submitStatus !== "success" && isAvailable && (
                       <>
                         {step > 0 && step < steps.length - 2 && (
-                          <div className="flex flex-col gap-2 pt-2 border-t border-gray-200">
+                          <div className="flex flex-col gap-2 pt-2 border-t border-chainpay-blue-light/20">
                             {step > 1 && (
                               <button
                                 type="button"
                                 onClick={prevStep}
                                 disabled={isSubmitting}
-                                className="px-3 py-2 text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200"
+                                className="px-3 py-2 text-sm text-chainpay-blue bg-chainpay-blue-light/10 rounded-md hover:bg-chainpay-blue-light/20 transition-colors duration-200 font-medium border border-chainpay-blue-light/20"
                               >
                                 Previous
                               </button>
@@ -271,9 +372,9 @@ const BillPaymentForm: React.FC = () => {
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -20 }}
-                              className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-100"
+                              className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200 shadow-sm"
                             >
-                              <p className="text-sm text-red-600 flex items-center gap-2">
+                              <p className="text-sm text-red-600 flex items-center gap-2 font-medium">
                                 <AlertCircle className="w-4 h-4" />
                                 There was an error processing your payment. Please try
                                 again.
@@ -285,13 +386,13 @@ const BillPaymentForm: React.FC = () => {
                     )}
 
                     {/* Payment Confirmation Modal */}
-                    {isPaymentConfirmationOpen && (
+                    {showConfirmation && (
                       <PaymentConfirmation
                         selectedService={selectedService}
                         watch={watch}
                         carrier={carrier}
                         selectedTokenDetails={selectedTokenDetails}
-                        onClose={closePaymentConfirmation}
+                        onClose={() => setShowConfirmation(false)}
                         setParentIsConverting={setIsConverting}
                         convertedAmount={convertedAmount}
                         displayAmount={displayAmount}

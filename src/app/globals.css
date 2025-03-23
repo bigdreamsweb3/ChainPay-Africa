@@ -1,9 +1,98 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary: #0A82CD;
+  --secondary: #35B0FF;
+  --accent: #F39C12;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #FFFFFF;
+  color: #1A202C;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #F8FAFC;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0A82CD, #35B0FF);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #35B0FF, #0A82CD);
+}
+
+/* Component classes */
+@layer components {
+  .app-card {
+    @apply bg-background-card rounded-medium border border-border-light shadow-small transition-all duration-300 hover:shadow-medium;
+  }
+  
+  .app-button {
+    @apply px-4 py-2 rounded-pill bg-gradient-to-r from-brand-primary to-brand-secondary text-white font-medium shadow-small hover:shadow-medium transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98];
+  }
+  
+  .accent-button {
+    @apply px-4 py-2 rounded-pill bg-gradient-to-r from-brand-accent to-brand-highlight text-white font-medium shadow-small hover:shadow-medium transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98];
+  }
+  
+  .outlined-border {
+    @apply border border-border-medium rounded-medium;
+  }
+  
+  .fade-in {
+    @apply animate-fade;
+  }
+  
+  .slide-up {
+    @apply animate-slideUp;
+  }
 }
 
 .container {

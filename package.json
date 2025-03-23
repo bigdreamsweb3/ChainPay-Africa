@@ -28,6 +28,8 @@
         "@tanstack/react-query": "^5.66.7",
         "@types/react-redux": "^7.1.34",
         "autoprefixer": "^10.4.20",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
         "ethers": "^6.13.5",
         "eventemitter3": "^5.0.1",
         "framer-motion": "^12.4.5",
@@ -36,7 +38,9 @@
         "next": "15.1.7",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
+        "react-loading": "^2.0.3",
         "react-redux": "^9.2.0",
+        "tailwind-merge": "^3.0.2",
         "viem": "^2.23.3",
         "wagmi": "^2.14.11",
         "zod": "^3.24.2"
