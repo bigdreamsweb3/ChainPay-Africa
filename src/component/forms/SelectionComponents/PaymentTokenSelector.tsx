@@ -36,8 +36,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   const [isConverting, setIsConverting] = useState(false);
   const { isConnected } = useAccount();
   const [tokenImages, setTokenImages] = useState<{ [key: string]: string }>({});
-  const [fetchingRates, setFetchingRates] = useState(false);
-  const [conversionAmount, setConversionAmount] = useState<string>('Loading...');
   const [conversionError, setConversionError] = useState<string | null>(null);
   const payment = usePayment();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -187,7 +185,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const updateConversionAmount = async () => {
     try {
-      setFetchingRates(true);
       setConversionError(null);
 
       // Instead of making an API call that results in 404, use local estimation
@@ -195,9 +192,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
         // Fallback to approximate conversion (1 USD ≈ 1400 NGN)
         const approxUsdValue = parseFloat(payment.amount) / 1400;
         const formattedValue = formatTokenPrice(approxUsdValue);
-        setConversionAmount(`≈ ${formattedValue} USD (estimate)`);
-      } else {
-        setConversionAmount("-- USD");
+        // Conversion amount calculation is still performed but not stored or displayed
       }
     } catch (error) {
       console.error("Failed to calculate conversion rate:", error);
@@ -207,12 +202,8 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       if (payment.amount) {
         const approxUsdValue = parseFloat(payment.amount) / 1400;
         const formattedValue = formatTokenPrice(approxUsdValue);
-        setConversionAmount(`≈ ${formattedValue} USD (estimate)`);
-      } else {
-        setConversionAmount("-- USD");
+        // Conversion amount calculation is still performed but not stored or displayed
       }
-    } finally {
-      setFetchingRates(false);
     }
   };
 
@@ -225,8 +216,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   useEffect(() => {
     if (payment.amount && payment.amount !== "0") {
       debouncedUpdateAmount();
-    } else {
-      setConversionAmount("-- USD");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment.amount]);

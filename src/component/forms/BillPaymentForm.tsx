@@ -7,7 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Sparkles } from "lucide-react";
-import { useConnect } from "wagmi";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
 import ServiceSelection from "./SelectionComponents/ServiceSelection";
@@ -55,7 +54,7 @@ const steps = ["Service", "Details", "Payment", "Confirm"];
 
 const BillPaymentForm: React.FC = () => {
   const [step, setStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "processing" | "success" | "error"
   >("idle");
@@ -79,8 +78,6 @@ const BillPaymentForm: React.FC = () => {
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const prevServiceRef = useRef<string | null>(null);
-
-  const { connectors } = useConnect();
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
