@@ -1,7 +1,10 @@
 export const appConfig = {
   appFullName: "ChainPay",
-  appName: "Chain",
-  appSubName: "Pay",
+  appNameWord1: "Chain",
+  appNameWord2: "Pay",
+  appDescription:
+    "ChainPay is a platform for making payments on the blockchain.",
+  appLogo: "/images/logo-removebg.png",
   appRegion: "Africa",
   appCountry: "Nigeria",
   countryTheme: {
@@ -19,19 +22,10 @@ export const appConfig = {
     gradientTo: string;
     borderColor: string;
   }>,
-  appDescription:
-    "ChainPay is a platform for making payments on the blockchain.",
-  appLogo: "/images/logo-removebg.png",
-// 
-  // Available Regions
+
+  // Availables
   availableRegions: ["Africa"],
-
-  // Available Countries
   availableCountries: ["Nigeria"],
-
-  // Available Services
   availableServices: ["Airtime"],
-
-  // Available Networks
   availableNetworks: ["MTN", "Airtel", "Glo", "9Mobile"],
 };

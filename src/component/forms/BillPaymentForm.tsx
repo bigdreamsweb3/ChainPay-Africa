@@ -9,10 +9,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Sparkles } from "lucide-react";
 import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
 import MeterNumberInput from "./InputComponents/MeterNumberInput";
-import ServiceSelection from "./SelectionComponents/ServiceSelection";
+import ServiceSelection from "./InputComponents/SelectionComponents/ServiceSelection";
 import { useAcceptedTokens, PaymentToken } from "@/utils/web3/config";
 import UnavailableServiceMessage from "./UnavailableServiceMessage";
-import PaymentTokenSelector from "./SelectionComponents/PaymentTokenSelector";
+import PaymentTokenSelector from "./InputComponents/SelectionComponents/PaymentTokenSelector";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { appConfig } from "@/app-config";
 import { FuturisticButton } from "../ui";
@@ -204,7 +204,6 @@ const BillPaymentForm: React.FC = () => {
       <div className="flex flex-col items-center justify-center gap-2 sm:gap-3">
         <ServiceSelection
           control={methods.control}
-          selectedService={selectedService}
           setStep={setStep}
           setUnavailableServiceMessage={setUnavailableServiceMessage}
           preserveCalculation={true}
@@ -254,7 +253,7 @@ const BillPaymentForm: React.FC = () => {
                                 />
                               )}
 
-                              <div className="space-y-2">
+                              <div className="">
                                 <PaymentTokenSelector
                                   paymentTokens={adaptPaymentTokens(paymentTokens)}
                                   selectedToken={selectedTokenId}

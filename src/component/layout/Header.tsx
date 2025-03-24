@@ -54,9 +54,9 @@ export function Header() {
 
             <div className="flex flex-col">
               <span className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-brand-primary to-chainpay-blue-light bg-clip-text text-transparent">
-                {appConfig.appName}
+                {appConfig.appNameWord1}
                 <span className="text-lg sm:text-xl font-semibold text-chainpay-orange">
-                  {appConfig.appSubName}
+                  {appConfig.appNameWord2}
                 </span>
               </span>
               <div className="flex items-center gap-1 text-xs sm:text-sm text-gray-500">

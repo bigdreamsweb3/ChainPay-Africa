@@ -10,16 +10,19 @@ export default function ChainPayInfoCard() {
   // const isTokenAccepted = useIsTokenAccepted();
   // console.log(isTokenAccepted);
 
+  // Get country theme colors
+  const countryTheme = appConfig.countryTheme[appConfig.appCountry]
+
   return (
-    <div className="w-full max-w-md mx-auto mb-2">
+    <div className="w-full max-w-md mx-auto">
       <motion.div
-        className="relative rounded-xl shadow-lg overflow-hidden p-4 flex flex-col gap-3"
+        className="relative rounded-xl shadow-sm overflow-hidden p-4 flex flex-col gap-3"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        {/* Background Gradient - Using ChainPay brand colors */}
-        <div className="absolute inset-0 bg-gradient-to-br from-chainpay-blue-dark via-chainpay-blue to-chainpay-blue-light" />
+        {/* Background Gradient - Updated to darker blue theme */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-chainpay-blue-dark to-chainpay-blue" />
 
         {/* Blockchain Pattern Overlay */}
         <div className="absolute inset-0 opacity-15 bg-[url('/images/grid-pattern.svg')]" />
@@ -36,11 +39,11 @@ export default function ChainPayInfoCard() {
           </svg>
         </div>
 
-        {/* Animated Glow Effect - Using ChainPay theme colors */}
+        {/* Animated Glow Effect - Using darker blue theme with orange accent */}
         <motion.div
           className="absolute -inset-1 rounded-xl opacity-30 blur-xl"
           style={{
-            background: "linear-gradient(90deg, #0088CC, #00AAFF, #FFAA00, #0088CC)"
+            background: "linear-gradient(90deg, #0a2540, #0088CC, #FFAA00, #0a2540)"
           }}
           animate={{
             backgroundPosition: ["0% center", "200% center"],
@@ -74,9 +77,9 @@ export default function ChainPayInfoCard() {
             </motion.div>
           </div>
 
-          {/* Animated Badge */}
+          {/* Animated Badge - Using Country Theme Colors */}
           <motion.div
-            className={`bg-gradient-to-r from-green-600 to-green-500 px-3 py-1 rounded-full text-xs font-semibold text-white shadow-md border-green-500/30 flex items-center gap-1`}
+            className={`bg-gradient-to-r ${countryTheme.gradientFrom} ${countryTheme.gradientTo} px-3 py-1 rounded-full text-xs font-semibold text-white shadow-md ${countryTheme.borderColor} flex items-center gap-1`}
             initial={{ opacity: 0, x: -5 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.3 }}
@@ -94,7 +97,7 @@ export default function ChainPayInfoCard() {
           transition={{ delay: 0.4, duration: 0.3 }}
           className="z-10"
         >
-          <p className="text-sm text-blue-100">Blockchain-powered transactions across Africa, secure and immutable.</p>
+          <p className="text-sm text-blue-50">Blockchain-powered bill payments across Africa, secure and immutable.</p>
 
 
         </motion.div>
