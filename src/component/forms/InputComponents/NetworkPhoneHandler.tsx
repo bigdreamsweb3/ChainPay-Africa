@@ -6,7 +6,7 @@ import { useFormContext } from "react-hook-form";
 import { networks, detectCarrier } from "@/utils/getPhoneCarrierInfo";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, ChevronDown, AlertCircle, Check, Smartphone } from "lucide-react";
+import { Phone, ChevronDown, AlertCircle, Check } from "lucide-react";
 
 interface PhoneNumberInputProps {
   error?: string;
@@ -38,7 +38,6 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isManualSelection, setIsManualSelection] = useState(false);
   const phoneNumber = watch("phoneNumber");
-  const [isFocused, setIsFocused] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -159,9 +158,6 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
     return true;
   }, []);
 
-  const handleFocus = () => setIsFocused(true);
-  const handleBlur = () => setIsFocused(false);
-
   // Phone validation successful
   const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true;
 
@@ -198,8 +194,6 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                       focus:outline-none focus:border-chainpay-blue/80 focus:ring-1 focus:ring-chainpay-blue/30
                       placeholder:text-chainpay-blue-dark/40
                       bg-chainpay-blue/5 text-chainpay-blue-dark"
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
                   />
                 </div>
 

@@ -75,13 +75,13 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
       {/* Service Selection Card */}
       <motion.div
-        className="w-full mb-4 rounded-xl bg-gradient-to-br from-chainpay-blue-dark/20 to-chainpay-blue/10 backdrop-blur-sm border border-chainpay-blue-light/20 shadow-sm"
+        className="w-full rounded-xl bg-gradient-to-br from-chainpay-blue-dark/20 to-chainpay-blue/10 backdrop-blur-sm border border-chainpay-blue-light/20 shadow-sm"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}
       >
         <div className="p-2">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-4 gap-3">
             {services.map((service) => {
               const isAvailable = appConfig.availableServices.includes(service.name);
               const Icon = service.icon;
@@ -110,9 +110,9 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                           setUnavailableServiceMessage(service.name);
                         }
                       }}
-                      className={`relative flex flex-col items-center justify-center p-3 rounded-md transition-all duration-200 ease-in-out ${field.value === service.id
+                      className={`relative flex flex-col items-center justify-center p-3 rounded-md transition-all duration-200 ease-in-out max-w-[100px] ${field.value === service.id
                         ? "bg-chainpay-blue text-white"
-                        : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
                         }`}
                       aria-label={`Select ${service.name}`}
                     >
