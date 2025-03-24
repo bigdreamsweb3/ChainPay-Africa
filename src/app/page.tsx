@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3.5 sm:gap-3">
         <ChainPayInfoCard />
         <BillPaymentForm />
 

@@ -201,7 +201,7 @@ const BillPaymentForm: React.FC = () => {
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center gap-3.5 sm:gap-3">
         <ServiceSelection
           control={methods.control}
           setStep={setStep}
