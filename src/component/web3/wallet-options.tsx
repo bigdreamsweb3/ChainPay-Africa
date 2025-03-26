@@ -58,9 +58,9 @@ export function WalletOptions() {
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector.uid);
     setConnectionStatus("connecting");
+    setIsModalOpen(false);
     try {
       await connect({ connector });
-      setIsModalOpen(false);
     } catch (err) {
       console.error("Connection error:", err);
       setConnectionStatus("error");
