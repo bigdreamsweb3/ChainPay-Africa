@@ -1,4 +1,4 @@
-import { PaymentToken } from "@/constants/token";
+// import { PaymentToken } from "@/constants/token";
 import axios from "axios";
 
 // Simple rate configuration

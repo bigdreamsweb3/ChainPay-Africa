@@ -55,8 +55,8 @@ export const useAcceptedTokens = (): PaymentToken[] => {
   return Object.values(acceptedTokens) as PaymentToken[]; // Cast to PaymentToken[]
 };
 
-// New function to get the available chains
-export const getAvailableChains = () => {
+// Custom hook to get the available chains
+export const useAvailableChains = () => {
   const { chain } = useAccount();
   return chain ? [chain] : []; // Return the connected chain if available
 };
