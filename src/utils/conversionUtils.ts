@@ -13,7 +13,7 @@ export const fetchConversionRate = async () => {
 // Function to convert credit to token amount
 export const convertAmount = async (amount: string, selectedTokenData: PaymentToken) => {
   if (selectedTokenData && amount && !isNaN(Number(amount))) {
-    const tokenAmount = await convertCreditToTokenAmount(Number(amount), selectedTokenData);
+    const tokenAmount = await convertCreditToTokenAmount(Number(amount));
     return formatTokenAmountDisplay(tokenAmount);
   }
   return "0";
