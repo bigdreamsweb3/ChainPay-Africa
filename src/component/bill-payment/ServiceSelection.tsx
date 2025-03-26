@@ -3,7 +3,6 @@
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Controller, type Control } from "react-hook-form";
-import { motion } from "framer-motion";
 import { Phone, Wifi, Zap } from "lucide-react";
 
 import { appConfig } from "../../app-config";
@@ -52,13 +51,10 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
   return (
     <div className="w-full max-w-md mx-auto">
-
       {/* Service Selection Card */}
-      <motion.div
+      <div
         className="w-full rounded-[10px] bg-blue-50 backdrop-blur-sm border border-chainpay-blue-light/20 shadow-sm"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        
       >
         <div className="p-2">
           <div className="grid grid-cols-4 gap-3">
@@ -90,24 +86,24 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                           setUnavailableServiceMessage(service.name);
                         }
                       }}
-                      className={`relative flex flex-col items-center justify-center p-3 rounded-md transition-all duration-200 ease-in-out max-w-[100px] transform ${field.value === service.id
-                        ? "bg-chainpay-blue text-white scale-105 shadow-lg"
-                        : "bg-white text-gray-700 hover:bg-gray-100"
-                        }`}
+                      className={`relative flex flex-col items-center justify-center p-3 rounded-md transition-all duration-200 ease-in-out max-w-[100px] transform ${
+                        field.value === service.id
+                          ? "bg-chainpay-blue text-white scale-105 shadow-lg"
+                          : "bg-white text-gray-700 hover:bg-gray-100"
+                      }`}
                       aria-label={`Select ${service.name}`}
                     >
                       <Icon
                         size={20}
-                        className={`mb-1 ${field.value === service.id ? "text-white" : "text-chainpay-blue"
-                          }`}
+                        className={`mb-1 ${field.value === service.id ? "text-white" : "text-chainpay-blue"}`}
                       />
                       <span className="text-xs font-bold">{service.name}</span>
 
                       {field.value === service.id && (
-                        <motion.div
-                          className="absolute -bottom-1 left-1/3 transform -translate-x-1/2 w-8 h-1 bg-chainpay-orange rounded-full"
-                          layoutId="activeIndicator"
-                          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        <div
+                          className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-chainpay-orange rounded-full"
+                          
+                          
                         />
                       )}
                     </button>
@@ -117,7 +113,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
             })}
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

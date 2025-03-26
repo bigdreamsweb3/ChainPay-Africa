@@ -22,7 +22,7 @@ module.exports = {
                     'blue-light': '#E6F0FF',
                     'blue': '#0066CC',
                     'blue-dark': '#004C99',
-                    'orange': '#FF6B00',
+                    'orange': '#fda704',
                     'orange-dark': '#E65C00',
                     'orange-light': '#FFF5EB',
                 },

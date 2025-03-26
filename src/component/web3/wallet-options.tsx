@@ -73,23 +73,19 @@ export function WalletOptions() {
     }
   };
 
-  if (!isClient) {
-    return (
-      <button className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 flex items-center gap-2">
-        <Wallet className="w-5 h-5" />
-        <span>Loading wallet options...</span>
-      </button>
-    );
-  }
+  // Filter out the Injected connector
+  const filteredConnectors = connectors.filter(connector => 
+    connector.name.toLowerCase() !== "injected"
+  );
 
   return (
     <div className="relative">
       {/* Connect Wallet Button with clear CTA */}
       <button
         onClick={() => setIsModalOpen(true)}
-        disabled={isPending}
-        className={`flex items-center space-x-2 bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50 ${
-          isPending ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""
+        disabled={isPending || !isClient}
+        className={`flex items-center space-x-2 hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50 ${
+          isPending || !isClient ? "bg-gray-100 text-gray-600 cursor-not-allowed" : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white"
         }`}
         aria-label="Connect your wallet to continue"
       >
@@ -97,6 +93,11 @@ export function WalletOptions() {
           <>
             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
             <span>Connecting...</span>
+          </>
+        ) : !isClient ? (
+          <>
+            <Wallet className="w-4 h-4" />
+            <span>Loading wallet options...</span>
           </>
         ) : (
           <>
@@ -147,7 +148,7 @@ export function WalletOptions() {
 
                 <div className="p-4">
                   <div className="space-y-3">
-                    {connectors.map((connector) => (
+                    {filteredConnectors.map((connector) => (
                       <motion.button
                         key={connector.uid}
                         onClick={(e) => {
@@ -177,9 +178,6 @@ export function WalletOptions() {
                           <div className="text-left">
                             <span className="font-medium text-gray-700 block">
                               {connector.name}
-                            </span>
-                            <span className="text-xs text-gray-400 block">
-                              {connector.id === "injected" ? "Browser extension" : "Mobile wallet"}
                             </span>
                           </div>
                         </div>
