@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useConnect, useAccount, useDisconnect, Connector } from "wagmi"
 import { motion, AnimatePresence } from "framer-motion"
 import { Wallet, ChevronRight, CheckCircle, XCircle, X } from "lucide-react"
@@ -15,27 +15,10 @@ export function WalletOptions() {
   const [selectedConnector, setSelectedConnector] = useState<string | null>(null)
   const [connectionStatus, setConnectionStatus] = useState<"idle" | "connecting" | "success" | "error">("idle")
   const [isClient, setIsClient] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
-  const detailsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsClient(true)
   }, [])
-
-  // Handle clicks outside the modal or details dropdown
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isModalOpen && modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        setIsModalOpen(false)
-      }
-      if (isDetailsOpen && detailsRef.current && !detailsRef.current.contains(event.target as Node)) {
-        setIsDetailsOpen(false)
-      }
-    }
-    
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [isModalOpen, isDetailsOpen])
 
   // Track connection status based on isPending
   useEffect(() => {
@@ -94,54 +77,42 @@ export function WalletOptions() {
 
           <AnimatePresence>
             {isDetailsOpen && (
-              <>
-                {/* Invisible backdrop to capture clicks */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-40"
-                />
-                
-                <motion.div
-                  ref={detailsRef}
-                  initial={{ opacity: 0, y: 5, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                  transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200"
-                  style={{ transformOrigin: "top right" }}
-                >
-                  <div className="p-4 border-b border-gray-100">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-medium text-gray-900">Connected Wallet</h3>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setIsDetailsOpen(false)
-                        }}
-                        className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                    <div className="mt-2 text-sm font-mono text-gray-700 bg-gray-50 p-2 rounded">
-                      {address && formatAddress(address)}
-                    </div>
-                  </div>
-                  <div className="p-3">
+              <motion.div
+                initial={{ opacity: 0, y: 5, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
+              >
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-gray-900">Connected Wallet</h3>
                     <button
-                      onClick={() => {
-                        disconnect()
+                      onClick={(e) => {
+                        e.stopPropagation()
                         setIsDetailsOpen(false)
                       }}
-                      className="w-full p-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors text-center"
+                      className="text-gray-400 hover:text-gray-600"
                     >
-                      Disconnect Wallet
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
-                </motion.div>
-              </>
+                  <div className="mt-2 text-sm font-mono text-gray-700 bg-gray-50 p-2 rounded">
+                    {address && formatAddress(address)}
+                  </div>
+                </div>
+                <div className="p-3">
+                  <button
+                    onClick={() => {
+                      disconnect()
+                      setIsDetailsOpen(false)
+                    }}
+                    className="w-full p-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors text-center"
+                  >
+                    Disconnect Wallet
+                  </button>
+                </div>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -169,25 +140,17 @@ export function WalletOptions() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
             className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-            onClick={(e) => {
-              if (e.target === e.currentTarget) {
-                setIsModalOpen(false)
-              }
-            }}
           >
             <motion.div
-              ref={modalRef}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="w-full max-w-md bg-white shadow-2xl rounded-lg overflow-hidden relative"
+              className="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden relative"
             >
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -203,11 +166,7 @@ export function WalletOptions() {
                   {connectors.map((connector) => (
                     <motion.button
                       key={connector.uid}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        handleConnect(connector)
-                      }}
+                      onClick={() => handleConnect(connector)}
                       disabled={isPending}
                       className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors focus:outline-none ${
                         selectedConnector === connector.uid
@@ -215,18 +174,15 @@ export function WalletOptions() {
                           : "hover:bg-gray-50 border border-gray-100"
                       }`}
                       whileTap={{ scale: 0.98 }}
-                      transition={{ duration: 0.1 }}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 relative flex-shrink-0">
-                          <Image
-                            src={connector.icon || "/next.svg"}
-                            alt={`${connector.name} logo`}
-                            width={24}
-                            height={24}
-                            className="w-6 h-6 rounded-md object-contain"
-                          />
-                        </div>
+                        <Image
+                          src={connector.icon || "/next.svg"}
+                          alt={`${connector.name} logo`}
+                          width={32}
+                          height={32}
+                          className="w-6 h-6 rounded-md"
+                        />
                         <span className="font-medium text-gray-700">
                           {connector.name}
                           {isPending && selectedConnector === connector.uid && " (Connecting...)"}
@@ -244,7 +200,6 @@ export function WalletOptions() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    transition={{ duration: 0.2 }}
                     className="p-4 border-t border-gray-100"
                   >
                     {connectionStatus === "connecting" && (

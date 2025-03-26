@@ -7,17 +7,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Sparkles } from "lucide-react";
-import PhoneNumberInput from "./InputComponents/NetworkPhoneHandler";
-import MeterNumberInput from "./InputComponents/MeterNumberInput";
-import ServiceSelection from "./InputComponents/SelectionComponents/ServiceSelection";
+import PhoneNumberInput from "./NetworkPhoneHandler";
+import MeterNumberInput from "./MeterNumberInput";
+import ServiceSelection from "./ServiceSelection";
 import { useAcceptedTokens, PaymentToken } from "@/utils/web3/config";
-import UnavailableServiceMessage from "./UnavailableServiceMessage";
-import PaymentTokenSelector from "./InputComponents/SelectionComponents/PaymentTokenSelector";
+import UnavailableServiceMessage from "../UnavailableServiceMessage";
+import PaymentTokenSelector from "./PaymentTokenSelector";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { appConfig } from "@/app-config";
 import { FuturisticButton } from "../ui";
 import { usePayment, useSetPayment } from "@/hooks/states";
 import { PaymentToken as TokenSelectorToken } from '@/constants/token';
+
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {

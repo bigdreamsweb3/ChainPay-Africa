@@ -1,82 +1,56 @@
-exports.theme = {
+const theme = {
   colors: {
     brand: {
-      primary: '#0066CC',    // Blue from logo
-      secondary: '#FF9900',  // Orange from logo
-      accent: '#00AAFF',
-      highlight: "#FFB74D", // Lighter orange
-      success: "#2ECC71", // Green for success states
-
+      primary: '#0088CC',
+      secondary: '#FF6600',
+      accent: '#33CCFF',
+      success: '#00CC66',
+      warning: '#FFCC00',
+      error: '#FF3366',
+      info: '#3366FF',
     },
     status: {
-      success: "#2ECC71",
-      warning: "#F39C12",
-      error: "#E74C3C",
-      info: "#3498DB",
+      success: '#00CC66',
+      warning: '#FFCC00',
+      error: '#FF3366',
+      info: '#3366FF',
     },
     background: {
-      main: "#FFFFFF", // White background
-      card: "#F8FAFC", // Very light gray for cards
-      hover: "#EDF2F7", // Light gray for hover states
-      light: "#FFFFFF", // Pure white
-      overlay: "rgba(10, 130, 205, 0.05)", // Transparent blue overlay
+      main: '#FFFFFF',
+      card: '#FFFFFF',
+      dark: '#1A1A1A',
+      light: '#F5F9FF',
     },
     text: {
-      primary: "#1A202C", // Dark gray for primary text
-      secondary: "#4A5568", // Medium gray for secondary text
-      muted: "#718096", // Lighter gray for muted text
-      dark: "#2D3748", // Very dark gray
+      primary: '#1A1A1A',
+      secondary: '#666666',
+      muted: '#999999',
+      dark: '#000000',
+      light: '#FFFFFF',
     },
     border: {
-      light: "#E2E8F0", // Light gray for borders
-      medium: "#CBD5E0", // Medium gray for borders
-      focus: "rgba(10, 130, 205, 0.3)", // Transparent blue for focus states
+      light: '#E5E5E5',
+      medium: '#CCCCCC',
+      dark: '#999999',
     },
   },
-  gradients: {
-    'primary': "linear-gradient(45deg, #0A82CD, #35B0FF)",
-    'accent': "linear-gradient(45deg, #F39C12, #FFB74D)",
-    'light': "linear-gradient(180deg, #FFFFFF, #F8FAFC)",
-    'glass': "linear-gradient(45deg, rgba(248, 250, 252, 0.8), rgba(255, 255, 255, 0.8))",
-  },
-  shadows: {
-    small: "0 1px 3px rgba(0, 0, 0, 0.1)",
-    medium: "0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1)",
-    large: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-    focus: "0 0 0 3px rgba(10, 130, 205, 0.3)",
-  },
   radius: {
-    small: "4px",
-    medium: "8px",
-    large: "12px",
-    pill: "9999px",
-    circle: "50%",
+    'none': '0',
+    'sm': '0.125rem',
+    'md': '0.375rem',
+    'lg': '0.5rem',
+    'xl': '1rem',
+    '2xl': '1.5rem',
+    '3xl': '2rem',
+    'full': '9999px',
   },
   breakpoints: {
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
-  },
-  animations: {
-    transition: "all 0.2s ease-in-out",
-    fade: "fade 0.3s ease-in-out",
-    slideUp: "slideUp 0.3s ease-out forwards",
-    slideRight: "slideRight 0.3s ease-out forwards",
-  },
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px',
+  }
 };
 
-exports.keyframes = {
-  fade: {
-    "0%": { opacity: 0 },
-    "100%": { opacity: 1 },
-  },
-  slideUp: {
-    "0%": { opacity: 0, transform: "translateY(10px)" },
-    "100%": { opacity: 1, transform: "translateY(0)" },
-  },
-  slideRight: {
-    "0%": { opacity: 0, transform: "translateX(-10px)" },
-    "100%": { opacity: 1, transform: "translateX(0)" },
-  },
-}; 
+module.exports = { theme };

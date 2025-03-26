@@ -2,7 +2,12 @@ import { useBuyAirtime } from "@/hooks/interact/TokenContract";
 import { Loader2, AlertCircle } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { convertCreditToTokenAmount, convertToTokenUnits, formatTokenAmountDisplay } from "@/lib/conversion";
+import {
+  convertCreditToTokenAmount,
+  convertToTokenUnits,
+  formatTokenAmountDisplay,
+} from '@/lib/CP_NGN_USD_Vendor';
+
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 
@@ -26,6 +31,10 @@ interface PaymentConfirmationProps {
     contractAddress: string;
     image: string;
     decimals: number;
+    network: string;
+    token: string;
+    address: string;
+    id: string;
   }
   | null
   | undefined;

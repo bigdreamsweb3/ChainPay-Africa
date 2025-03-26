@@ -1,4 +1,4 @@
-import BillPaymentForm from "@/component/forms/BillPaymentForm";
+import BillPaymentForm from "@/component/bill-payment/BillPaymentForm";
 import ChainPayInfoCard from "@/component/chainpay-info-card";
 import type { Metadata } from "next";
 // import { isTokenAccepted } from "@/interact/TokenCheck";
@@ -11,12 +11,9 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
-      <div className="flex flex-col gap-3.5 sm:gap-3">
-        <ChainPayInfoCard />
-        <BillPaymentForm />
-
-      </div>
-    </>
+    <div className="flex flex-col gap-4">
+      <ChainPayInfoCard />
+      <BillPaymentForm />
+    </div>
   );
 }

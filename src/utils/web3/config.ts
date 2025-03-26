@@ -40,6 +40,9 @@ export interface PaymentToken {
   decimals: number;
   contractAddress: string;
   image: string;
+  network: string;
+  token: string;
+  address: string;
 }
 
 // Custom hook to get accepted tokens for the connected chain

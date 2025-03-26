@@ -164,7 +164,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   return (
     <div className="max-w-md mx-auto">
       <motion.div
-        className="bg-white rounded-xl shadow-lg border border-chainpay-blue-light/20"
+        className="bg-white rounded-xl shadow-lg border border-chainpay-blue-dark/70"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -177,7 +177,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             <div className="flex-1 relative">
               <label
                 htmlFor="phoneNumber"
-                className="block text-xs font-medium text-chainpay-blue-dark/70 mb-1.5 ml-0.5"
+                className="block text-xs font-bold text-chainpay-blue-dark/70 mb-1.5 ml-0.5"
               >
                 Phone Number
               </label>
@@ -222,7 +222,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             <div className="relative" ref={dropdownRef}>
               <label
                 htmlFor="networkSelect"
-                className="block text-xs font-medium text-chainpay-blue-dark/70 mb-1.5 ml-0.5"
+                className="block text-xs font-bold text-chainpay-blue-dark/70 mb-1.5 ml-0.5"
               >
                 Network Provider
               </label>

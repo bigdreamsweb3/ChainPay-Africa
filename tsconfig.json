@@ -23,6 +23,6 @@
     },
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/utils/getPhoneCarrierInfo.js", "src/utils/web3/chains/crossfiChain.ts", "hardhat.config.js", "src/hooks/interact/TokenContract.js", "src/app/api/read-contract/route.js" ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
