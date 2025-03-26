@@ -345,7 +345,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-gradient-to-r from-chainpay-blue-light/20 to-chainpay-blue/30 flex items-center justify-center overflow-hidden shadow-sm border border-chainpay-blue-light/40">
                               <Image
-                                src={selectedTokenData?.icon || "/placeholder.svg"}
+                                src={
+                                  selectedTokenData?.icon || "/placeholder.svg"
+                                }
                                 alt={selectedTokenData?.symbol}
                                 width={24}
                                 height={24}
@@ -405,7 +407,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           conversionError={conversionError}
         />
       ) : (
-        <div>No token selected</div>
+        ""
       )}
 
       {/* Token Selection Modal */}

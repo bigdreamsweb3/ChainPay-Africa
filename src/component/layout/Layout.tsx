@@ -26,7 +26,7 @@ export function Layout({ children }: LayoutProps) {
           <NetworkSwitchNotification className="container mx-auto px-4 sm:px-6" />
 
           {/* Main Content */}
-          <main className="flex-grow relative z-10 overflow-visible py-5 sm:py-8">
+          <main className="flex-grow relative z-10 overflow-visible py-5 px-2 sm:py-8">
             <div className="container mx-auto w-full max-w-md px-4 sm:px-6">
               {children}
             </div>
