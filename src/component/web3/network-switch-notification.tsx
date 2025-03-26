@@ -1,6 +1,6 @@
 "use client";
 
-import { getAvailableChains } from "@/utils/web3/config";
+import { useAvailableChains } from "@/utils/web3/config";
 import React, { useEffect, useState } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,7 +16,7 @@ export default function NetworkSwitchNotification({
   const { switchChain } = useSwitchChain();
   const [showNotification, setShowNotification] = useState(false);
 
-  const availableChains = getAvailableChains();
+  const availableChains = useAvailableChains();
   const targetChain = availableChains[0];
 
   const onSwitch = async () => {
