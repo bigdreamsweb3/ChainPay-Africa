@@ -14,10 +14,10 @@ import UnavailableServiceMessage from "../UnavailableServiceMessage";
 import PaymentTokenSelector from "./PaymentTokenSelector";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { appConfig } from "@/app-config";
-import { FuturisticButton } from "../ui";
+
 import { usePayment, useSetPayment } from "@/hooks/states";
 import { PaymentToken as TokenSelectorToken } from "@/constants/token";
-
+import { ChainPayButton } from "../ui";
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
@@ -178,7 +178,14 @@ const BillPaymentForm: React.FC = () => {
       );
     }
     return false;
-  }, [amount, selectedTokenId, phoneNumber, meterNumber, carrier.id, selectedService]);
+  }, [
+    amount,
+    selectedTokenId,
+    phoneNumber,
+    meterNumber,
+    carrier.id,
+    selectedService,
+  ]);
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
@@ -282,7 +289,7 @@ const BillPaymentForm: React.FC = () => {
                       )}
 
                       <div className="flex justify-center mt-4 sm:mt-6 max-w-md mx-auto">
-                        <FuturisticButton
+                        <ChainPayButton
                           type="submit"
                           data-action="submit-payment"
                           disabled={!isPaymentValid() || isConverting}
@@ -292,11 +299,8 @@ const BillPaymentForm: React.FC = () => {
                           icon={<Sparkles size={16} />}
                         >
                           Pay
-                        </FuturisticButton>
+                        </ChainPayButton>
                       </div>
-
-
-                      
                     </form>
                   </div>
 

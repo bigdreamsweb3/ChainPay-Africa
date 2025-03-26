@@ -5,38 +5,50 @@ import { ChainPayLogo } from "../web3/chainpay-logo";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { appConfig } from "@/app-config";
+import { Globe } from "lucide-react";
 
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
   return (
-    <header className="w-full py-4 sm:py-5 relative z-30">
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+    <header className="py-3 sticky top-0 z-50 bg-gradient-to-r from-transparent via-chainpay-blue/5 to-transparent backdrop-blur-sm shadow-sm">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#60A5FA]/5 to-transparent"></div>
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/5"></div>
+      <div className="absolute bottom-0 left-1/3 right-1/3 h-[1px] bg-chainpay-orange/20"></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="flex items-center justify-between">
-          {/* Logo - without animations */}
-          <div
-            className={cn(
-              "flex items-center space-x-3",
-              isHome
-                ? "cursor-default"
-                : "cursor-pointer hover:opacity-80 transition-opacity"
-            )}
-          >
-            <ChainPayLogo className="w-8 h-8 sm:w-9 sm:h-9" />
+          {/* Left Section: Logo */}
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <ChainPayLogo className="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-md" />
+            </div>
             <div className="flex flex-col">
-              <span className="text-lg sm:text-xl font-semibold text-chainpay-blue break-words">
-                {appConfig.appNameWord1}
-                <span className="text-lg sm:text-xl font-semibold text-chainpay-orange">
-                  {appConfig.appNameWord2}
+              <div
+                className={cn(
+                  "flex items-center",
+                  isHome
+                    ? "cursor-default"
+                    : "cursor-pointer hover:opacity-80 transition-opacity"
+                )}
+              >
+                <span className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-brand-primary to-chainpay-blue-light bg-clip-text text-transparent break-words">
+                  {appConfig.appNameWord1}
+                  <span className="text-lg sm:text-xl font-semibold text-chainpay-orange">
+                    {appConfig.appNameWord2}
+                  </span>
                 </span>
-              </span>
+              </div>
             </div>
           </div>
 
-          {/* Wallet Button - without animation wrapper */}
-          <div>
-            <WalletButton />
+          {/* Right Section: Country Selector and Wallet Button */}
+          <div className="flex items-center gap-3">
+
+            {/* Wallet Button */}
+            <div className="flex-shrink-0">
+              <WalletButton />
+            </div>
           </div>
         </div>
       </div>

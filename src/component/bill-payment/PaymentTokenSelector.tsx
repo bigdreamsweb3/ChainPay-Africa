@@ -239,7 +239,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   return (
     <div className="max-w-md mx-auto ">
-      <div className="bg-[#F1F5F9] rounded-xl p-3 sm:p-4">
+      <div className="bg-[#F1F5F9] rounded-xl p-2">
         <motion.div
           className="bg-[#FFFFFF] rounded-xl overflow-hidden border border-[#E2E8F0]"
           initial={{ opacity: 0, y: 10 }}
