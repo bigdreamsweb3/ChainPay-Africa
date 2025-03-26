@@ -87,10 +87,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
 
-          const tokenAmount = await convertCreditToTokenAmount(
-            Number(amountStr),
-            selectedTokenDetails
-          );
+          const tokenAmount = await convertCreditToTokenAmount(Number(amountStr));
 
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
@@ -180,10 +177,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
 
-          const tokenAmount = await convertCreditToTokenAmount(
-            Number(amountStr),
-            selectedTokenDetails
-          );
+          const tokenAmount = await convertCreditToTokenAmount(Number(amountStr));
 
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
