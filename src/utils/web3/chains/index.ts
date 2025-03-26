@@ -44,6 +44,10 @@ export const crossfiTestnet = defineChain({
       decimals: 18,
       contractAddress: "0x12e048d4f26f54c0625ef34fabd365e4f925f2ff",
       image: "https://crossfi.org/wp-content/uploads/2024/12/xusd-2.svg",
+      icon: "https://crossfi.org/wp-content/uploads/2024/12/xusd-icon.svg",
+      network: "CrossFi Testnet",
+      token: "XUSD",
+      address: "0x12e048d4f26f54c0625ef34fabd365e4f925f2ff",
     },
 
     // xUSDT: {
