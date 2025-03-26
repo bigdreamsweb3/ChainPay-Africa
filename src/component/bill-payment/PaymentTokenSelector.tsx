@@ -240,12 +240,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   return (
     <div className="max-w-md mx-auto">
       <div className="bg-[#F1F5F9] rounded-xl p-1">
-        <motion.div
-          className="bg-[#FFFFFF] rounded-xl overflow-hidden border border-[#E2E8F0]"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+        <div className="bg-[#FFFFFF] rounded-xl overflow-hidden border border-[#E2E8F0]">
           {/* Card Content */}
           <div className="p-3 space-y-4">
             {/* Amount and Token Selection */}
@@ -363,7 +358,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
               </AnimatePresence>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Conversion Result */}

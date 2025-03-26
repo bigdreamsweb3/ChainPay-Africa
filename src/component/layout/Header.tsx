@@ -1,16 +1,12 @@
 "use client";
 
-import { WalletButton } from "../web3/wallet-button";
 import { ChainPayLogo } from "../web3/chainpay-logo";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { appConfig } from "@/app-config";
+import { WalletButton } from "../web3/wallet-options"; // This import should now work
 
-interface HeaderProps {
-  setIsModalOpen: (open: boolean) => void;
-}
-
-export function Header({ setIsModalOpen }: HeaderProps) {
+export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -45,11 +41,10 @@ export function Header({ setIsModalOpen }: HeaderProps) {
             </div>
           </div>
 
-          {/* Right Section: Country Selector and Wallet Button */}
+          {/* Right Section: Wallet Button */}
           <div className="flex items-center gap-3">
-            {/* Wallet Button */}
             <div className="flex-shrink-0">
-              <WalletButton setIsModalOpen={setIsModalOpen} />
+              <WalletButton />
             </div>
           </div>
         </div>
