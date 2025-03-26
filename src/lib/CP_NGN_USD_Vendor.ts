@@ -40,6 +40,8 @@ const getRateWithFallbacks = async (): Promise<number> => {
   }
 };
 
+// 
+
 // Main rate fetching function
 export const fetchNGNtoUSDRate = async (): Promise<number> => {
   // Check cache first
