@@ -55,7 +55,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
       {/* Service Selection Card */}
       <motion.div
-        className="w-full rounded-xl bg-gradient-to-br from-chainpay-blue-dark/20 to-chainpay-blue/10 backdrop-blur-sm border border-chainpay-blue-light/20 shadow-sm"
+        className="w-full rounded-[10px] bg-blue-50 backdrop-blur-sm border border-chainpay-blue-light/20 shadow-sm"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3, delay: 0.2 }}

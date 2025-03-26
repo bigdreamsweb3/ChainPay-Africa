@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Sparkles } from "lucide-react";
 import PhoneNumberInput from "./NetworkPhoneHandler";
 import MeterNumberInput from "./MeterNumberInput";
@@ -17,19 +16,18 @@ import PaymentConfirmation from "./PaymentConfirmation";
 import { appConfig } from "@/app-config";
 import { FuturisticButton } from "../ui";
 import { usePayment, useSetPayment } from "@/hooks/states";
-import { PaymentToken as TokenSelectorToken } from '@/constants/token';
-
+import { PaymentToken as TokenSelectorToken } from "@/constants/token";
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
-  return tokens.map(token => ({
+  return tokens.map((token) => ({
     id: token.id,
-    network: token.id.split('-')[0] || 'ethereum',
+    network: token.id.split("-")[0] || "ethereum",
     token: token.symbol,
     address: token.contractAddress,
     name: token.name,
     symbol: token.symbol,
-    image: token.image
+    image: token.image,
   }));
 };
 
@@ -126,14 +124,22 @@ const BillPaymentForm: React.FC = () => {
   // Sync form data with payment state
   useEffect(() => {
     setPayment({
-      amount: amount || '',
-      phoneNumber: phoneNumber || '',
-      meterNumber: meterNumber || '',
-      tokenId: selectedTokenId || '',
+      amount: amount || "",
+      phoneNumber: phoneNumber || "",
+      meterNumber: meterNumber || "",
+      tokenId: selectedTokenId || "",
       serviceType: selectedService,
-      networkProvider: payment.networkProvider
+      networkProvider: payment.networkProvider,
     });
-  }, [amount, phoneNumber, meterNumber, selectedTokenId, selectedService, setPayment, payment.networkProvider]);
+  }, [
+    amount,
+    phoneNumber,
+    meterNumber,
+    selectedTokenId,
+    selectedService,
+    setPayment,
+    payment.networkProvider,
+  ]);
 
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
@@ -196,13 +202,21 @@ const BillPaymentForm: React.FC = () => {
       phoneNumber,
       meterNumber,
       carrier,
-      serviceType: selectedService
+      serviceType: selectedService,
     });
-  }, [amount, selectedTokenId, phoneNumber, meterNumber, carrier, selectedService, isPaymentValid]);
+  }, [
+    amount,
+    selectedTokenId,
+    phoneNumber,
+    meterNumber,
+    carrier,
+    selectedService,
+    isPaymentValid,
+  ]);
 
   return (
     <FormProvider {...methods}>
-      <div className="flex flex-col items-center justify-center gap-3.5 sm:gap-3">
+      <div className="flex flex-col items-center justify-center gap-4 w-full overflow-hidden">
         <ServiceSelection
           control={methods.control}
           setStep={setStep}
@@ -210,144 +224,127 @@ const BillPaymentForm: React.FC = () => {
           preserveCalculation={true}
         />
 
-        <div className="w-full max-w-md">
-          <AnimatePresence>
-            {selectedService && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {unavailableServiceMessage ? (
-                  <UnavailableServiceMessage serviceName={selectedService} />
-                ) : (
-                  <div className="">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={step}
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -50 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <form onSubmit={handleSubmitForm} className="space-y-3">
-                          {step === 1 && (
-                            <>
-                              {selectedService === "electricity" ? (
-                                <MeterNumberInput
-                                  error={errors.meterNumber?.message}
-                                />
-                              ) : (
-                                <PhoneNumberInput
-                                  error={errors.phoneNumber?.message}
-                                  onCarrierChange={(carrierData) => {
-                                    setCarrier(carrierData);
-                                    // Update the network provider in payment state
-                                    if (carrierData.name) {
-                                      setPayment({
-                                        ...payment,
-                                        networkProvider: carrierData.name
-                                      });
-                                    }
-                                  }}
-                                />
-                              )}
-
-                              <div className="">
-                                <PaymentTokenSelector
-                                  paymentTokens={adaptPaymentTokens(paymentTokens)}
-                                  selectedToken={selectedTokenId}
-                                  setSelectedToken={(tokenId) => {
-                                    setSelectedTokenId(tokenId);
-                                    setValue("paymentToken", tokenId);
-                                    // Update payment state with the selected token
-                                    setPayment({
-                                      ...payment,
-                                      tokenId: tokenId
-                                    });
-                                  }}
-                                  setIsConverting={setIsConverting}
-                                  setConvertedAmount={setConvertedAmount}
-                                  setDisplayAmount={setDisplayAmount}
-                                />
-                              </div>
-                            </>
+        <div className="w-full">
+          {selectedService && (
+            <div className="w-full">
+              {unavailableServiceMessage ? (
+                <UnavailableServiceMessage serviceName={selectedService} />
+              ) : (
+                <div className="w-full">
+                  <div className="w-full">
+                    <form
+                      onSubmit={handleSubmitForm}
+                      className="space-y-3 w-full"
+                    >
+                      {step === 1 && (
+                        <>
+                          {selectedService === "electricity" ? (
+                            <MeterNumberInput
+                              error={errors.meterNumber?.message}
+                            />
+                          ) : (
+                            <PhoneNumberInput
+                              error={errors.phoneNumber?.message}
+                              onCarrierChange={(carrierData) => {
+                                setCarrier(carrierData);
+                                // Update the network provider in payment state
+                                if (carrierData.name) {
+                                  setPayment({
+                                    ...payment,
+                                    networkProvider: carrierData.name,
+                                  });
+                                }
+                              }}
+                            />
                           )}
 
-
-                          <div className="flex justify-center mt-6">
-                            <FuturisticButton
-                              type="submit"
-                              data-action="submit-payment"
-                              disabled={!isPaymentValid() || isConverting}
-                              variant="primary"
-                              size="large"
-                              fullWidth
-                              icon={<Sparkles size={16} />}
-                            >
-                              Pay
-                            </FuturisticButton>
+                          <div className="w-full">
+                            <PaymentTokenSelector
+                              paymentTokens={adaptPaymentTokens(paymentTokens)}
+                              selectedToken={selectedTokenId}
+                              setSelectedToken={(tokenId: string) => {
+                                setSelectedTokenId(tokenId);
+                                setValue("paymentToken", tokenId);
+                                // Update payment state with the selected token
+                                setPayment({
+                                  ...payment,
+                                  tokenId: tokenId,
+                                });
+                              }}
+                              setIsConverting={setIsConverting}
+                              setConvertedAmount={setConvertedAmount}
+                              setDisplayAmount={setDisplayAmount}
+                            />
                           </div>
-                        </form>
-                      </motion.div>
-                    </AnimatePresence>
+                        </>
+                      )}
 
-                    {submitStatus !== "success" && isAvailable && (
-                      <>
-                        {step > 0 && step < steps.length - 2 && (
-                          <div className="flex flex-col gap-2 pt-2 border-t border-chainpay-blue-light/20">
-                            {step > 1 && (
-                              <button
-                                type="button"
-                                onClick={prevStep}
-                                disabled={isSubmitting}
-                                className="px-3 py-2 text-sm text-chainpay-blue bg-chainpay-blue-light/10 rounded-md hover:bg-chainpay-blue-light/20 transition-colors duration-200 font-medium border border-chainpay-blue-light/20"
-                              >
-                                Previous
-                              </button>
-                            )}
-                          </div>
-                        )}
+                      <div className="flex justify-center mt-4 sm:mt-6 max-w-md mx-auto">
+                        <FuturisticButton
+                          type="submit"
+                          data-action="submit-payment"
+                          disabled={!isPaymentValid() || isConverting}
+                          variant="primary"
+                          size="large"
+                          fullWidth
+                          icon={<Sparkles size={16} />}
+                        >
+                          Pay
+                        </FuturisticButton>
+                      </div>
 
-                        <AnimatePresence>
-                          {submitStatus === "error" && (
-                            <motion.div
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -20 }}
-                              className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200 shadow-sm"
-                            >
-                              <p className="text-sm text-red-600 flex items-center gap-2 font-medium">
-                                <AlertCircle className="w-4 h-4" />
-                                There was an error processing your payment. Please try
-                                again.
-                              </p>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </>
-                    )}
 
-                    {/* Payment Confirmation Modal */}
-                    {showConfirmation && (
-                      <PaymentConfirmation
-                        selectedService={selectedService}
-                        watch={watch}
-                        carrier={carrier}
-                        selectedTokenDetails={selectedTokenDetails}
-                        onClose={() => setShowConfirmation(false)}
-                        setParentIsConverting={setIsConverting}
-                        convertedAmount={convertedAmount}
-                        displayAmount={displayAmount}
-                        skipInitialConversion={true}
-                      />
-                    )}
+                      
+                    </form>
                   </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+
+                  {submitStatus !== "success" && isAvailable && (
+                    <>
+                      {step > 0 && step < steps.length - 2 && (
+                        <div className="flex flex-col gap-2 pt-2 border-t border-chainpay-blue-light/20 mt-3">
+                          {step > 1 && (
+                            <button
+                              type="button"
+                              onClick={prevStep}
+                              disabled={isSubmitting}
+                              className="px-3 py-2 text-sm text-chainpay-blue bg-chainpay-blue-light/10 rounded-md hover:bg-chainpay-blue-light/20 transition-colors duration-200 font-medium border border-chainpay-blue-light/20"
+                            >
+                              Previous
+                            </button>
+                          )}
+                        </div>
+                      )}
+
+                      {submitStatus === "error" && (
+                        <div className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200">
+                          <p className="text-sm text-red-600 flex items-center gap-2 font-medium">
+                            <AlertCircle className="w-4 h-4" />
+                            There was an error processing your payment. Please
+                            try again.
+                          </p>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {/* Payment Confirmation Modal */}
+                  {showConfirmation && (
+                    <PaymentConfirmation
+                      selectedService={selectedService}
+                      watch={watch}
+                      carrier={carrier}
+                      selectedTokenDetails={selectedTokenDetails}
+                      onClose={() => setShowConfirmation(false)}
+                      setParentIsConverting={setIsConverting}
+                      convertedAmount={convertedAmount}
+                      displayAmount={displayAmount}
+                      skipInitialConversion={true}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </FormProvider>
