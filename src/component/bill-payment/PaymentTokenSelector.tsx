@@ -98,7 +98,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   useEffect(() => {
     const fetchTokenIcons = async () => {
       try {
-        // Define the network-token pairs and their corresponding icon paths
         const tokenIconMap: { [key: string]: string } = {
           "ethereum-usdt": "/network-icons/ethereum-usdt.png",
           "ethereum-usdc": "/network-icons/ethereum-usdc.png",
@@ -112,7 +111,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           "optimism-usdc": "/network-icons/optimism-usdc.png",
           "base-usdt": "/network-icons/base-usdt.png",
           "base-usdc": "/network-icons/base-usdc.png",
-          // Add more network-token pairs and icon paths as needed
         };
 
         setTokenImages(tokenIconMap);
@@ -124,7 +122,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     fetchTokenIcons();
   }, []);
 
-  // Add effect to fetch conversion rate
   useEffect(() => {
     const fetchRate = async () => {
       const rate = await fetchConversionRate();
@@ -133,26 +130,20 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     fetchRate();
   }, []);
 
-  // Debounce function to delay conversion until user stops typing
   const legacyUpdateAmount = async (amount: string, token: string) => {
-    // Clear any existing timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // Skip if nothing has changed
     if (amount === prevAmountRef.current && token === prevTokenRef.current) {
       return;
     }
 
-    // Reset error state when starting a new conversion
     setConversionError(null);
 
-    // Set a new timer
     debounceTimerRef.current = setTimeout(async () => {
       if (selectedTokenData && amount && !isNaN(Number(amount))) {
         try {
-          // Update state refs
           prevAmountRef.current = amount;
           prevTokenRef.current = token;
           lastCalculationTimeRef.current = Date.now();
@@ -166,7 +157,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           );
           setLocalDisplayAmount(formattedAmount);
 
-          // Update parent state if provided
           if (setParentConvertedAmount)
             setParentConvertedAmount(formattedAmount);
           if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
@@ -174,11 +164,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           console.error("Error converting amount:", error);
           setConversionError("Network error. Using estimated conversion rate.");
 
-          // Use a fallback approximate conversion
           const formattedAmount = handleConversionError(amount);
           setLocalDisplayAmount(formattedAmount);
 
-          // Update parent state with fallback values
           if (setParentConvertedAmount)
             setParentConvertedAmount(formattedAmount);
           if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
@@ -191,20 +179,17 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
         if (setParentConvertedAmount) setParentConvertedAmount("0");
         if (setParentDisplayAmount) setParentDisplayAmount("0");
       }
-    }, 800); // Wait 800ms after user stops typing
+    }, 800);
   };
 
-  // Convert credit units to token amount whenever amount or selected token changes
   useEffect(() => {
     legacyUpdateAmount(creditAmount, selectedToken);
 
-    // Cleanup function to clear the timer when component unmounts
     return () => {
       if (debounceTimerRef.current) {
         clearTimeout(debounceTimerRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [creditAmount, selectedToken]);
 
   const handleTokenSelect = (token: PaymentToken) => {
@@ -221,9 +206,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     try {
       setConversionError(null);
 
-      // Instead of making an API call that results in 404, use local estimation
       if (payment.amount) {
-        // Fallback to approximate conversion (1 USD ≈ 1400 NGN)
         const approxUsdValue = parseFloat(payment.amount) / 1400;
         const formattedValue = formatTokenAmountDisplay(
           approxUsdValue.toString()
@@ -234,7 +217,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       console.error("Failed to calculate conversion rate:", error);
       setConversionError("Could not calculate rate");
 
-      // Fallback if there's an error in the calculation
       if (payment.amount) {
         const approxUsdValue = parseFloat(payment.amount) / 1400;
         const formattedValue = formatTokenAmountDisplay(
@@ -245,24 +227,21 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     }
   };
 
-  // Create a debounced version of updateConversionAmount
   const debouncedUpdateAmount = useRef(
     debounce(updateConversionAmount, 500)
   ).current;
 
-  // Effect to handle amount changes
   useEffect(() => {
     if (payment.amount && payment.amount !== "0") {
       debouncedUpdateAmount();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payment.amount]);
 
   return (
-    <div className="max-w-md mx-auto">
-      <div>
+    <div className="max-w-md mx-auto ">
+      <div className="bg-[#F1F5F9] rounded-xl p-3 sm:p-4">
         <motion.div
-          className="bg-white rounded-xl overflow-hidden border border-chainpay-blue-dark/70"
+          className="bg-[#FFFFFF] rounded-xl overflow-hidden border border-[#E2E8F0]"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -276,7 +255,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 <div className="flex-1 relative">
                   <label
                     htmlFor="amount"
-                    className="block text-xs font-bold text-chainpay-blue-dark/70 mb-2 ml-0.5"
+                    className="block text-xs font-bold text-[#1E293B] mb-2 ml-0.5"
                   >
                     Amount (min. 50)
                   </label>
@@ -296,14 +275,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                         validate: (value) =>
                           !isNaN(Number(value)) || "Amount must be a number",
                       })}
-                      className="w-full h-10 px-3 pr-[110px] text-sm font-medium rounded-lg transition-all duration-200 ease-in-out
-                                            border border-chainpay-blue-light/40 
-                                            hover:border-chainpay-blue/60
-                                            focus:outline-none focus:border-chainpay-blue/70 focus:ring-1 focus:ring-chainpay-blue/30
-                                            bg-chainpay-blue/5 placeholder:text-chainpay-blue-dark/40 text-chainpay-blue-dark
-                                            [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-full h-10 px-3 pr-[110px] text-sm font-medium rounded-lg transition-all duration-200 ease-in-out border border-[#E2E8F0] hover:border-[#A1A1AA] focus:outline-none focus:border-[#60A5FA] focus:ring-1 focus:ring-[#60A5FA]/30 placeholder:text-[#A1A1AA] text-[#1E293B] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-chainpay-blue font-medium px-2 py-1 bg-white/90 backdrop-blur-sm rounded-md border border-chainpay-blue-light/30 shadow-sm">
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#1E293B] font-medium px-2 py-1 bg-[#FFFFFF] rounded-md border border-[#E2E8F0] shadow-sm">
                       Credit Units
                     </div>
                   </div>
@@ -313,7 +287,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 <div className="relative" ref={dropdownRef}>
                   <label
                     htmlFor="tokenSelect"
-                    className="block text-xs font-bold text-chainpay-blue-dark/70 mb-2 ml-0.5"
+                    className="block text-xs font-bold text-[#1E293B] mb-2 ml-0.5"
                   >
                     Payment Token
                   </label>
@@ -328,22 +302,18 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                     disabled={!isConnected}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`flex items-center justify-between gap-2 whitespace-nowrap transition-all duration-200 
-                                        h-10 px-3 pr-4 rounded-lg border shadow-sm w-full sm:w-auto min-w-[70px]
-                                        ${
-                                          isConnected
-                                            ? "border-chainpay-blue-light/40 hover:border-chainpay-blue/60 bg-chainpay-blue/5 hover:bg-chainpay-blue-light/10"
-                                            : "cursor-not-allowed bg-gray-100 opacity-50 border-gray-200"
-                                        }
-                                        focus-visible:outline-none focus-visible:border-chainpay-blue/70 focus-visible:ring-1 focus-visible:ring-chainpay-blue/30
-                                        focus-visible:shadow-[0_0_0_1px_rgba(0,136,204,0.15),0_2px_8px_-2px_rgba(0,136,204,0.15)]`}
+                    className={`flex items-center justify-between gap-2 whitespace-nowrap transition-all duration-200 h-10 px-3 rounded-lg border border-[#E2E8F0] shadow-sm w-full sm:w-auto min-w-[70px] ${
+                      isConnected
+                        ? "hover:border-[#A1A1AA] focus:outline-none focus:border-[#60A5FA] focus:ring-1 focus:ring-[#60A5FA]/30"
+                        : "cursor-not-allowed bg-[#F1F5F9] opacity-50 border-[#E2E8F0]"
+                    }`}
                     data-action="token-select"
                   >
                     {isConnected ? (
                       selectedTokenData ? (
                         <>
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-chainpay-blue-light/20 to-chainpay-blue/30 flex items-center justify-center overflow-hidden shadow-sm border border-chainpay-blue-light/40">
+                            <div className="w-6 h-6 rounded-full overflow-hidden border border-[#E2E8F0]">
                               <Image
                                 src={
                                   selectedTokenData?.icon || "/placeholder.svg"
@@ -354,20 +324,20 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                                 className="w-5 h-5 rounded-full object-cover"
                               />
                             </div>
-                            <span className="text-sm font-medium text-chainpay-blue-dark">
+                            <span className="text-sm font-medium text-[#1E293B]">
                               {selectedTokenData.symbol}
                             </span>
                           </div>
                         </>
                       ) : (
                         <>
-                          <span className="text-sm font-medium text-chainpay-blue">
+                          <span className="text-sm font-medium text-[#1E293B]">
                             Select token
                           </span>
                         </>
                       )
                     ) : (
-                      <span className="text-sm font-medium text-gray-500">
+                      <span className="text-sm font-medium text-[#A1A1AA]">
                         Connect Wallet
                       </span>
                     )}
@@ -382,9 +352,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    className="px-3 py-2 rounded-lg bg-red-50 border border-red-200 shadow-sm"
+                    className="px-3 py-2 rounded-lg bg-[#FEF2F2] border border-[#FECACA] shadow-sm"
                   >
-                    <p className="text-sm text-red-600 flex items-center gap-2 font-medium">
+                    <p className="text-sm text-[#DC2626] flex items-center gap-2 font-medium">
                       <AlertCircle className="w-4 h-4" />
                       {errors.amount?.message?.toString()}
                     </p>
@@ -430,17 +400,16 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-white rounded-xl w-full max-w-[90vw] sm:max-w-md shadow-xl border border-chainpay-blue-light/30 overflow-hidden"
+              className="bg-[#FFFFFF] rounded-xl w-full max-w-[90vw] sm:max-w-md shadow-xl border border-[#E2E8F0] overflow-hidden"
               onClick={(e) => {
                 e.stopPropagation();
-                // Don't call preventDefault here to allow scrolling and other interactions
               }}
               data-action="token-select"
             >
-              <div className="p-4 border-b border-chainpay-blue-light/20 bg-gradient-to-r from-chainpay-blue-light/10 to-chainpay-blue/10">
+              <div className="p-4 border-b border-[#E2E8F0]">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-chainpay-blue-dark flex items-center gap-2">
-                    <Coins className="w-4 h-4 text-chainpay-blue" />
+                  <h2 className="text-base font-semibold text-[#1E293B] flex items-center gap-2">
+                    <Coins className="w-4 h-4 text-[#60A5FA]" />
                     Select a Token
                   </h2>
                   <motion.button
@@ -452,7 +421,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                     }}
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     whileTap={{ scale: 0.9 }}
-                    className="p-1 rounded-full hover:bg-chainpay-blue-light/20 transition-colors text-chainpay-blue"
+                    className="p-1 rounded-full hover:bg-[#F1F5F9] transition-colors text-[#60A5FA]"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -485,15 +454,13 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                       data-action="token-select"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ease-in-out 
-                                            ${
-                                              selectedToken === token.id
-                                                ? "bg-gradient-to-r from-chainpay-blue-light/30 to-chainpay-blue/20 border border-chainpay-blue-light/50 shadow-sm"
-                                                : "hover:bg-gradient-to-r hover:from-chainpay-blue-light/15 hover:to-chainpay-blue/10 border border-transparent hover:border-chainpay-blue-light/30"
-                                            }
-                                            focus-visible:outline-none focus-visible:border-chainpay-blue focus-visible:shadow-[0_0_0_1px_rgba(0,136,204,0.15)]`}
+                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
+                        selectedToken === token.id
+                          ? "bg-[#E0F2FE] border border-[#60A5FA]/50"
+                          : "hover:bg-[#F1F5F9] border border-transparent"
+                      }`}
                     >
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-chainpay-blue-light/20 to-chainpay-blue/30 flex items-center justify-center overflow-hidden border border-chainpay-blue-light/50 shadow-sm">
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-[#E2E8F0]">
                         <Image
                           src={
                             getTokenImageSource(token.network, token.token) ||
@@ -506,17 +473,17 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                         />
                       </div>
                       <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-sm font-semibold text-chainpay-blue-dark truncate">
+                        <span className="text-sm font-semibold text-[#1E293B] truncate">
                           {token.token}
                         </span>
-                        <span className="text-xs text-chainpay-blue truncate">
+                        <span className="text-xs text-[#A1A1AA] truncate">
                           {token.network}
                         </span>
                       </div>
 
                       {selectedToken === token.id && (
-                        <div className="ml-auto w-5 h-5 rounded-full bg-chainpay-blue flex items-center justify-center shadow-sm">
-                          <Check className="w-3 h-3 text-white" />
+                        <div className="ml-auto w-5 h-5 rounded-full bg-[#60A5FA] flex items-center justify-center">
+                          <Check className="w-3 h-3 text-[#FFFFFF]" />
                         </div>
                       )}
                     </motion.div>

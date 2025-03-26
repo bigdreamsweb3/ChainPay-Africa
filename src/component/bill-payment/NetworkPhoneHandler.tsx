@@ -165,37 +165,37 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true;
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-xl shadow-sm border border-chainpay-blue-dark/70">
+    <div className="max-w-md mx-auto bg-[#F1F5F9] rounded-xl p-3 sm:p-4">
+      <div className="bg-[#FFFFFF] rounded-xl border border-[#E2E8F0]">
         <div className="p-5 sm:p-6 space-y-4">
           <div className="flex flex-row sm:items-stretch gap-4">
             {/* Phone Number Input */}
             <div className="flex-1 relative">
               <label
                 htmlFor="phoneNumber"
-                className="block text-xs font-bold text-chainpay-blue-dark/70 mb-2 ml-0.5"
+                className="block text-xs font-bold text-[#1E293B] mb-2 ml-0.5"
               >
                 Phone Number
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-chainpay-orange w-4 h-4 pointer-events-none" />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#FF9900] w-4 h-4 pointer-events-none" />
                 <input
                   type="tel"
                   placeholder="Enter phone number"
                   {...register("phoneNumber", {
                     validate: validatePhoneNumber,
                   })}
-                  className="w-full h-10 px-3 pl-10 pr-10 text-sm rounded-lg border border-chainpay-blue-light/40 hover:border-chainpay-blue/60 focus:outline-none focus:border-chainpay-blue/80 focus:ring-1 focus:ring-chainpay-blue/30 placeholder:text-chainpay-blue-dark/40 bg-chainpay-blue/5 text-chainpay-blue-dark"
+                  className="w-full h-10 px-3 pl-10 pr-10 text-sm rounded-lg border border-[#E2E8F0] hover:border-[#A1A1AA] focus:outline-none focus:border-[#60A5FA] focus:ring-1 focus:ring-[#60A5FA]/30 placeholder:text-[#A1A1AA] text-[#1E293B]"
                 />
                 {phoneNumber && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                     {isPhoneValid ? (
-                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 border border-green-200">
-                        <Check size={14} className="text-green-600" />
+                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 border border-[#22C55E]/30">
+                        <Check size={14} className="text-[#22C55E]" />
                       </div>
                     ) : (
-                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 border border-chainpay-orange-light/30">
-                        <AlertCircle size={14} className="text-chainpay-orange" />
+                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 border border-[#FF9900]/30">
+                        <AlertCircle size={14} className="text-[#FF9900]" />
                       </div>
                     )}
                   </div>
@@ -207,7 +207,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
             <div className="relative" ref={dropdownRef}>
               <label
                 htmlFor="networkSelect"
-                className="block text-xs font-bold text-chainpay-blue-dark/70 mb-2 ml-0.5"
+                className="block text-xs font-bold text-[#1E293B] mb-2 ml-0.5"
               >
                 Network Provider
               </label>
@@ -217,12 +217,9 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 aria-label="Select network"
                 aria-expanded={isDropdownOpen}
-                className="flex items-center justify-between gap-2 h-10 px-3 rounded-lg transition-all duration-200 
-                          border border-chainpay-blue-light/40 hover:border-chainpay-blue/60 bg-chainpay-blue/5 
-                          hover:bg-chainpay-blue-light/10 focus:outline-none focus:border-chainpay-blue/70 
-                          focus:ring-1 focus:ring-chainpay-blue/30 shadow-sm w-fit min-w-10"
+                className="flex items-center justify-between gap-2 h-10 px-3 rounded-lg transition-all duration-200 border border-[#E2E8F0] hover:border-[#A1A1AA] focus:outline-none focus:border-[#60A5FA] focus:ring-1 focus:ring-[#60A5FA]/30 w-fit min-w-10"
               >
-                <div className="w-6 h-6 rounded-full overflow-hidden border border-chainpay-blue-light/40">
+                <div className="w-6 h-6 rounded-full overflow-hidden border border-[#E2E8F0]">
                   <Image
                     src={selectedNetwork.iconUrl || "/placeholder.svg"}
                     alt={selectedNetwork.name}
@@ -231,15 +228,15 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                     className="w-5 h-5 rounded-full object-cover"
                   />
                 </div>
-                <span className="text-sm font-medium text-chainpay-blue-dark">
+                <span className="text-sm font-medium text-[#1E293B]">
                   {selectedNetwork.name?.replace(/\s?Nigeria\s?/g, "")}
                 </span>
-                <ChevronDown className="w-4 h-4 text-chainpay-blue" />
+                <ChevronDown className="w-4 h-4 text-[#60A5FA]" />
               </button>
 
               {/* Network Dropdown */}
               {isDropdownOpen && (
-                <div className="absolute z-[1000] right-0 mt-2 w-auto min-w-[180px] max-w-[260px] bg-white rounded-lg border border-chainpay-blue-light/30 shadow-lg overflow-hidden">
+                <div className="absolute z-[1000] right-0 mt-2 w-auto min-w-[180px] max-w-[260px] bg-[#FFFFFF] rounded-lg border border-[#E2E8F0] shadow-lg overflow-hidden">
                   <div className="p-2 space-y-1.5">
                     {networks.map((network) => (
                       <div
@@ -247,11 +244,11 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                         onClick={() => handleNetworkSelect(network)}
                         className={`flex items-center gap-2.5 p-3 rounded-md cursor-pointer ${
                           selectedNetwork.id === network.id
-                            ? "bg-chainpay-blue-light/30 border border-chainpay-blue-light/50"
-                            : "hover:bg-chainpay-blue-light/15 border border-transparent"
+                            ? "bg-[#E0F2FE] border border-[#60A5FA]/50"
+                            : "hover:bg-[#F1F5F9] border border-transparent"
                         }`}
                       >
-                        <div className="w-7 h-7 rounded-full overflow-hidden border border-chainpay-blue-light/50">
+                        <div className="w-7 h-7 rounded-full overflow-hidden border border-[#E2E8F0]">
                           <Image
                             src={network.iconUrl || "/placeholder.svg"}
                             alt={network.name}
@@ -260,12 +257,12 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
                             className="w-6 h-6 rounded-full object-cover"
                           />
                         </div>
-                        <span className="text-sm font-medium text-chainpay-blue-dark truncate">
+                        <span className="text-sm font-medium text-[#1E293B] truncate">
                           {network.name}
                         </span>
                         {selectedNetwork.id === network.id && (
-                          <div className="ml-auto w-5 h-5 rounded-full bg-chainpay-blue flex items-center justify-center">
-                            <Check size={12} className="text-white" />
+                          <div className="ml-auto w-5 h-5 rounded-full bg-[#60A5FA] flex items-center justify-center">
+                            <Check size={12} className="text-[#FFFFFF]" />
                           </div>
                         )}
                       </div>
@@ -278,8 +275,8 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
 
           {/* Error Message */}
           {error && (
-            <div className="px-4 py-2.5 rounded-lg bg-red-50 border border-red-200 shadow-sm">
-              <p className="text-sm text-red-600 flex items-center gap-2 font-medium">
+            <div className="px-4 py-2.5 rounded-lg bg-[#FEF2F2] border border-[#FECACA] shadow-sm">
+              <p className="text-sm text-[#DC2626] flex items-center gap-2 font-medium">
                 <AlertCircle className="w-4 h-4" />
                 {error}
               </p>
