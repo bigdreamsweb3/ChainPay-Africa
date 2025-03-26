@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, Minus } from "lucide-react";
+import { AlertCircle, Minus, Loader2 } from "lucide-react";
 
 interface ConversionResultCardProps {
   selectedTokenData: any; // Replace with the appropriate type for selectedTokenData
@@ -73,14 +73,27 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-orange-500 border border-orange-200">
-                      <Minus size={14} className="text-white" />
+                      {isConverting ? (
+                        <Loader2 size={14} className="text-white animate-spin" />
+                      ) : (
+                        <Minus size={14} className="text-white" />
+                      )}
                     </div>
                     <span className="text-gray-700 font-medium">
                       Final Amount
                     </span>
                   </div>
                   <span className="font-semibold text-gray-900">
-                    {localDisplayAmount} {selectedTokenData?.symbol}
+                    {isConverting ? (
+                      <span className="flex items-center">
+                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        Calculating...
+                      </span>
+                    ) : (
+                      <>
+                        {localDisplayAmount} {selectedTokenData?.symbol}
+                      </>
+                    )}
                   </span>
                 </div>
 

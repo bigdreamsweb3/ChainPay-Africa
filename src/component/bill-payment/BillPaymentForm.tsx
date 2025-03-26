@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -154,7 +154,7 @@ const BillPaymentForm: React.FC = () => {
     selectedService.charAt(0).toUpperCase() + selectedService.slice(1)
   );
 
-  const isPaymentValid = () => {
+  const isPaymentValid = useCallback(() => {
     // For airtime/data services
     if (selectedService === "airtime" || selectedService === "data") {
       return (
@@ -176,7 +176,7 @@ const BillPaymentForm: React.FC = () => {
       );
     }
     return false;
-  };
+  }, [amount, selectedTokenId, phoneNumber, meterNumber, carrier.id, selectedService]);
 
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
