@@ -5,7 +5,6 @@ import { ChainPayLogo } from "../web3/chainpay-logo";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { appConfig } from "@/app-config";
-import { Globe } from "lucide-react";
 
 export function Header() {
   const pathname = usePathname();
@@ -44,7 +43,6 @@ export function Header() {
 
           {/* Right Section: Country Selector and Wallet Button */}
           <div className="flex items-center gap-3">
-
             {/* Wallet Button */}
             <div className="flex-shrink-0">
               <WalletButton />
