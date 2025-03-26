@@ -59,7 +59,8 @@ export function WalletOptions() {
     setSelectedConnector(connector.uid);
     setConnectionStatus("connecting");
     try {
-      connect({ connector });
+      await connect({ connector });
+      setIsModalOpen(false);
     } catch (err) {
       console.error("Connection error:", err);
       setConnectionStatus("error");
