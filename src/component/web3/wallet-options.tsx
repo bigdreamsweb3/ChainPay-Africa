@@ -59,8 +59,14 @@ export function WalletOptions() {
     setSelectedConnector(connector.uid);
     setConnectionStatus("connecting");
     setIsModalOpen(false);
+
+    const timeout = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error("Connection timed out")), 10000) // 10 seconds timeout
+    );
+
     try {
-      await connect({ connector });
+      await Promise.race([connect({ connector }), timeout]); // Race between connect and timeout
+      setConnectionStatus("success");
     } catch (err) {
       console.error("Connection error:", err);
       setConnectionStatus("error");
@@ -81,10 +87,9 @@ export function WalletOptions() {
       {/* Connect Wallet Button with clear CTA */}
       <button
         onClick={() => setIsModalOpen(true)}
+        disabled={isPending}
         className={`flex items-center space-x-2 bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50 ${
-          isPending
-            ? "bg-gray-100 text-gray-600 cursor-not-allowed"
-            : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white hover:opacity-90 active:scale-95"
+          isPending ? "bg-gray-100 text-gray-600 cursor-not-allowed" : ""
         }`}
         aria-label="Connect your wallet to continue"
       >
