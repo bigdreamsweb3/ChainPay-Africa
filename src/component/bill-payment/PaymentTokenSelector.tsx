@@ -17,6 +17,7 @@ import {
   handleConversionError,
 } from "@/utils/conversionUtils";
 import ConversionResultCard from "./ConversionResultCard";
+import { TokenData } from "@/types/token";
 
 interface PaymentTokenSelectorProps {
   paymentTokens: PaymentToken[];
@@ -58,7 +59,19 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
-  );
+  ) as PaymentToken | undefined;
+
+  // Ensure selectedTokenData is of type TokenData
+  const tokenData: TokenData | undefined = selectedTokenData
+    ? {
+        id: selectedTokenData.id,
+        network: selectedTokenData.network,
+        token: selectedTokenData.token,
+        address: selectedTokenData.address,
+        icon: selectedTokenData.icon,
+        symbol: selectedTokenData.symbol,
+      }
+    : undefined;
 
   const creditAmount = watch("amount");
 
@@ -332,10 +345,8 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full bg-gradient-to-r from-chainpay-blue-light/20 to-chainpay-blue/30 flex items-center justify-center overflow-hidden shadow-sm border border-chainpay-blue-light/40">
                               <Image
-                                src={
-                                  selectedTokenData.image || "/placeholder.svg"
-                                }
-                                alt={selectedTokenData.name}
+                                src={selectedTokenData?.icon || "/placeholder.svg"}
+                                alt={selectedTokenData?.symbol}
                                 width={24}
                                 height={24}
                                 className="w-5 h-5 rounded-full object-cover"
@@ -384,14 +395,18 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       </div>
 
       {/* Conversion Result */}
-      <ConversionResultCard
-        selectedTokenData={selectedTokenData}
-        creditAmount={creditAmount}
-        localDisplayAmount={localDisplayAmount}
-        conversionRate={conversionRate}
-        isConverting={isConverting}
-        conversionError={conversionError}
-      />
+      {tokenData ? (
+        <ConversionResultCard
+          selectedTokenData={tokenData}
+          creditAmount={creditAmount}
+          localDisplayAmount={localDisplayAmount}
+          conversionRate={conversionRate}
+          isConverting={isConverting}
+          conversionError={conversionError}
+        />
+      ) : (
+        <div>No token selected</div>
+      )}
 
       {/* Token Selection Modal */}
       <AnimatePresence>

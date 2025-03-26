@@ -7,6 +7,7 @@ export interface PaymentToken {
   name: string;
   symbol: string;
   image: string;
+  icon: string;
 }
 
 // Supported blockchain networks
@@ -64,7 +65,8 @@ export const defaultToken: PaymentToken = {
   id: 'ethereum-usdt',
   name: 'Tether USD',
   symbol: 'USDT',
-  image: '/network-icons/ethereum-usdt.png'
+  image: '/network-icons/ethereum-usdt.png',
+  icon: '/network-icons/ethereum-usdt.png'
 };
 
 // Gas price multipliers for different networks

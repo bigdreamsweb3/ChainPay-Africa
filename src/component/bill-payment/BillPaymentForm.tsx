@@ -18,16 +18,18 @@ import { FuturisticButton } from "../ui";
 import { usePayment, useSetPayment } from "@/hooks/states";
 import { PaymentToken as TokenSelectorToken } from "@/constants/token";
 
+
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
   return tokens.map((token) => ({
     id: token.id,
-    network: token.id.split("-")[0] || "ethereum",
-    token: token.symbol,
-    address: token.contractAddress,
+    network: token.network,
+    token: token.token,
+    address: token.address,
     name: token.name,
     symbol: token.symbol,
     image: token.image,
+    icon: token.icon,
   }));
 };
 
@@ -100,7 +102,7 @@ const BillPaymentForm: React.FC = () => {
   const paymentTokens: PaymentToken[] = useAcceptedTokens();
   const selectedTokenDetails = paymentTokens.find(
     (token) => token.id === selectedTokenId
-  );
+  ) as PaymentToken | undefined;
 
   useEffect(() => {
     if (appConfig.availableServices.includes("Airtime")) {

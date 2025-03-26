@@ -3,9 +3,10 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AlertCircle, Minus, Loader2 } from "lucide-react";
+import { TokenData } from "@/types/token";
 
 interface ConversionResultCardProps {
-  selectedTokenData: any; // Replace with the appropriate type for selectedTokenData
+  selectedTokenData: TokenData;
   creditAmount: string;
   localDisplayAmount: string;
   conversionRate: string;

@@ -38,6 +38,7 @@ export interface PaymentToken {
   decimals: number;
   contractAddress: string;
   image: string;
+  icon: string;
   network: string;
   token: string;
   address: string;
