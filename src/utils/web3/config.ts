@@ -7,8 +7,6 @@ import { useAccount } from "wagmi";
 
 export const SUPPORTED_CHAIN_IDS = [mainnet, crossfiTestnet, monadTestnet];
 
-export const DEFAULT_CHAIN = crossfiTestnet;
-
 declare module "wagmi" {
   interface Register {
     config: typeof wagmiConfig;
@@ -55,5 +53,11 @@ export const useAcceptedTokens = (): PaymentToken[] => {
     chain.id === crossfiTestnet.id ? crossfiTestnet.payAcceptedTokens : {};
 
   return Object.values(acceptedTokens) as PaymentToken[]; // Cast to PaymentToken[]
+};
+
+// New function to get the available chains
+export const getAvailableChains = () => {
+  const { chain } = useAccount();
+  return chain ? [chain] : []; // Return the connected chain if available
 };
 

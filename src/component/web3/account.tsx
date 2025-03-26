@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, LogOut, ChevronDown, ExternalLink, Check, AlertCircle, Loader2 } from "lucide-react";
 import { SUPPORTED_CHAIN_IDS } from "@/utils/web3/config";
 import Image from "next/image";
-import { Chain } from "viem";
+
 
 export function Account() {
   const { address, chain, isConnected, isConnecting, isDisconnected, isReconnecting } = useAccount();

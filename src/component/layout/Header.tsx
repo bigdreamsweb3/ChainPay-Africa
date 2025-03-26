@@ -12,9 +12,6 @@ export function Header() {
 
   return (
     <header className="w-full py-4 sm:py-5 relative z-30">
-      {/* Simple border instead of gradient overlay */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gray-200"></div>
-
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="flex items-center justify-between">
           {/* Logo - without animations */}

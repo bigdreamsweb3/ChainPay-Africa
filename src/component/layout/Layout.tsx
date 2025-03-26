@@ -23,10 +23,7 @@ export function Layout({ children }: LayoutProps) {
           {/* Header */}
           <Header />
 
-          {/* Network Switch Notification
-          <div className="pt-2 pb-4 sm:pt-3 sm:pb-5">
-            <NetworkSwitchNotification className="container mx-auto px-4 sm:px-6" />
-          </div> */}
+          <NetworkSwitchNotification className="container mx-auto px-4 sm:px-6" />
 
           {/* Main Content */}
           <main className="flex-grow relative z-10 overflow-visible py-5 sm:py-8">
@@ -40,21 +37,21 @@ export function Layout({ children }: LayoutProps) {
             <div className="container mx-auto px-4 sm:px-6">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
                 <div className="text-gray-600 text-sm flex items-center">
-                  <Blocks size={14} className="mr-1.5 text-chainpay-orange" />
-                  © {new Date().getFullYear()} ChainPay Africa
+                  <Blocks size={14} className="mr-1.5 text-chainpay-orange" />©{" "}
+                  {new Date().getFullYear()} ChainPay Africa
                 </div>
-                
+
                 <div className="flex items-center space-x-5 sm:space-x-8">
                   {[
                     { name: "Privacy", icon: Shield },
                     { name: "Terms", icon: Blocks },
-                    { name: "Support", icon: Heart }
+                    { name: "Support", icon: Heart },
                   ].map((item) => {
                     const Icon = item.icon;
                     return (
-                      <a 
+                      <a
                         key={item.name}
-                        href="#" 
+                        href="#"
                         className="text-gray-600 hover:text-chainpay-orange transition-colors text-xs sm:text-sm flex items-center"
                       >
                         <Icon size={14} className="mr-1.5" />

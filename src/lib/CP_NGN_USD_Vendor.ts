@@ -34,8 +34,8 @@ const fetchExchangeRate = async (): Promise<number> => {
 const getRateWithFallbacks = async (): Promise<number> => {
   try {
     return await fetchExchangeRate();
-  } catch (error) {
-    console.error('Failed to fetch rate:', error);
+  } catch {
+    console.error('Failed to fetch rate');
     return RATE_CONFIG.preferredRate;
   }
 };
@@ -60,8 +60,8 @@ export const fetchNGNtoUSDRate = async (): Promise<number> => {
     };
     
     return finalRate;
-  } catch (error) {
-    console.error("Failed to fetch exchange rate:", error);
+  } catch {
+    console.error("Failed to fetch exchange rate");
     return RATE_CONFIG.preferredRate;
   }
 };
@@ -79,7 +79,7 @@ export const getConversionRateDisplay = async (): Promise<string> => {
   try {
     const rate = await fetchNGNtoUSDRate();
     return `1 USD ≈ ${rate.toLocaleString()} NGN`;
-  } catch (error) {
+  } catch {
     return `1 USD ≈ ${RATE_CONFIG.preferredRate.toLocaleString()} NGN`;
   }
 };
@@ -96,8 +96,7 @@ export const convertToTokenUnits = (tokenAmount: string, decimals = 18): string 
 
 // Function to convert credit units to token amount
 export const convertCreditToTokenAmount = async (
-  creditAmount: number,
-  token: PaymentToken
+  creditAmount: number
 ): Promise<string> => {
   try {
     // Get current NGN to USD rate
@@ -111,8 +110,8 @@ export const convertCreditToTokenAmount = async (
     
     // For USDT/USDC, the amount is the same as USD
     return usdAmount.toFixed(6);
-  } catch (error) {
-    console.error('Error in conversion:', error);
+  } catch {
+    console.error('Error in conversion');
     throw new Error('Failed to convert amount');
   }
 }; 

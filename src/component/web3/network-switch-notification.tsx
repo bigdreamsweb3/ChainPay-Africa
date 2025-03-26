@@ -1,6 +1,6 @@
 "use client";
 
-import { DEFAULT_CHAIN } from "@/utils/web3/config";
+import { getAvailableChains } from "@/utils/web3/config";
 import React, { useEffect, useState } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,10 +16,13 @@ export default function NetworkSwitchNotification({
   const { switchChain } = useSwitchChain();
   const [showNotification, setShowNotification] = useState(false);
 
+  const availableChains = getAvailableChains();
+  const targetChain = availableChains[0];
+
   const onSwitch = async () => {
-    if (chain?.id !== DEFAULT_CHAIN.id) {
+    if (chain?.id !== targetChain.id) {
       try {
-        switchChain({ chainId: DEFAULT_CHAIN.id });
+        switchChain({ chainId: targetChain.id });
         setShowNotification(true);
       } catch (error) {
         console.error("Failed to switch chain:", error);
@@ -28,7 +31,7 @@ export default function NetworkSwitchNotification({
   };
 
   useEffect(() => {
-    setShowNotification(!!address && chain?.id !== DEFAULT_CHAIN.id);
+    setShowNotification(!!address && chain?.id !== targetChain.id);
   }, [address, chain]);
 
   return (
@@ -45,10 +48,10 @@ export default function NetworkSwitchNotification({
             className="bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 border-l-4 border-brand-primary p-4 rounded-lg shadow-md max-w-sm"
           >
             <h2 className="font-semibold text-brand-primary text-lg">
-              Switch to {DEFAULT_CHAIN.name}
+              Switch to {targetChain.name}
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              This application is only available on the {DEFAULT_CHAIN.name} network. Please switch to continue.
+              This application is only available on the {targetChain.name} network. Please switch to continue.
             </p>
             <button
               onClick={onSwitch}
