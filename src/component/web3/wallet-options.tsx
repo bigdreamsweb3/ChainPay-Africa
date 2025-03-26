@@ -6,16 +6,19 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Wallet, ChevronRight, CheckCircle, XCircle, X } from "lucide-react"
 import Image from "next/image"
 
-export function WalletOptions() {
+interface WalletOptionsProps {
+  isModalOpen: boolean;
+  setIsModalOpen: (open: boolean) => void;
+}
+
+export function WalletOptions({ isModalOpen, setIsModalOpen }: WalletOptionsProps) {
   const { connectors, connect, error, isPending } = useConnect()
   const { address, isConnected } = useAccount()
   const { disconnect } = useDisconnect()
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [selectedConnector, setSelectedConnector] = useState<string | null>(null)
   const [connectionStatus, setConnectionStatus] = useState<"idle" | "connecting" | "success" | "error">("idle")
   const [isClient, setIsClient] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
   const detailsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -25,9 +28,6 @@ export function WalletOptions() {
   // Handle clicks outside the modal or details dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isModalOpen && modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        setIsModalOpen(false)
-      }
       if (isDetailsOpen && detailsRef.current && !detailsRef.current.contains(event.target as Node)) {
         setIsDetailsOpen(false)
       }
@@ -35,7 +35,7 @@ export function WalletOptions() {
     
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [isModalOpen, isDetailsOpen])
+  }, [isDetailsOpen])
 
   // Track connection status based on isPending
   useEffect(() => {
@@ -60,7 +60,6 @@ export function WalletOptions() {
     setConnectionStatus("connecting")
     try {
       connect({ connector })
-      // Let the useEffect handle the status changes based on isPending
     } catch (err) {
       console.error("Connection error:", err)
       setConnectionStatus("error")
@@ -95,12 +94,11 @@ export function WalletOptions() {
           <AnimatePresence>
             {isDetailsOpen && (
               <>
-                {/* Invisible backdrop to capture clicks */}
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="fixed inset-0 z-40"
+                  className="fixed inset-0 z-50 bg-black/50"
                 />
                 
                 <motion.div
@@ -109,7 +107,7 @@ export function WalletOptions() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 5, scale: 0.95 }}
                   transition={{ duration: 0.15, ease: "easeOut" }}
-                  className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-gray-200"
+                  className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-60 border border-gray-200"
                   style={{ transformOrigin: "top right" }}
                 >
                   <div className="p-4 border-b border-gray-100">
@@ -169,21 +167,22 @@ export function WalletOptions() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
             onClick={(e) => {
-              if (e.target === e.currentTarget) {
-                setIsModalOpen(false)
-              }
+              e.preventDefault()
+              e.stopPropagation()
+              setIsModalOpen(false)
             }}
           >
             <motion.div
-              ref={modalRef}
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="w-full max-w-md bg-white shadow-2xl rounded-lg overflow-hidden relative"
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              className="bg-[#FFFFFF] rounded-xl w-full max-w-[90vw] sm:max-w-md shadow-xl border border-[#E2E8F0] overflow-hidden"
+              onClick={(e) => {
+                e.stopPropagation()
+              }}
             >
               <button
                 onClick={() => setIsModalOpen(false)}

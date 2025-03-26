@@ -165,9 +165,9 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
   const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true;
 
   return (
-    <div className="max-w-md mx-auto bg-[#F1F5F9] rounded-xl p-2">
+    <div className="max-w-md mx-auto bg-[#F1F5F9] rounded-xl p-1">
       <div className="bg-[#FFFFFF] rounded-xl border border-[#E2E8F0]">
-        <div className="p-5 sm:p-6 space-y-4">
+        <div className="p-3 space-y-4">
           <div className="flex flex-row sm:items-stretch gap-4">
             {/* Phone Number Input */}
             <div className="flex-1 relative">
@@ -236,7 +236,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({
 
               {/* Network Dropdown */}
               {isDropdownOpen && (
-                <div className="absolute z-[1000] right-0 mt-2 w-auto min-w-[180px] max-w-[260px] bg-[#FFFFFF] rounded-lg border border-[#E2E8F0] shadow-lg overflow-hidden">
+                <div className="absolute z-50 right-0 mt-2 w-auto min-w-[180px] max-w-[260px] bg-[#FFFFFF] rounded-lg border border-[#E2E8F0] shadow-lg overflow-hidden">
                   <div className="p-2 space-y-1.5">
                     {networks.map((network) => (
                       <div

@@ -11,12 +11,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-[#60A5FA] text-[#FFFFFF] hover:bg-[#3B82F6] border border-[#60A5FA]",
-        secondary: "bg-[#FFFFFF] text-[#1E293B] hover:bg-[#F1F5F9] border border-[#E2E8F0]",
-        accent: "bg-[#FF9900] text-[#FFFFFF] hover:bg-[#F97316] border border-[#FF9900]",
-        outline: "border border-[#E2E8F0] bg-transparent hover:bg-[#F1F5F9] text-[#1E293B]",
-        ghost: "bg-transparent text-[#1E293B] hover:bg-[#F1F5F9]",
-        destructive: "bg-[#EF4444] text-[#FFFFFF] hover:bg-[#DC2626] border border-[#EF4444]",
+        primary:
+          "bg-brand-primary text-text-light hover:bg-brand-secondary border border-brand-primary",
+        secondary:
+          "bg-bg-primary text-text-primary hover:bg-bg-secondary border border-border-light",
+        accent:
+          "bg-brand-accent text-text-light hover:bg-[#F97316] border border-brand-accent",
+        outline:
+          "border border-border-light bg-transparent hover:bg-bg-secondary text-text-primary",
+        ghost: "bg-transparent text-text-primary hover:bg-bg-secondary",
+        destructive:
+          "bg-[#EF4444] text-text-light hover:bg-[#DC2626] border border-[#EF4444]",
       },
       size: {
         small: "h-8 px-3 text-xs",
@@ -44,7 +49,21 @@ export interface ChainPayButtonProps
 }
 
 const ChainPayButton = React.forwardRef<HTMLButtonElement, ChainPayButtonProps>(
-  ({ className, children, variant, size, fullWidth, isLoading, icon, whileHover, whileTap, ...props }, ref) => {
+  (
+    {
+      className,
+      children,
+      variant,
+      size,
+      fullWidth,
+      isLoading,
+      icon,
+      whileHover,
+      whileTap,
+      ...props
+    },
+    ref
+  ) => {
     return (
       <motion.button
         ref={ref}

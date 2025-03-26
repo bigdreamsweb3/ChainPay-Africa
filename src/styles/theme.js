@@ -1,8 +1,8 @@
 const theme = {
   colors: {
     brand: {
-      primary: '#0088CC',
-      secondary: '#FF6600',
+      primary: '#0066CC',
+      secondary: '#FF6B00',
       accent: '#33CCFF',
       success: '#00CC66',
       warning: '#FFCC00',

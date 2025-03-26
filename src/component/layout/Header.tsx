@@ -6,7 +6,11 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { appConfig } from "@/app-config";
 
-export function Header() {
+interface HeaderProps {
+  setIsModalOpen: (open: boolean) => void;
+}
+
+export function Header({ setIsModalOpen }: HeaderProps) {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -45,7 +49,7 @@ export function Header() {
           <div className="flex items-center gap-3">
             {/* Wallet Button */}
             <div className="flex-shrink-0">
-              <WalletButton />
+              <WalletButton setIsModalOpen={setIsModalOpen} />
             </div>
           </div>
         </div>
