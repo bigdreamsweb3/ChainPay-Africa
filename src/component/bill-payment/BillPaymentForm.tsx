@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { AlertCircle, Sparkles, CreditCard } from "lucide-react";
+import { AlertCircle, CreditCard } from "lucide-react";
 import PhoneNumberInput from "./NetworkPhoneHandler";
 import MeterNumberInput from "./MeterNumberInput";
 import ServiceSelection from "./ServiceSelection";
