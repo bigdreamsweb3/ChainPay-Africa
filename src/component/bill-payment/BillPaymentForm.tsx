@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { AlertCircle, Sparkles } from "lucide-react";
+import { AlertCircle, Sparkles, CreditCard } from "lucide-react";
 import PhoneNumberInput from "./NetworkPhoneHandler";
 import MeterNumberInput from "./MeterNumberInput";
 import ServiceSelection from "./ServiceSelection";
@@ -309,7 +309,7 @@ const BillPaymentForm: React.FC = () => {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [amount, selectedTokenId]);
+  }, [amount, selectedTokenId, updateConversionAmount]);
 
   return (
     <FormProvider {...methods}>
@@ -396,9 +396,9 @@ const BillPaymentForm: React.FC = () => {
                               variant="primary"
                               size="large"
                               fullWidth
-                              icon={<Sparkles size={16} />}
+                              icon={<CreditCard className="w-4 h-4" />}
                             >
-                              Pay
+                              Pay Now
                             </ChainPayButton>
                           </div>
                         </div>

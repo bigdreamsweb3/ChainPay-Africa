@@ -61,7 +61,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
       </div>
 
       {/* Service Selection Card */}
-      <div className="w-full bg-white backdrop-blur-sm border border-chainpay-blue-light/20 space-y-5 p-3 rounded-[10px] shadow-sm">
+      <div className="w-full bg-white backdrop-blur-sm border border-chainpay-blue-light/10 space-y-5 p-3 rounded-xl shadow-sm">
         <div className="grid grid-cols-3 gap-2">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
@@ -98,10 +98,10 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                         setUnavailableServiceMessage(service.name);
                       }
                     }}
-                    className={`relative flex flex-col items-center justify-center p-3 rounded-md transition-all duration-200 ease-in-out max-w-[100px] transform ${
+                    className={`relative flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-200 ease-in-out max-w-[100px] transform border ${
                       field.value === service.id
-                        ? "bg-chainpay-blue text-white scale-105 shadow-lg"
-                        : "bg-white text-chainpay-blue-dark hover:bg-chainpay-blue-light/10 border border-chainpay-blue-light/20"
+                        ? "bg-gradient-to-br from-chainpay-blue to-chainpay-blue-dark text-white scale-105 shadow-md"
+                        : "bg-white text-chainpay-blue-dark hover:bg-chainpay-blue-light/5 border-chainpay-blue-light/20 hover:border-chainpay-blue-light/30"
                     }`}
                     aria-label={`Select ${service.name}`}
                   >
@@ -114,7 +114,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                       }`}
                     />
                     <span
-                      className={`text-xs font-bold transition-colors duration-200 ${
+                      className={`text-xs font-medium transition-colors duration-200 ${
                         field.value === service.id
                           ? "text-white"
                           : "text-chainpay-blue-dark"
@@ -124,7 +124,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                     </span>
 
                     {field.value === service.id && (
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-1 bg-chainpay-orange rounded-full shadow-sm" />
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-chainpay-orange rounded-full shadow-sm" />
                     )}
                   </button>
                 )}

@@ -81,7 +81,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="flex flex-col gap-2 bg-chainpay-blue-light/15 rounded-lg p-3 border border-chainpay-blue-light/20">
+      <div className="flex flex-col gap-2 bg-chainpay-blue-light/20 rounded-lg p-3 border border-chainpay-blue-light/20">
         <div className="flex flex-col space-y-3">
           <div className="flex flex-row justify-between items-center gap-3">
             {/* Amount Input */}

@@ -7,9 +7,6 @@ import {
   convertToTokenUnits,
   formatTokenAmountDisplay,
 } from '@/lib/CP_NGN_USD_Vendor';
-
-import Button from '../ui/Button';
-import Card from '../ui/Card';
 import ChainPayButton from '../ui/ChainPayButton';
 
 interface FormData {
@@ -257,7 +254,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 mt-0 bg-chainpay-blue-dark/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 mt-0 bg-chainpay-blue-dark/70 backdrop-blur-sm"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -269,13 +266,13 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-chainpay-blue-light/20 bg-gradient-to-r from-chainpay-blue-light/5 via-white to-chainpay-blue-light/5">
+        <div className="p-4 border-b border-chainpay-blue-light/20 bg-gradient-to-r from-chainpay-blue-light/10 via-white to-chainpay-blue-light/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-chainpay-blue-light/10 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-chainpay-blue-light/15 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-chainpay-blue"
+                  className="h-4 w-4 text-chainpay-blue-dark"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -288,7 +285,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   />
                 </svg>
               </div>
-              <h3 className="text-base font-semibold text-chainpay-blue">Review Transaction</h3>
+              <h3 className="text-base font-semibold text-chainpay-blue-dark">Review Transaction</h3>
             </div>
             <button
               onClick={(e) => {
@@ -296,11 +293,11 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                 e.stopPropagation();
                 onClose();
               }}
-              className="p-1.5 rounded-lg hover:bg-chainpay-blue-light/5 transition-colors focus:outline-none"
+              className="p-1.5 rounded-lg hover:bg-chainpay-blue-light/10 transition-colors focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-chainpay-blue/60"
+                className="h-5 w-5 text-chainpay-blue-dark/70"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -320,34 +317,34 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         <div className="p-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
-              <span className="text-xs text-chainpay-blue/60">Service</span>
-              <span className="text-sm font-medium text-chainpay-blue capitalize">{selectedService}</span>
+              <span className="text-xs text-chainpay-blue-dark/60">Service</span>
+              <span className="text-sm font-medium text-chainpay-blue-dark capitalize">{selectedService}</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
-              <span className="text-xs text-chainpay-blue/60">
+              <span className="text-xs text-chainpay-blue-dark/60">
                 {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
               </span>
-              <span className="text-sm font-medium text-chainpay-blue">
+              <span className="text-sm font-medium text-chainpay-blue-dark">
                 {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
               </span>
             </div>
 
             {(selectedService === "airtime" || selectedService === "data") && carrier && (
               <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
-                <span className="text-xs text-chainpay-blue/60">Network</span>
-                <span className="text-sm font-medium text-chainpay-blue">{carrier.name || "Unknown"}</span>
+                <span className="text-xs text-chainpay-blue-dark/60">Network</span>
+                <span className="text-sm font-medium text-chainpay-blue-dark">{carrier.name || "Unknown"}</span>
               </div>
             )}
 
             <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
-              <span className="text-xs text-chainpay-blue/60">Amount</span>
-              <span className="text-sm font-medium text-chainpay-blue">{watch("amount")} Credit Units</span>
+              <span className="text-xs text-chainpay-blue-dark/60">Amount</span>
+              <span className="text-sm font-medium text-chainpay-blue-dark">{watch("amount")} Credit Units</span>
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
-              <span className="text-xs text-chainpay-blue/60">Pay Amount</span>
-              <span className="text-sm font-medium text-chainpay-blue">
+              <span className="text-xs text-chainpay-blue-dark/60">Pay Amount</span>
+              <span className="text-sm font-medium text-chainpay-blue-dark">
                 {isConverting ? (
                   <span className="flex items-center gap-1.5">
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -360,8 +357,8 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             </div>
 
             <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
-              <span className="text-xs text-chainpay-blue/60">Payment Token</span>
-              <span className="text-sm font-medium text-chainpay-blue">
+              <span className="text-xs text-chainpay-blue-dark/60">Payment Token</span>
+              <span className="text-sm font-medium text-chainpay-blue-dark">
                 {selectedTokenDetails ? (
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded-lg bg-white border border-chainpay-blue-light/20 flex items-center justify-center overflow-hidden">
@@ -384,7 +381,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
           {/* Error Message */}
           {errorMessage && (
-            <div className="mt-4 p-3 rounded-lg bg-red-50/50 border border-red-100">
+            <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-100">
               <p className="text-xs text-red-600 flex items-center gap-2">
                 <AlertCircle className="w-3.5 h-3.5" />
                 {errorMessage}
