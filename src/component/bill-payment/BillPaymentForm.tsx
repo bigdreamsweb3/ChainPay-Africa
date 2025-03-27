@@ -18,8 +18,6 @@ import { appConfig } from "@/app-config";
 import { usePayment, useSetPayment } from "@/hooks/states";
 import { PaymentToken as TokenSelectorToken } from "@/constants/token";
 import { ChainPayButton } from "../ui";
-import { debounce } from "@/utils/debounce";
-import { formatTokenAmountDisplay } from "@/lib/CP_NGN_USD_Vendor";
 import {
   fetchConversionRate,
   convertAmount,

@@ -10,6 +10,7 @@ import {
 
 import Button from '../ui/Button';
 import Card from '../ui/Card';
+import ChainPayButton from '../ui/ChainPayButton';
 
 interface FormData {
   phoneNumber: string;
@@ -256,7 +257,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 mt-0 bg-gray-900/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 mt-0 bg-chainpay-blue-dark/60 backdrop-blur-sm"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -264,24 +265,42 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       }}
     >
       <div
-        className="bg-white rounded-[20px] w-full max-w-md shadow-xl border border-gray-100 overflow-hidden"
-        onClick={(e) => e.stopPropagation()} // Prevent clicks inside the modal from closing it
+        className="bg-white rounded-xl w-full max-w-md shadow-xl border border-chainpay-orange/10 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-4 border-b border-chainpay-orange/10 bg-gradient-to-r from-chainpay-orange/5 via-white to-chainpay-orange/5">
           <div className="flex items-center justify-between">
-            <h3 className="text-[15px] font-semibold text-gray-900">Review Transaction</h3>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-chainpay-orange/10 flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 text-chainpay-orange"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-base font-semibold text-chainpay-orange">Review Transaction</h3>
+            </div>
             <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 onClose();
               }}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors focus:outline-none"
+              className="p-1.5 rounded-lg hover:bg-chainpay-orange/5 transition-colors focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-gray-500"
+                className="h-5 w-5 text-chainpay-orange/60"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -298,100 +317,96 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Content */}
-        <Card
-          title=""
-          className="max-w-md w-full mx-auto"
-        >
-          <div >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
-                <span className="text-sm text-gray-600">Service</span>
-                <span className="text-[15px] font-semibold text-gray-900 capitalize">{selectedService}</span>
-              </div>
-
-              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
-                <span className="text-sm text-gray-600">
-                  {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
-                </span>
-                <span className="text-[15px] font-semibold text-gray-900">
-                  {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
-                </span>
-              </div>
-
-              {(selectedService === "airtime" || selectedService === "data") && carrier && (
-                <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
-                  <span className="text-sm text-gray-600">Network</span>
-                  <span className="text-[15px] font-semibold text-gray-900">{carrier.name || "Unknown"}</span>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
-                <span className="text-sm text-gray-600">Amount</span>
-                <span className="text-[15px] font-semibold text-gray-900">{watch("amount")} Credit Units</span>
-              </div>
-
-              {/* Display the converted token amount */}
-              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
-                <span className="text-sm text-gray-600">Pay Amount</span>
-                <span className="text-[15px] font-semibold text-gray-900">
-                  {isConverting ? (
-                    <span className="flex items-center">
-                      <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" />
-                      Calculating...
-                    </span>
-                  ) : (
-                    <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
-                  )}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between py-3 px-4 rounded-[15px] bg-gradient-to-r from-chainpay-blue-light/5 to-chainpay-blue/5 border border-chainpay-blue-light/20">
-                <span className="text-sm text-gray-600">Payment Token</span>
-                <span className="text-[15px] font-semibold text-gray-900">
-                  {selectedTokenDetails ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-r from-chainpay-blue-light/10 to-chainpay-blue/10 flex items-center justify-center overflow-hidden border border-chainpay-blue-light/20">
-                        <Image
-                          src={selectedTokenDetails.image || "/placeholder.svg"}
-                          alt={selectedTokenDetails.name}
-                          width={16}
-                          height={16}
-                          className="w-4 h-4 rounded-full object-cover"
-                        />
-                      </div>
-                      {selectedTokenDetails.symbol}
-                    </div>
-                  ) : (
-                    "None selected"
-                  )}
-                </span>
-              </div>
+        <div className="p-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
+              <span className="text-xs text-chainpay-orange/60">Service</span>
+              <span className="text-sm font-medium text-chainpay-orange capitalize">{selectedService}</span>
             </div>
 
-            {/* Error Message */}
-            {errorMessage && (
-              <div className="px-3 py-2 rounded-lg bg-red-50 border border-red-100">
-                <p className="text-sm text-red-600 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  {errorMessage}
-                </p>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
+              <span className="text-xs text-chainpay-orange/60">
+                {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
+              </span>
+              <span className="text-sm font-medium text-chainpay-orange">
+                {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
+              </span>
+            </div>
+
+            {(selectedService === "airtime" || selectedService === "data") && carrier && (
+              <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
+                <span className="text-xs text-chainpay-orange/60">Network</span>
+                <span className="text-sm font-medium text-chainpay-orange">{carrier.name || "Unknown"}</span>
               </div>
             )}
+
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
+              <span className="text-xs text-chainpay-orange/60">Amount</span>
+              <span className="text-sm font-medium text-chainpay-orange">{watch("amount")} Credit Units</span>
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
+              <span className="text-xs text-chainpay-orange/60">Pay Amount</span>
+              <span className="text-sm font-medium text-chainpay-orange">
+                {isConverting ? (
+                  <span className="flex items-center gap-1.5">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Calculating...
+                  </span>
+                ) : (
+                  <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
+                )}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
+              <span className="text-xs text-chainpay-orange/60">Payment Token</span>
+              <span className="text-sm font-medium text-chainpay-orange">
+                {selectedTokenDetails ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-white border border-chainpay-orange/20 flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={selectedTokenDetails.image || "/placeholder.svg"}
+                        alt={selectedTokenDetails.name}
+                        width={16}
+                        height={16}
+                        className="w-4 h-4 object-contain"
+                      />
+                    </div>
+                    {selectedTokenDetails.symbol}
+                  </div>
+                ) : (
+                  "None selected"
+                )}
+              </span>
+            </div>
           </div>
 
-          {/* Actions */}
-          <div className="p-6 border-t border-border-light">
-            <Button
-              type="button"
-              onClick={(e) => handleBuyAirtime(e)}
-              disabled={isPending || isConfirmDisabled}
-              isLoading={isPending}
-              fullWidth
-            >
-              {isPending ? "Processing..." : "Confirm Payment"}
-            </Button>
-          </div>
-        </Card>
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="mt-4 p-3 rounded-lg bg-red-50/50 border border-red-100">
+              <p className="text-xs text-red-600 flex items-center gap-2">
+                <AlertCircle className="w-3.5 h-3.5" />
+                {errorMessage}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="p-4 border-t border-chainpay-orange/10">
+          <ChainPayButton
+            type="button"
+            onClick={(e) => handleBuyAirtime(e)}
+            disabled={isPending || isConfirmDisabled}
+            isLoading={isPending}
+            fullWidth
+            variant="primary"
+            size="large"
+          >
+            {isPending ? "Processing..." : "Confirm Payment"}
+          </ChainPayButton>
+        </div>
       </div>
     </div>
   );

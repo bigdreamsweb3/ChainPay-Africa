@@ -7,21 +7,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#60A5FA]/50 disabled:pointer-events-none disabled:opacity-50",
+  "relative inline-flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-chainpay-orange/50 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary:
-          "bg-brand-primary text-text-light hover:bg-brand-secondary border border-brand-primary",
+          "bg-chainpay-orange text-white hover:bg-chainpay-orange/90 border border-chainpay-orange shadow-sm hover:shadow-md",
         secondary:
-          "bg-bg-primary text-text-primary hover:bg-bg-secondary border border-border-light",
+          "bg-white text-chainpay-orange hover:bg-chainpay-orange/5 border border-chainpay-orange/20 shadow-sm hover:shadow-md",
         accent:
-          "bg-brand-accent text-text-light hover:bg-[#F97316] border border-brand-accent",
+          "bg-gradient-to-r from-chainpay-orange to-chainpay-orange/90 text-white hover:from-chainpay-orange/90 hover:to-chainpay-orange/80 border border-chainpay-orange shadow-sm hover:shadow-md",
         outline:
-          "border border-border-light bg-transparent hover:bg-bg-secondary text-text-primary",
-        ghost: "bg-transparent text-text-primary hover:bg-bg-secondary",
+          "border border-chainpay-orange/20 bg-transparent hover:bg-chainpay-orange/5 text-chainpay-orange",
+        ghost: 
+          "bg-transparent text-chainpay-orange hover:bg-chainpay-orange/5",
         destructive:
-          "bg-[#EF4444] text-text-light hover:bg-[#DC2626] border border-[#EF4444]",
+          "bg-red-500 text-white hover:bg-red-600 border border-red-500 shadow-sm hover:shadow-md",
       },
       size: {
         small: "h-8 px-3 text-xs",
