@@ -265,17 +265,17 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       }}
     >
       <div
-        className="bg-white rounded-xl w-full max-w-md shadow-xl border border-chainpay-orange/10 overflow-hidden"
+        className="bg-white rounded-xl w-full max-w-md shadow-xl border border-chainpay-blue-light/20 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-4 border-b border-chainpay-orange/10 bg-gradient-to-r from-chainpay-orange/5 via-white to-chainpay-orange/5">
+        <div className="p-4 border-b border-chainpay-blue-light/20 bg-gradient-to-r from-chainpay-blue-light/5 via-white to-chainpay-blue-light/5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-chainpay-orange/10 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-chainpay-blue-light/10 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4 text-chainpay-orange"
+                  className="h-4 w-4 text-chainpay-blue"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -288,7 +288,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   />
                 </svg>
               </div>
-              <h3 className="text-base font-semibold text-chainpay-orange">Review Transaction</h3>
+              <h3 className="text-base font-semibold text-chainpay-blue">Review Transaction</h3>
             </div>
             <button
               onClick={(e) => {
@@ -296,11 +296,11 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                 e.stopPropagation();
                 onClose();
               }}
-              className="p-1.5 rounded-lg hover:bg-chainpay-orange/5 transition-colors focus:outline-none"
+              className="p-1.5 rounded-lg hover:bg-chainpay-blue-light/5 transition-colors focus:outline-none"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-chainpay-orange/60"
+                className="h-5 w-5 text-chainpay-blue/60"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -319,35 +319,35 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         {/* Content */}
         <div className="p-4">
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
-              <span className="text-xs text-chainpay-orange/60">Service</span>
-              <span className="text-sm font-medium text-chainpay-orange capitalize">{selectedService}</span>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
+              <span className="text-xs text-chainpay-blue/60">Service</span>
+              <span className="text-sm font-medium text-chainpay-blue capitalize">{selectedService}</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
-              <span className="text-xs text-chainpay-orange/60">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
+              <span className="text-xs text-chainpay-blue/60">
                 {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
               </span>
-              <span className="text-sm font-medium text-chainpay-orange">
+              <span className="text-sm font-medium text-chainpay-blue">
                 {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
               </span>
             </div>
 
             {(selectedService === "airtime" || selectedService === "data") && carrier && (
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
-                <span className="text-xs text-chainpay-orange/60">Network</span>
-                <span className="text-sm font-medium text-chainpay-orange">{carrier.name || "Unknown"}</span>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
+                <span className="text-xs text-chainpay-blue/60">Network</span>
+                <span className="text-sm font-medium text-chainpay-blue">{carrier.name || "Unknown"}</span>
               </div>
             )}
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
-              <span className="text-xs text-chainpay-orange/60">Amount</span>
-              <span className="text-sm font-medium text-chainpay-orange">{watch("amount")} Credit Units</span>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
+              <span className="text-xs text-chainpay-blue/60">Amount</span>
+              <span className="text-sm font-medium text-chainpay-blue">{watch("amount")} Credit Units</span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
-              <span className="text-xs text-chainpay-orange/60">Pay Amount</span>
-              <span className="text-sm font-medium text-chainpay-orange">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
+              <span className="text-xs text-chainpay-blue/60">Pay Amount</span>
+              <span className="text-sm font-medium text-chainpay-blue">
                 {isConverting ? (
                   <span className="flex items-center gap-1.5">
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -359,12 +359,12 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
               </span>
             </div>
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-orange/10">
-              <span className="text-xs text-chainpay-orange/60">Payment Token</span>
-              <span className="text-sm font-medium text-chainpay-orange">
+            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-chainpay-blue-light/20">
+              <span className="text-xs text-chainpay-blue/60">Payment Token</span>
+              <span className="text-sm font-medium text-chainpay-blue">
                 {selectedTokenDetails ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-white border border-chainpay-orange/20 flex items-center justify-center overflow-hidden">
+                    <div className="w-6 h-6 rounded-lg bg-white border border-chainpay-blue-light/20 flex items-center justify-center overflow-hidden">
                       <Image
                         src={selectedTokenDetails.image || "/placeholder.svg"}
                         alt={selectedTokenDetails.name}
@@ -394,7 +394,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="p-4 border-t border-chainpay-orange/10">
+        <div className="p-4 border-t border-chainpay-blue-light/20">
           <ChainPayButton
             type="button"
             onClick={(e) => handleBuyAirtime(e)}
@@ -404,7 +404,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             variant="primary"
             size="large"
           >
-            {isPending ? "Processing..." : "Confirm Payment"}
+            {isPending ? "Processing..." : "Confirm"}
           </ChainPayButton>
         </div>
       </div>

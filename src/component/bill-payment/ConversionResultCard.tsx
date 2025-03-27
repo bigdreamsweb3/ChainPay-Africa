@@ -98,7 +98,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                 <div className="pt-2.5 border-t border-chainpay-blue-light/10">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-orange-500 border border-orange-200">
+                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-chainpay-orange  border border-chainpay-orange">
                         {isConverting ? (
                           <Loader2
                             size={14}
