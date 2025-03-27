@@ -1,40 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import { useAccount } from "wagmi";
-import { AlertCircle, Coins, Check } from "lucide-react";
-
+import { AlertCircle, Coins, Check, ChevronDown, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PaymentToken } from "@/constants/token";
-import { usePayment } from "@/hooks/states";
-import { debounce } from "@/utils/debounce";
-import { formatTokenAmountDisplay } from "@/lib/CP_NGN_USD_Vendor";
-import {
-  fetchConversionRate,
-  convertAmount,
-  handleConversionError,
-} from "@/utils/conversionUtils";
-import ConversionResultCard from "./ConversionResultCard";
-import { TokenData } from "@/types/token";
+import { createPortal } from "react-dom";
+import type { PaymentToken } from "@/constants/token";
 
 interface PaymentTokenSelectorProps {
   paymentTokens: PaymentToken[];
   selectedToken: string;
   setSelectedToken: (tokenId: string) => void;
-  setIsConverting?: (state: boolean) => void;
-  setConvertedAmount?: (amount: string) => void;
-  setDisplayAmount?: (amount: string) => void;
 }
 
 const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   paymentTokens,
   selectedToken,
   setSelectedToken,
-  setIsConverting: setParentIsConverting,
-  setConvertedAmount: setParentConvertedAmount,
-  setDisplayAmount: setParentDisplayAmount,
 }) => {
   const {
     register,
@@ -42,57 +27,19 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     watch,
   } = useFormContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [localDisplayAmount, setLocalDisplayAmount] = useState<string>("0");
-  const [isConverting, setIsConverting] = useState(false);
   const { isConnected } = useAccount();
   const [tokenImages, setTokenImages] = useState<{ [key: string]: string }>({});
-  const [conversionError, setConversionError] = useState<string | null>(null);
-  const payment = usePayment();
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [conversionRate, setConversionRate] = useState<string>("");
-
-  // Store previous values to avoid unnecessary calculations
-  const prevAmountRef = useRef<string>("");
-  const prevTokenRef = useRef<string>("");
-  const lastCalculationTimeRef = useRef<number>(0);
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isClient, setIsClient] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
   ) as PaymentToken | undefined;
 
-  // Ensure selectedTokenData is of type TokenData
-  const tokenData: TokenData | undefined = selectedTokenData
-    ? {
-        id: selectedTokenData.id,
-        network: selectedTokenData.network,
-        token: selectedTokenData.token,
-        address: selectedTokenData.address,
-        icon: selectedTokenData.icon,
-        symbol: selectedTokenData.symbol,
-      }
-    : undefined;
-
   const creditAmount = watch("amount");
 
-  const toggleDropdown = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
-  const closeDropdown = (event: MouseEvent) => {
-    if (
-      dropdownRef.current &&
-      !dropdownRef.current.contains(event.target as Node)
-    ) {
-      setIsModalOpen(false);
-    }
-  };
-
   useEffect(() => {
-    document.addEventListener("mousedown", closeDropdown);
-    return () => {
-      document.removeEventListener("mousedown", closeDropdown);
-    };
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
@@ -122,76 +69,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     fetchTokenIcons();
   }, []);
 
-  useEffect(() => {
-    const fetchRate = async () => {
-      const rate = await fetchConversionRate();
-      setConversionRate(rate);
-    };
-    fetchRate();
-  }, []);
-
-  const legacyUpdateAmount = async (amount: string, token: string) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    if (amount === prevAmountRef.current && token === prevTokenRef.current) {
-      return;
-    }
-
-    setConversionError(null);
-
-    debounceTimerRef.current = setTimeout(async () => {
-      if (selectedTokenData && amount && !isNaN(Number(amount))) {
-        try {
-          prevAmountRef.current = amount;
-          prevTokenRef.current = token;
-          lastCalculationTimeRef.current = Date.now();
-
-          setIsConverting(true);
-          if (setParentIsConverting) setParentIsConverting(true);
-
-          const formattedAmount = await convertAmount(
-            amount,
-            selectedTokenData
-          );
-          setLocalDisplayAmount(formattedAmount);
-
-          if (setParentConvertedAmount)
-            setParentConvertedAmount(formattedAmount);
-          if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
-        } catch (error) {
-          console.error("Error converting amount:", error);
-          setConversionError("Network error. Using estimated conversion rate.");
-
-          const formattedAmount = handleConversionError(amount);
-          setLocalDisplayAmount(formattedAmount);
-
-          if (setParentConvertedAmount)
-            setParentConvertedAmount(formattedAmount);
-          if (setParentDisplayAmount) setParentDisplayAmount(formattedAmount);
-        } finally {
-          setIsConverting(false);
-          if (setParentIsConverting) setParentIsConverting(false);
-        }
-      } else {
-        setLocalDisplayAmount("0");
-        if (setParentConvertedAmount) setParentConvertedAmount("0");
-        if (setParentDisplayAmount) setParentDisplayAmount("0");
-      }
-    }, 800);
-  };
-
-  useEffect(() => {
-    legacyUpdateAmount(creditAmount, selectedToken);
-
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [creditAmount, selectedToken]);
-
   const handleTokenSelect = (token: PaymentToken) => {
     setSelectedToken(token.id);
     setIsModalOpen(false);
@@ -202,293 +79,203 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     return tokenImages[key] || "/network-icons/default-token.png";
   };
 
-  const updateConversionAmount = async () => {
-    try {
-      setConversionError(null);
-
-      if (payment.amount) {
-        const approxUsdValue = parseFloat(payment.amount) / 1400;
-        const formattedValue = formatTokenAmountDisplay(
-          approxUsdValue.toString()
-        );
-        setLocalDisplayAmount(formattedValue);
-      }
-    } catch (error) {
-      console.error("Failed to calculate conversion rate:", error);
-      setConversionError("Could not calculate rate");
-
-      if (payment.amount) {
-        const approxUsdValue = parseFloat(payment.amount) / 1400;
-        const formattedValue = formatTokenAmountDisplay(
-          approxUsdValue.toString()
-        );
-        setLocalDisplayAmount(formattedValue);
-      }
-    }
-  };
-
-  const debouncedUpdateAmount = useRef(
-    debounce(updateConversionAmount, 500)
-  ).current;
-
-  useEffect(() => {
-    if (payment.amount && payment.amount !== "0") {
-      debouncedUpdateAmount();
-    }
-  }, [payment.amount]);
-
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-[#F1F5F9] rounded-xl p-1">
-        <div className="bg-[#FFFFFF] rounded-xl overflow-hidden border border-[#E2E8F0]">
-          {/* Card Content */}
-          <div className="p-3 space-y-4">
-            {/* Amount and Token Selection */}
-            <div className="space-y-3">
-              <div className="flex flex-row items-stretch gap-3">
-                {/* Amount Input */}
-                <div className="flex-1 relative">
-                  <label
-                    htmlFor="amount"
-                    className="block text-xs font-bold text-[#1E293B] mb-2 ml-0.5"
-                  >
-                    Amount (min. 50)
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="amount"
-                      type="number"
-                      step="1"
-                      min="50"
-                      placeholder="Enter amount"
-                      {...register("amount", {
-                        required: "Amount is required",
-                        min: {
-                          value: 50,
-                          message: "Minimum amount is 50 credit units",
-                        },
-                        validate: (value) =>
-                          !isNaN(Number(value)) || "Amount must be a number",
-                      })}
-                      className="w-full h-10 px-3 pr-[110px] text-sm font-medium rounded-lg transition-all duration-200 ease-in-out border border-[#E2E8F0] hover:border-[#A1A1AA] focus:outline-none focus:border-[#60A5FA] focus:ring-1 focus:ring-[#60A5FA]/30 placeholder:text-[#A1A1AA] text-[#1E293B] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#1E293B] font-medium px-2 py-1 bg-[#FFFFFF] rounded-md border border-[#E2E8F0] shadow-sm">
-                      Credit Units
-                    </div>
-                  </div>
-                </div>
+      <div className="flex flex-col gap-2 bg-chainpay-blue-light/15 rounded-lg p-3 border border-chainpay-blue-light/20">
+        <div className="flex flex-col space-y-3">
+          <div className="flex flex-row justify-between items-center gap-3">
+            {/* Amount Input */}
+            <div className="relative w-2/3">
+              <input
+                id="amount"
+                type="number"
+                step="1"
+                min="50"
+                placeholder="Enter amount"
+                {...register("amount", {
+                  required: "Amount is required",
+                  min: {
+                    value: 50,
+                    message: "Minimum amount is 50 credit units",
+                  },
+                  validate: (value) =>
+                    !isNaN(Number(value)) || "Amount must be a number",
+                })}
+                className="w-full text-lg font-medium bg-transparent outline-none text-chainpay-blue-dark placeholder:text-chainpay-blue-dark/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              />
 
-                {/* Token Selection */}
-                <div className="relative" ref={dropdownRef}>
-                  <label
-                    htmlFor="tokenSelect"
-                    className="block text-xs font-bold text-[#1E293B] mb-2 ml-0.5"
-                  >
-                    Payment Token
-                  </label>
-                  <motion.button
-                    id="tokenSelect"
-                    type="button"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleDropdown();
-                    }}
-                    disabled={!isConnected}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className={`flex items-center justify-between gap-2 whitespace-nowrap transition-all duration-200 h-10 px-3 rounded-lg border border-[#E2E8F0] shadow-sm w-full sm:w-auto min-w-[70px] ${
-                      isConnected
-                        ? "hover:border-[#A1A1AA] focus:outline-none focus:border-[#60A5FA] focus:ring-1 focus:ring-[#60A5FA]/30"
-                        : "cursor-not-allowed bg-[#F1F5F9] opacity-50 border-[#E2E8F0]"
-                    }`}
-                    data-action="token-select"
-                  >
-                    {isConnected ? (
-                      selectedTokenData ? (
-                        <>
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full overflow-hidden border border-[#E2E8F0]">
-                              <Image
-                                src={
-                                  selectedTokenData?.icon || "/placeholder.svg"
-                                }
-                                alt={selectedTokenData?.symbol}
-                                width={24}
-                                height={24}
-                                className="w-5 h-5 rounded-full object-cover"
-                              />
-                            </div>
-                            <span className="text-sm font-medium text-[#1E293B]">
-                              {selectedTokenData.symbol}
-                            </span>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-sm font-medium text-[#1E293B]">
-                            Select token
-                          </span>
-                        </>
-                      )
-                    ) : (
-                      <span className="text-sm font-medium text-[#A1A1AA]">
-                        Connect Wallet
+              {creditAmount && (
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-chainpay-blue-dark/70 font-medium px-2 py-1 bg-chainpay-blue-light/5 rounded-md border border-chainpay-blue-light/20">
+                  Units
+                </div>
+              )}
+            </div>
+
+            {/* Token Selection Button */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                disabled={!isConnected}
+                className={`bg-white rounded-lg py-1.5 px-3 flex items-center gap-2 w-fit cursor-pointer border border-chainpay-blue-light/20 hover:border-chainpay-blue-light/50 transition-colors duration-200 ${
+                  isConnected ? "" : "cursor-not-allowed opacity-50"
+                }`}
+              >
+                {isConnected ? (
+                  selectedTokenData ? (
+                    <>
+                      <div className="inline-flex items-center justify-center overflow-hidden w-3.5 h-3.5 min-w-3.5">
+                        <Image
+                          src={selectedTokenData?.icon || "/placeholder.svg"}
+                          alt={selectedTokenData?.symbol}
+                          width={14}
+                          height={14}
+                          className="w-full h-full"
+                        />
+                      </div>
+                      <span className="font-medium text-sm text-chainpay-blue-dark">
+                        {selectedTokenData.symbol}
                       </span>
-                    )}
-                  </motion.button>
-                </div>
-              </div>
-
-              {/* Error Message */}
-              <AnimatePresence>
-                {errors.amount && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    className="px-3 py-2 rounded-lg bg-[#FEF2F2] border border-[#FECACA] shadow-sm"
-                  >
-                    <p className="text-sm text-[#DC2626] flex items-center gap-2 font-medium">
-                      <AlertCircle className="w-4 h-4" />
-                      {errors.amount?.message?.toString()}
-                    </p>
-                  </motion.div>
+                      <ChevronDown className="w-4 h-4 text-chainpay-blue" />
+                    </>
+                  ) : (
+                    <>
+                      <div className="inline-flex items-center justify-center overflow-hidden w-3.5 h-3.5 min-w-3.5">
+                        <Image
+                          src={"/placeholder.svg"}
+                          alt=""
+                          width={14}
+                          height={14}
+                          className="w-full h-full"
+                        />
+                      </div>
+                      <span className="font-medium text-sm text-chainpay-blue-dark">
+                        Select
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-chainpay-blue" />
+                    </>
+                  )
+                ) : (
+                  <span className="font-medium text-sm text-chainpay-blue-dark/50">
+                    Connect Wallet
+                  </span>
                 )}
-              </AnimatePresence>
+              </button>
+            </div>
+          </div>
+
+          <div className="flex flex-row justify-between items-center gap-4">
+            <div className="flex items-center text-xs font-medium w-2/3">
+              <Coins className="text-chainpay-orange w-3.5 h-3.5 pointer-events-none" />
+              <span className="text-chainpay-blue-dark ml-1.5">Payment Amount</span>
+            </div>
+
+            <div className="flex items-center justify-end text-xs font-medium w-1/3">
+              <span className="text-chainpay-blue-dark ml-auto">Payment Token</span>
             </div>
           </div>
         </div>
+
+        {/* Error Message */}
+        {errors.amount && (
+          <div className="px-2.5 py-1.5 mt-1 rounded-md bg-red-50 border border-red-200">
+            <p className="text-xs text-red-600 flex items-center gap-1.5 font-medium">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {errors.amount?.message?.toString()}
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Conversion Result */}
-      {tokenData ? (
-        <ConversionResultCard
-          selectedTokenData={tokenData}
-          creditAmount={creditAmount}
-          localDisplayAmount={localDisplayAmount}
-          conversionRate={conversionRate}
-          isConverting={isConverting}
-          conversionError={conversionError}
-        />
-      ) : (
-        ""
-      )}
-
       {/* Token Selection Modal */}
-      <AnimatePresence>
-        {isModalOpen && isConnected && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] pointer-events-auto flex items-center justify-center p-4 sm:p-6 bg-black/50 backdrop-blur-sm"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsModalOpen(false);
-            }}
-            data-action="token-select"
-          >
+      {isModalOpen && isClient && createPortal(
+        <div className="fixed inset-0 z-[50] pointer-events-auto">
+          <AnimatePresence>
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="bg-[#FFFFFF] rounded-xl w-full max-w-[90vw] sm:max-w-md shadow-xl border border-[#E2E8F0] overflow-hidden"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              data-action="token-select"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4"
+              onClick={() => setIsModalOpen(false)}
             >
-              <div className="p-4 border-b border-[#E2E8F0]">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-base font-semibold text-[#1E293B] flex items-center gap-2">
-                    <Coins className="w-4 h-4 text-[#60A5FA]" />
-                    Select a Token
+              <motion.div
+                ref={modalRef}
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="w-full max-w-md bg-white shadow-2xl rounded-lg overflow-hidden relative"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  aria-label="Close token selection modal"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                <div className="p-6 border-b border-gray-100">
+                  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    <Coins className="w-5 h-5 text-chainpay-orange" />
+                    Select Payment Token
                   </h2>
-                  <motion.button
-                    data-action="token-select"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setIsModalOpen(false);
-                    }}
-                    whileHover={{ scale: 1.1, rotate: 90 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="p-1 rounded-full hover:bg-[#F1F5F9] transition-colors text-[#60A5FA]"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </motion.button>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Choose your preferred token for payment
+                  </p>
                 </div>
-              </div>
 
-              <div className="p-3 max-h-[50vh] sm:max-h-[400px] overflow-y-auto">
-                <div className="space-y-1.5">
-                  {paymentTokens.map((token: PaymentToken) => (
-                    <motion.div
-                      key={token.id}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleTokenSelect(token);
-                      }}
-                      data-action="token-select"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ease-in-out ${
-                        selectedToken === token.id
-                          ? "bg-[#E0F2FE] border border-[#60A5FA]/50"
-                          : "hover:bg-[#F1F5F9] border border-transparent"
-                      }`}
-                    >
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-[#E2E8F0]">
-                        <Image
-                          src={
-                            getTokenImageSource(token.network, token.token) ||
-                            "/placeholder.svg"
-                          }
-                          alt={`${token.token} on ${token.network}`}
-                          width={32}
-                          height={32}
-                          className="w-8 h-8 rounded-full object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-sm font-semibold text-[#1E293B] truncate">
-                          {token.token}
-                        </span>
-                        <span className="text-xs text-[#A1A1AA] truncate">
-                          {token.network}
-                        </span>
-                      </div>
-
-                      {selectedToken === token.id && (
-                        <div className="ml-auto w-5 h-5 rounded-full bg-[#60A5FA] flex items-center justify-center">
-                          <Check className="w-3 h-3 text-[#FFFFFF]" />
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {paymentTokens.map((token: PaymentToken) => (
+                      <motion.button
+                        key={token.id}
+                        onClick={() => handleTokenSelect(token)}
+                        className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
+                          selectedToken === token.id
+                            ? "bg-chainpay-blue/10 border border-chainpay-blue"
+                            : "hover:bg-gray-50 border border-gray-100"
+                        }`}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 relative flex-shrink-0 rounded-lg overflow-hidden border border-gray-200">
+                            <Image
+                              src={getTokenImageSource(token.network, token.token)}
+                              alt={`${token.token} on ${token.network}`}
+                              width={32}
+                              height={32}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          <div className="text-left">
+                            <span className={`font-medium block ${
+                              selectedToken === token.id 
+                                ? "text-chainpay-blue" 
+                                : "text-gray-700"
+                            }`}>
+                              {token.token}
+                            </span>
+                            <span className="text-xs text-gray-500">
+                              {token.network}
+                            </span>
+                          </div>
                         </div>
-                      )}
-                    </motion.div>
-                  ))}
+                        {selectedToken === token.id && (
+                          <Check className="w-5 h-5 text-chainpay-blue" />
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </AnimatePresence>
+        </div>,
+        document.getElementById("modal-root")!
+      )}
     </div>
   );
 };

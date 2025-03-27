@@ -11,29 +11,26 @@ export function Header() {
   const isHome = pathname === "/";
 
   return (
-    <header className="py-3 sticky top-0 z-50 bg-gradient-to-r from-transparent via-chainpay-blue/5 to-transparent backdrop-blur-sm shadow-sm">
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#60A5FA]/5 to-transparent"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-white/5"></div>
-      <div className="absolute bottom-0 left-1/3 right-1/3 h-[1px] bg-chainpay-orange/20"></div>
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-chainpay-blue-light/20">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="h-16 flex items-center justify-between">
           {/* Left Section: Logo */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <div className="relative">
-              <ChainPayLogo className="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-md" />
+              <ChainPayLogo className="w-8 h-8 drop-shadow" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex items-center">
               <div
                 className={cn(
                   "flex items-center",
                   isHome
                     ? "cursor-default"
-                    : "cursor-pointer hover:opacity-80 transition-opacity"
+                    : "cursor-pointer hover:opacity-90 transition-opacity"
                 )}
               >
-                <span className="text-lg sm:text-xl font-semibold bg-gradient-to-r from-brand-primary to-chainpay-blue-light bg-clip-text text-transparent break-words">
+                <span className="text-base font-semibold bg-gradient-to-r from-chainpay-blue-dark to-chainpay-blue-light bg-clip-text text-transparent">
                   {appConfig.appNameWord1}
-                  <span className="text-lg sm:text-xl font-semibold text-chainpay-orange">
+                  <span className="text-chainpay-orange font-semibold">
                     {appConfig.appNameWord2}
                   </span>
                 </span>
@@ -42,13 +39,16 @@ export function Header() {
           </div>
 
           {/* Right Section: Wallet Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             <div className="flex-shrink-0">
               <WalletButton />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Bottom Accent Line */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-chainpay-orange/20 to-transparent"></div>
     </header>
   );
 }

@@ -84,7 +84,7 @@ export function WalletOptions() {
       <button
         onClick={() => setIsModalOpen(true)}
         disabled={isPending || !isClient}
-        className={`flex items-center space-x-2 hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50 ${
+        className={`flex items-center space-x-2 hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50 text-sm font-medium ${
           isPending || !isClient ? "bg-gray-100 text-gray-600 cursor-not-allowed" : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white"
         }`}
         aria-label="Connect your wallet to continue"
@@ -102,7 +102,7 @@ export function WalletOptions() {
         ) : (
           <>
             <Wallet className="w-4 h-4" />
-            <span>Connect Wallet</span>
+            <span>Connect</span>
           </>
         )}
       </button>

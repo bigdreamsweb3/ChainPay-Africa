@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, ArrowRight, Loader2, Minus } from "lucide-react";
+import { AlertCircle, ArrowRight, Loader2 } from "lucide-react";
 import { TokenData } from "@/types/token";
 import Image from "next/image";
 
@@ -62,9 +62,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                     />
                   </div>
                   <div>
-                    <p className="text-xs text-chainpay-blue-dark/60">
-                      Selected Token
-                    </p>
+                    <p className="text-xs text-chainpay-blue-dark/60">Selected Token</p>
                     <p className="text-sm font-medium text-chainpay-blue-dark">
                       {selectedTokenData?.symbol}
                     </p>
@@ -76,9 +74,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
               <div className="p-3 space-y-2.5">
                 {/* Credit Units */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-chainpay-blue-dark/60">
-                    Credit Units
-                  </span>
+                  <span className="text-xs text-chainpay-blue-dark/60">Credit Units</span>
                   <span className="text-sm font-medium text-chainpay-blue-dark">
                     {creditAmount.toString()}
                   </span>
@@ -86,9 +82,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
 
                 {/* Conversion Rate */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-chainpay-blue-dark/60">
-                    Current Rate
-                  </span>
+                  <span className="text-xs text-chainpay-blue-dark/60">Current Rate</span>
                   <span className="text-sm font-medium text-chainpay-blue-dark">
                     {conversionRate}
                   </span>
@@ -97,21 +91,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                 {/* Final Amount */}
                 <div className="pt-2.5 border-t border-chainpay-blue-light/10">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-orange-500 border border-orange-200">
-                        {isConverting ? (
-                          <Loader2
-                            size={14}
-                            className="text-white animate-spin"
-                          />
-                        ) : (
-                          <Minus size={14} className="text-white" />
-                        )}
-                      </div>
-                      <span className="text-sm font-medium text-chainpay-blue-dark">
-                        Final Amount
-                      </span>
-                    </div>
+                    <span className="text-sm font-medium text-chainpay-blue-dark">Final Amount</span>
                     <div className="flex items-center gap-2">
                       {isConverting ? (
                         <div className="flex items-center gap-1.5 text-chainpay-blue-dark/60">
@@ -131,9 +111,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                 {conversionError && (
                   <div className="mt-2.5 flex items-start gap-2 text-xs bg-red-50 text-red-600 p-2 rounded-lg border border-red-100">
                     <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
-                    <p className="font-medium leading-tight">
-                      {conversionError}
-                    </p>
+                    <p className="font-medium leading-tight">{conversionError}</p>
                   </div>
                 )}
               </div>

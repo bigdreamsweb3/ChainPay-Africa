@@ -18,6 +18,15 @@ import { appConfig } from "@/app-config";
 import { usePayment, useSetPayment } from "@/hooks/states";
 import { PaymentToken as TokenSelectorToken } from "@/constants/token";
 import { ChainPayButton } from "../ui";
+import { debounce } from "@/utils/debounce";
+import { formatTokenAmountDisplay } from "@/lib/CP_NGN_USD_Vendor";
+import {
+  fetchConversionRate,
+  convertAmount,
+  handleConversionError,
+} from "@/utils/conversionUtils";
+import ConversionResultCard from "./ConversionResultCard";
+import type { TokenData } from "@/types/token";
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
@@ -62,6 +71,8 @@ const BillPaymentForm: React.FC = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [convertedAmount, setConvertedAmount] = useState<string>("0.00");
   const [displayAmount, setDisplayAmount] = useState<string>("0");
+  const [conversionRate, setConversionRate] = useState<string>("");
+  const [conversionError, setConversionError] = useState<string | null>(null);
   const [carrier, setCarrier] = useState<{
     id: string | null;
     name: string | null;
@@ -79,6 +90,10 @@ const BillPaymentForm: React.FC = () => {
   const [selectedTokenId, setSelectedTokenId] = useState<string>("");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const prevServiceRef = useRef<string | null>(null);
+  const prevAmountRef = useRef<string>("");
+  const prevTokenRef = useRef<string>("");
+  const lastCalculationTimeRef = useRef<number>(0);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
@@ -103,6 +118,18 @@ const BillPaymentForm: React.FC = () => {
   const selectedTokenDetails = paymentTokens.find(
     (token) => token.id === selectedTokenId
   ) as PaymentToken | undefined;
+
+  // Ensure selectedTokenData is of type TokenData
+  const tokenData: TokenData | undefined = selectedTokenDetails
+    ? {
+        id: selectedTokenDetails.id,
+        network: selectedTokenDetails.network,
+        token: selectedTokenDetails.token,
+        address: selectedTokenDetails.address,
+        icon: selectedTokenDetails.icon,
+        symbol: selectedTokenDetails.symbol,
+      }
+    : undefined;
 
   useEffect(() => {
     if (appConfig.availableServices.includes("Airtime")) {
@@ -223,6 +250,69 @@ const BillPaymentForm: React.FC = () => {
     isPaymentValid,
   ]);
 
+  useEffect(() => {
+    const fetchRate = async () => {
+      const rate = await fetchConversionRate();
+      setConversionRate(rate);
+    };
+    fetchRate();
+  }, []);
+
+  const updateConversionAmount = async (amount: string, token: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    if (amount === prevAmountRef.current && token === prevTokenRef.current) {
+      return;
+    }
+
+    setConversionError(null);
+
+    debounceTimerRef.current = setTimeout(async () => {
+      if (selectedTokenDetails && amount && !isNaN(Number(amount))) {
+        try {
+          prevAmountRef.current = amount;
+          prevTokenRef.current = token;
+          lastCalculationTimeRef.current = Date.now();
+
+          setIsConverting(true);
+
+          const formattedAmount = await convertAmount(
+            amount,
+            selectedTokenDetails
+          );
+          setDisplayAmount(formattedAmount);
+          setConvertedAmount(formattedAmount);
+        } catch (error) {
+          console.error("Error converting amount:", error);
+          setConversionError("Network error. Using estimated conversion rate.");
+
+          const formattedAmount = handleConversionError(amount);
+          setDisplayAmount(formattedAmount);
+          setConvertedAmount(formattedAmount);
+        } finally {
+          setIsConverting(false);
+        }
+      } else {
+        setDisplayAmount("0");
+        setConvertedAmount("0");
+      }
+    }, 800);
+  };
+
+  useEffect(() => {
+    if (amount && amount !== "0") {
+      updateConversionAmount(amount, selectedTokenId);
+    }
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [amount, selectedTokenId]);
+
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col items-center justify-center gap-4 w-full">
@@ -240,67 +330,81 @@ const BillPaymentForm: React.FC = () => {
                 <UnavailableServiceMessage serviceName={selectedService} />
               ) : (
                 <div className="w-full">
-                  <div className="w-full">
+                  <div className="max-w-md mx-auto">
                     <form
                       onSubmit={handleSubmitForm}
-                      className="space-y-3 w-full"
+                      className="w-full"
                     >
                       {step === 1 && (
-                        <>
-                          {selectedService === "electricity" ? (
-                            <MeterNumberInput
-                              error={errors.meterNumber?.message}
-                            />
-                          ) : (
-                            <PhoneNumberInput
-                              error={errors.phoneNumber?.message}
-                              onCarrierChange={(carrierData) => {
-                                setCarrier(carrierData);
-                                // Update the network provider in payment state
-                                if (carrierData.name) {
+                        <div className="space-y-4">
+                          <div className="bg-white backdrop-blur-sm border border-chainpay-blue-light/20 p-3 rounded-xl shadow-sm">
+                            {selectedService === "electricity" ? (
+                              <MeterNumberInput
+                                error={errors.meterNumber?.message}
+                              />
+                            ) : (
+                              <PhoneNumberInput
+                                error={errors.phoneNumber?.message}
+                                onCarrierChange={(carrierData) => {
+                                  setCarrier(carrierData);
+                                  // Update the network provider in payment state
+                                  if (carrierData.name) {
+                                    setPayment({
+                                      ...payment,
+                                      networkProvider: carrierData.name,
+                                    });
+                                  }
+                                }}
+                              />
+                            )}
+
+                            <div className="mt-4">
+                              <PaymentTokenSelector
+                                paymentTokens={adaptPaymentTokens(
+                                  paymentTokens
+                                )}
+                                selectedToken={selectedTokenId}
+                                setSelectedToken={(tokenId: string) => {
+                                  setSelectedTokenId(tokenId);
+                                  setValue("paymentToken", tokenId);
+                                  // Update payment state with the selected token
                                   setPayment({
                                     ...payment,
-                                    networkProvider: carrierData.name,
+                                    tokenId: tokenId,
                                   });
-                                }
-                              }}
+                                }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Conversion Result */}
+                          {tokenData && amount && amount !== "0" && (
+                            <ConversionResultCard
+                              selectedTokenData={tokenData}
+                              creditAmount={amount}
+                              localDisplayAmount={displayAmount}
+                              conversionRate={conversionRate}
+                              isConverting={isConverting}
+                              conversionError={conversionError}
                             />
                           )}
 
-                          <div className="w-full">
-                            <PaymentTokenSelector
-                              paymentTokens={adaptPaymentTokens(paymentTokens)}
-                              selectedToken={selectedTokenId}
-                              setSelectedToken={(tokenId: string) => {
-                                setSelectedTokenId(tokenId);
-                                setValue("paymentToken", tokenId);
-                                // Update payment state with the selected token
-                                setPayment({
-                                  ...payment,
-                                  tokenId: tokenId,
-                                });
-                              }}
-                              setIsConverting={setIsConverting}
-                              setConvertedAmount={setConvertedAmount}
-                              setDisplayAmount={setDisplayAmount}
-                            />
+                          {/* Payment Button */}
+                          <div className="pt-2">
+                            <ChainPayButton
+                              type="submit"
+                              data-action="submit-payment"
+                              disabled={!isPaymentValid() || isConverting}
+                              variant="primary"
+                              size="large"
+                              fullWidth
+                              icon={<Sparkles size={16} />}
+                            >
+                              Pay
+                            </ChainPayButton>
                           </div>
-                        </>
+                        </div>
                       )}
-
-                      <div className="flex justify-center mt-4 sm:mt-6 max-w-md mx-auto">
-                        <ChainPayButton
-                          type="submit"
-                          data-action="submit-payment"
-                          disabled={!isPaymentValid() || isConverting}
-                          variant="primary"
-                          size="large"
-                          fullWidth
-                          icon={<Sparkles size={16} />}
-                        >
-                          Pay
-                        </ChainPayButton>
-                      </div>
                     </form>
                   </div>
 

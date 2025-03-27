@@ -6,7 +6,7 @@ interface UnavailableServiceMessageProps {
 
 const UnavailableServiceMessage: React.FC<UnavailableServiceMessageProps> = ({ serviceName }) => {
   return (
-    <div className="text-center bg-gray-50 rounded-lg p-6 max-w-md mx-auto">
+    <div className="text-center bg-chainpay-blue-light/25 rounded-lg p-6 max-w-md mx-auto">
       <svg
         className="w-12 h-12 mx-auto text-gray-400 mb-4"
         fill="none"
