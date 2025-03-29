@@ -55,13 +55,13 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
     <div className="w-full max-w-md mx-auto space-y-3">
       <div className="flex items-center gap-2 mb-1">
         <div className="flex items-center gap-1.5 text-chainpay-blue-dark">
-          <Blocks className="w-3.5 h-3.5 text-chainpay-orange" />
+          <Blocks className="w-3.5 h-3.5 text-chainpay-gold" />
           <span className="text-sm font-semibold">Select Service</span>
         </div>
       </div>
 
       {/* Service Selection Card */}
-      <div className="w-full bg-white backdrop-blur-sm border border-chainpay-blue-light/10 space-y-5 p-3 rounded-xl shadow-sm">
+      <div className="w-full bg-white backdrop-blur-sm border border-border-light space-y-5 p-3 rounded-xl shadow-sm">
         <div className="grid grid-cols-3 gap-2">
           {services.map((service) => {
             const isAvailable = appConfig.availableServices.includes(
@@ -110,21 +110,21 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                       className={`mb-1 transition-colors duration-200 ${
                         field.value === service.id
                           ? "text-white"
-                          : "text-chainpay-blue"
+                          : "text-brand-primary"
                       }`}
                     />
                     <span
                       className={`text-xs font-medium transition-colors duration-200 ${
                         field.value === service.id
                           ? "text-white"
-                          : "text-chainpay-blue-dark"
+                          : "text-text-primary"
                       }`}
                     >
                       {service.name}
                     </span>
 
                     {field.value === service.id && (
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-chainpay-orange rounded-full shadow-sm" />
+                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-brand-accent rounded-full shadow-sm" />
                     )}
                   </button>
                 )}

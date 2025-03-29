@@ -81,7 +81,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="flex flex-col gap-2 bg-chainpay-blue-light/20 rounded-lg p-3 border border-chainpay-blue-light/20">
+      <div className="flex flex-col gap-2 bg-background-light rounded-lg p-3 border border-border-light">
         <div className="flex flex-col space-y-3">
           <div className="flex flex-row justify-between items-center gap-3">
             {/* Amount Input */}
@@ -101,12 +101,12 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                   validate: (value) =>
                     !isNaN(Number(value)) || "Amount must be a number",
                 })}
-                className="w-full text-lg font-medium bg-transparent outline-none text-chainpay-blue-dark placeholder:text-chainpay-blue-dark/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full text-lg font-medium bg-transparent outline-none text-text-primary placeholder:text-text-muted [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
 
               {creditAmount && (
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-chainpay-blue-dark/70 font-medium px-2 py-1 bg-chainpay-blue-light/5 rounded-md border border-chainpay-blue-light/20">
-                  Units
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-text-muted font-medium px-2 py-1 bg-background-light rounded-md border border-border-light">
+                  Credit
                 </div>
               )}
             </div>
@@ -117,7 +117,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 type="button"
                 onClick={() => setIsModalOpen(true)}
                 disabled={!isConnected}
-                className={`bg-white rounded-lg py-1.5 px-3 flex items-center gap-2 w-fit cursor-pointer border border-chainpay-blue-light/20 hover:border-chainpay-blue-light/50 transition-colors duration-200 ${
+                className={`bg-white rounded-lg py-1.5 px-3 flex items-center gap-2 w-fit cursor-pointer border border-border-light hover:border-border-medium transition-colors duration-200 ${
                   isConnected ? "" : "cursor-not-allowed opacity-50"
                 }`}
               >
@@ -133,10 +133,10 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           className="w-full h-full"
                         />
                       </div>
-                      <span className="font-medium text-sm text-chainpay-blue-dark">
+                      <span className="font-medium text-sm text-text-primary">
                         {selectedTokenData.symbol}
                       </span>
-                      <ChevronDown className="w-4 h-4 text-chainpay-blue" />
+                      <ChevronDown className="w-4 h-4 text-brand-primary" />
                     </>
                   ) : (
                     <>
@@ -149,14 +149,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           className="w-full h-full"
                         />
                       </div>
-                      <span className="font-medium text-sm text-chainpay-blue-dark">
+                      <span className="font-medium text-sm text-text-primary">
                         Select
                       </span>
-                      <ChevronDown className="w-4 h-4 text-chainpay-blue" />
+                      <ChevronDown className="w-4 h-4 text-brand-primary" />
                     </>
                   )
                 ) : (
-                  <span className="font-medium text-sm text-chainpay-blue-dark/50">
+                  <span className="font-medium text-sm text-text-muted whitespace-nowrap">
                     Connect Wallet
                   </span>
                 )}
@@ -166,20 +166,22 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
           <div className="flex flex-row justify-between items-center gap-4">
             <div className="flex items-center text-xs font-medium w-2/3">
-              <Coins className="text-chainpay-orange w-3.5 h-3.5 pointer-events-none" />
-              <span className="text-chainpay-blue-dark ml-1.5">Payment Amount</span>
+              <Coins className="text-brand-primary w-3.5 h-3.5 pointer-events-none" />
+              <span className="text-text-primary ml-1.5">Amount</span>
             </div>
 
             <div className="flex items-center justify-end text-xs font-medium w-1/3">
-              <span className="text-chainpay-blue-dark ml-auto">Payment Token</span>
+              <span className="text-text-primary ml-auto">
+                Payment Token
+              </span>
             </div>
           </div>
         </div>
 
         {/* Error Message */}
         {errors.amount && (
-          <div className="px-2.5 py-1.5 mt-1 rounded-md bg-red-50 border border-red-200">
-            <p className="text-xs text-red-600 flex items-center gap-1.5 font-medium">
+          <div className="px-2.5 py-1.5 mt-1 rounded-md bg-status-error/5 border border-status-error/10">
+            <p className="text-xs text-status-error flex items-center gap-1.5 font-medium">
               <AlertCircle className="w-3.5 h-3.5" />
               {errors.amount?.message?.toString()}
             </p>
@@ -188,94 +190,101 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
       </div>
 
       {/* Token Selection Modal */}
-      {isModalOpen && isClient && createPortal(
-        <div className="fixed inset-0 z-[50] pointer-events-auto">
-          <AnimatePresence>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4"
-              onClick={() => setIsModalOpen(false)}
-            >
+      {isModalOpen &&
+        isClient &&
+        createPortal(
+          <div className="fixed inset-0 z-[50] pointer-events-auto">
+            <AnimatePresence>
               <motion.div
-                ref={modalRef}
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-white shadow-2xl rounded-lg overflow-hidden relative"
-                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 bg-background-overlay backdrop-blur-sm flex items-center justify-center p-4"
+                onClick={() => setIsModalOpen(false)}
               >
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                  aria-label="Close token selection modal"
+                <motion.div
+                  ref={modalRef}
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.95, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="w-full max-w-md bg-white shadow-xl rounded-lg overflow-hidden relative"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <X className="w-5 h-5" />
-                </button>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="absolute top-4 right-4 text-text-muted hover:text-text-primary p-1 rounded-full hover:bg-background-light transition-colors"
+                    aria-label="Close token selection modal"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
 
-                <div className="p-6 border-b border-gray-100">
-                  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                    <Coins className="w-5 h-5 text-chainpay-orange" />
-                    Select Payment Token
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Choose your preferred token for payment
-                  </p>
-                </div>
-
-                <div className="p-4">
-                  <div className="space-y-3">
-                    {paymentTokens.map((token: PaymentToken) => (
-                      <motion.button
-                        key={token.id}
-                        onClick={() => handleTokenSelect(token)}
-                        className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
-                          selectedToken === token.id
-                            ? "bg-chainpay-blue/10 border border-chainpay-blue"
-                            : "hover:bg-gray-50 border border-gray-100"
-                        }`}
-                        whileTap={{ scale: 0.98 }}
-                        transition={{ duration: 0.1 }}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 relative flex-shrink-0 rounded-lg overflow-hidden border border-gray-200">
-                            <Image
-                              src={getTokenImageSource(token.network, token.token)}
-                              alt={`${token.token} on ${token.network}`}
-                              width={32}
-                              height={32}
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                          <div className="text-left">
-                            <span className={`font-medium block ${
-                              selectedToken === token.id 
-                                ? "text-chainpay-blue" 
-                                : "text-gray-700"
-                            }`}>
-                              {token.token}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {token.network}
-                            </span>
-                          </div>
-                        </div>
-                        {selectedToken === token.id && (
-                          <Check className="w-5 h-5 text-chainpay-blue" />
-                        )}
-                      </motion.button>
-                    ))}
+                  <div className="p-6 border-b border-border-light">
+                    <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+                      <Coins className="w-5 h-5 text-brand-primary" />
+                      Select Payment Token
+                    </h2>
+                    <p className="text-sm text-text-muted mt-1">
+                      Choose your preferred token for payment
+                    </p>
                   </div>
-                </div>
+
+                  <div className="p-4">
+                    <div className="space-y-3">
+                      {paymentTokens.map((token: PaymentToken) => (
+                        <motion.button
+                          key={token.id}
+                          onClick={() => handleTokenSelect(token)}
+                          className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
+                            selectedToken === token.id
+                              ? "bg-brand-primary/10 border border-brand-primary"
+                              : "hover:bg-background-light border border-border-light"
+                          }`}
+                          whileTap={{ scale: 0.98 }}
+                          transition={{ duration: 0.1 }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 relative flex-shrink-0 rounded-lg overflow-hidden border border-border-light">
+                              <Image
+                                src={getTokenImageSource(
+                                  token.network,
+                                  token.token
+                                )}
+                                alt={`${token.token} on ${token.network}`}
+                                width={32}
+                                height={32}
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <div className="text-left">
+                              <span
+                                className={`font-medium block ${
+                                  selectedToken === token.id
+                                    ? "text-brand-primary"
+                                    : "text-text-primary"
+                                }`}
+                              >
+                                {token.token}
+                              </span>
+                              <span className="text-xs text-text-muted">
+                                {token.network}
+                              </span>
+                            </div>
+                          </div>
+                          {selectedToken === token.id && (
+                            <Check className="w-5 h-5 text-brand-primary" />
+                          )}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        </div>,
-        document.getElementById("modal-root")!
-      )}
+            </AnimatePresence>
+          </div>,
+          document.getElementById("modal-root")!
+        )}
     </div>
   );
 };

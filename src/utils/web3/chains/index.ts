@@ -69,3 +69,47 @@ export const crossfiTestnet = defineChain({
     // },
   } as Record<string, PaymentToken>,
 });
+
+export const baseSepolia = defineChain({
+  id: 84532,
+  name: "Base Sepolia",
+  nativeCurrency: {
+    decimals: 18,
+    name: "ETH",
+    symbol: "ETH",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://sepolia.base.org"],
+    },
+  },
+  blockExplorers: {
+    default: { name: "BaseScan", url: "https://sepolia.basescan.org" },
+  },
+  payAcceptedTokens: {
+    USDC: {
+      id: "0xa4151B2B3e269645181dCcF2D426cE75fcbDeca9",
+      name: "USD Coin",
+      symbol: "USDC",
+      decimals: 6,
+      contractAddress: "0xa4151B2B3e269645181dCcF2D426cE75fcbDeca9",
+      image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+      icon: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+      network: "Base Sepolia",
+      token: "USDC",
+      address: "0xa4151B2B3e269645181dCcF2D426cE75fcbDeca9",
+    },
+    USDT: {
+      id: "0x900101d06A7426441Ae63e9AB3B9b0F63Be145F1",
+      name: "Tether USD",
+      symbol: "USDT",
+      decimals: 6,
+      contractAddress: "0x900101d06A7426441Ae63e9AB3B9b0F63Be145F1",
+      image: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+      icon: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+      network: "Base Sepolia",
+      token: "USDT",
+      address: "0x900101d06A7426441Ae63e9AB3B9b0F63Be145F1",
+    },
+  } as Record<string, PaymentToken>,
+});

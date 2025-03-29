@@ -19,23 +19,73 @@ module.exports = {
                 
                 // ChainPay specific colors
                 'chainpay': {
-                    'blue-light': '#E6F0FF',
-                    'blue': '#0066CC',
-                    'blue-dark': '#004C99',
-                    'orange': '#fda704',
-                    'orange-dark': '#E65C00',
-                    'orange-light': '#FFF5EB',
+                    'blue': {
+                        light: '#E6F0FF',
+                        DEFAULT: '#0066FF',
+                        dark: '#0052CC',
+                    },
+                    'sky': {
+                        light: '#E6F9FF',
+                        DEFAULT: '#00C2FF',
+                        dark: '#0099CC',
+                    },
+                    'gold': {
+                        light: '#FFF5E6',
+                        DEFAULT: '#FFB800',
+                        dark: '#CC9200',
+                    },
+                    'gray': {
+                        50: '#F5F9FF',
+                        100: '#E8EDF5',
+                        200: '#D1D8E5',
+                        300: '#B4BDCC',
+                        400: '#8F96A7',
+                        500: '#5A6478',
+                        600: '#0A0F1E',
+                    }
                 },
             },
+            fontFamily: theme.typography.fontFamily,
+            fontSize: theme.typography.sizes,
             borderRadius: theme.radius,
-            screens: {
-                xs: "480px",
-                sm: theme.breakpoints.sm,
-                md: theme.breakpoints.md,
-                lg: theme.breakpoints.lg,
-                xl: theme.breakpoints.xl,
+            boxShadow: theme.shadows,
+            spacing: theme.spacing,
+            screens: theme.breakpoints,
+            backgroundImage: {
+                'gradient-primary': theme.colors.gradients.primary,
+                'gradient-secondary': theme.colors.gradients.secondary,
+                'gradient-dark': theme.colors.gradients.dark,
+            },
+            animation: {
+                'fade-in': 'fadeIn 0.3s ease-in-out',
+                'slide-up': 'slideUp 0.3s ease-in-out',
+                'slide-down': 'slideDown 0.3s ease-in-out',
+            },
+            keyframes: {
+                fadeIn: {
+                    '0%': { opacity: '0' },
+                    '100%': { opacity: '1' },
+                },
+                slideUp: {
+                    '0%': { transform: 'translateY(10px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                },
+                slideDown: {
+                    '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                    '100%': { transform: 'translateY(0)', opacity: '1' },
+                },
+            },
+            zIndex: {
+                'modal': 100,
+                'dropdown': 50,
+                'header': 40,
+                'footer': 30,
             },
         },
     },
-    plugins: [],
+    plugins: [
+        require('@tailwindcss/forms')({
+            strategy: 'class',
+        }),
+    ],
 }

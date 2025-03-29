@@ -4,6 +4,7 @@ import { useAvailableChains } from "@/utils/web3/config";
 import React, { useEffect, useState } from "react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 interface NetworkSwitchNotificationProps {
   className?: string;
@@ -45,17 +46,18 @@ export default function NetworkSwitchNotification({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.3 }}
-            className="bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 border-l-4 border-brand-primary p-4 rounded-lg shadow-md max-w-sm"
+            className="bg-gradient-to-r from-brand-primary/5 via-brand-accent/5 to-chainpay-gold/5 border border-border-light p-4 rounded-lg shadow-lg backdrop-blur-sm"
           >
-            <h2 className="font-semibold text-brand-primary text-lg">
+            <h2 className="font-semibold text-text-primary text-lg flex items-center gap-2">
               Switch to {targetChain.name}
+              <ArrowRight className="w-4 h-4 text-brand-primary" />
             </h2>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-text-muted mt-1">
               This application is only available on the {targetChain.name} network. Please switch to continue.
             </p>
             <button
               onClick={onSwitch}
-              className="mt-3 bg-gradient-to-r from-brand-primary to-brand-accent text-white px-4 py-2 rounded-lg hover:opacity-90 transition duration-200"
+              className="mt-3 bg-gradient-to-r from-brand-primary via-brand-accent to-chainpay-gold text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-primary/50"
             >
               Switch Network
             </button>

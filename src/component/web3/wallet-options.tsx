@@ -116,7 +116,7 @@ export function WalletOptions() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4"
+              className="fixed inset-0 bg-background-overlay backdrop-blur-sm flex items-center justify-center p-4"
               onClick={() => setIsModalOpen(false)}
             >
               <motion.div
@@ -125,23 +125,23 @@ export function WalletOptions() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-white shadow-2xl rounded-lg overflow-hidden relative"
+                className="w-full max-w-md bg-white shadow-xl rounded-lg overflow-hidden relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                  className="absolute top-4 right-4 text-text-muted hover:text-text-primary p-1 rounded-full hover:bg-background-light transition-colors"
                   aria-label="Close wallet connection modal"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
-                <div className="p-6 border-b border-gray-100">
-                  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                    <Wallet className="w-5 h-5 text-[#0099FF]" />
+                <div className="p-6 border-b border-border-light">
+                  <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+                    <Wallet className="w-5 h-5 text-brand-primary" />
                     Connect Your Wallet
                   </h2>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-text-muted mt-1">
                     Select your preferred wallet provider to continue
                   </p>
                 </div>
@@ -159,8 +159,8 @@ export function WalletOptions() {
                         disabled={isPending}
                         className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
                           selectedConnector === connector.uid
-                            ? "bg-[#0099FF]/10 border border-[#0099FF]"
-                            : "hover:bg-gray-50 border border-gray-100"
+                            ? "bg-brand-primary/10 border border-brand-primary"
+                            : "hover:bg-background-light border border-border-light"
                         }`}
                         whileTap={{ scale: 0.98 }}
                         transition={{ duration: 0.1 }}
@@ -176,17 +176,25 @@ export function WalletOptions() {
                             />
                           </div>
                           <div className="text-left">
-                            <span className="font-medium text-gray-700 block">
+                            <span className={`font-medium ${
+                              selectedConnector === connector.uid
+                                ? "text-brand-primary"
+                                : "text-text-primary"
+                            }`}>
                               {connector.name}
                             </span>
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                        <ChevronRight className={`w-4 h-4 ${
+                          selectedConnector === connector.uid
+                            ? "text-brand-primary"
+                            : "text-text-muted"
+                        }`} />
                       </motion.button>
                     ))}
                   </div>
 
-                  <div className="mt-4 text-center text-xs text-gray-400">
+                  <div className="mt-4 text-center text-xs text-text-muted">
                     By connecting, you agree to our Terms of Service
                   </div>
                 </div>
@@ -199,10 +207,10 @@ export function WalletOptions() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.2 }}
-                      className="p-4 border-t border-gray-100"
+                      className="p-4 border-t border-border-light"
                     >
                       {connectionStatus === "connecting" && (
-                        <div className="flex items-center justify-center text-[#0099FF]">
+                        <div className="flex items-center justify-center text-brand-primary">
                           <motion.div
                             className="w-4 h-4 mr-2 border-2 border-current border-t-transparent rounded-full"
                             animate={{ rotate: 360 }}
@@ -216,13 +224,13 @@ export function WalletOptions() {
                         </div>
                       )}
                       {connectionStatus === "success" && (
-                        <div className="flex items-center justify-center text-green-600">
+                        <div className="flex items-center justify-center text-status-success">
                           <CheckCircle className="w-4 h-4 mr-2" />
                           <span>Wallet connected successfully!</span>
                         </div>
                       )}
                       {connectionStatus === "error" && (
-                        <div className="flex items-center justify-center text-red-600">
+                        <div className="flex items-center justify-center text-status-error">
                           <XCircle className="w-4 h-4 mr-2" />
                           <span>Connection failed. Please try again.</span>
                         </div>
@@ -232,7 +240,7 @@ export function WalletOptions() {
                 </AnimatePresence>
 
                 {error && (
-                  <div className="p-4 border-t border-gray-100 text-red-600 text-sm">
+                  <div className="p-4 border-t border-border-light bg-status-error/5 text-status-error text-sm">
                     {error.message}
                   </div>
                 )}

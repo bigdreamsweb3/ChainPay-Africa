@@ -152,7 +152,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="flex flex-col gap-2 bg-chainpay-blue-light/20 rounded-lg p-3 border border-chainpay-blue-light/20">
+      <div className="flex flex-col gap-2 bg-background-light rounded-lg p-3 border border-border-light">
         <div className="flex flex-col space-y-3">
           <div className="flex flex-row justify-between items-center gap-3">
             {/* Phone Number Input */}
@@ -163,18 +163,18 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                 {...register("phoneNumber", {
                   validate: validatePhoneNumber,
                 })}
-                className="w-full text-lg font-medium bg-transparent outline-none text-chainpay-blue-dark placeholder:text-chainpay-blue-dark/40 pr-10"
+                className="w-full text-lg font-medium bg-transparent outline-none text-text-primary placeholder:text-text-muted pr-10"
               />
 
               {phoneNumber && (
                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                   {isPhoneValid ? (
-                    <div className="flex items-center justify-center p-0.5 rounded-full w-4 h-4 border border-brand-success/20">
-                      <Check size={12} className="text-brand-success" />
+                    <div className="flex items-center justify-center p-0.5 rounded-full w-4 h-4 border border-status-success/20">
+                      <Check size={12} className="text-status-success" />
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center p-0.5 rounded-full w-4 h-4 border border-chainpay-orange/20">
-                      <AlertCircle size={12} className="text-chainpay-orange" />
+                    <div className="flex items-center justify-center p-0.5 rounded-full w-4 h-4 border border-status-error/20">
+                      <AlertCircle size={12} className="text-status-error" />
                     </div>
                   )}
                 </div>
@@ -189,7 +189,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 aria-label="Select network"
                 aria-expanded={isDropdownOpen}
-                className="bg-white rounded-lg py-1.5 px-3 flex items-center gap-2 w-fit cursor-pointer border border-chainpay-blue-light/20 hover:border-chainpay-blue-light/50 transition-colors duration-200"
+                className="bg-white rounded-lg py-1.5 px-3 flex items-center gap-2 w-fit cursor-pointer border border-border-light hover:border-border-medium transition-colors duration-200"
               >
                 <div className="inline-flex items-center justify-center overflow-hidden w-3.5 h-3.5 min-w-3.5">
                   <Image
@@ -200,15 +200,15 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                     className="w-full h-full"
                   />
                 </div>
-                <span className="font-medium text-sm text-chainpay-blue-dark">
+                <span className="font-medium text-sm text-text-primary">
                   {selectedNetwork.name?.replace(/\s?Nigeria\s?/g, "")}
                 </span>
-                <ChevronDown className="w-4 h-4 text-chainpay-blue" />
+                <ChevronDown className="w-4 h-4 text-brand-primary" />
               </button>
 
               {/* Network Dropdown */}
               {isDropdownOpen && (
-                <div className="absolute z-50 right-0 mt-1 w-44 bg-white rounded-lg border border-chainpay-blue-light/20 overflow-hidden shadow-sm">
+                <div className="absolute z-50 right-0 mt-1 w-44 bg-white rounded-lg border border-border-light overflow-hidden shadow-sm">
                   <div className="p-1.5 space-y-0.5">
                     {networks.map((network) => (
                       <div
@@ -216,8 +216,8 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                         onClick={() => handleNetworkSelect(network)}
                         className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors duration-200 ${
                           selectedNetwork.id === network.id
-                            ? "bg-chainpay-blue-light/20 border border-chainpay-blue-light/30"
-                            : "hover:bg-chainpay-blue-light/10 border border-transparent"
+                            ? "bg-brand-primary/10 border border-brand-primary"
+                            : "hover:bg-background-light border border-transparent"
                         }`}
                       >
                         <div className="inline-flex items-center justify-center overflow-hidden w-3.5 h-3.5 min-w-3.5">
@@ -229,9 +229,9 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                             className="w-full h-full"
                           />
                         </div>
-                        <span className="text-xs font-medium text-chainpay-blue-dark truncate">{network.name}</span>
+                        <span className="text-xs font-medium text-text-primary truncate">{network.name}</span>
                         {selectedNetwork.id === network.id && (
-                          <div className="ml-auto w-4 h-4 rounded-full bg-chainpay-blue flex items-center justify-center">
+                          <div className="ml-auto w-4 h-4 rounded-full bg-brand-primary flex items-center justify-center">
                             <Check size={10} className="text-white" />
                           </div>
                         )}
@@ -245,20 +245,20 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
 
           <div className="flex flex-row justify-between items-center gap-4">
             <div className="flex items-center text-xs font-medium w-2/3">
-              <Phone className="text-chainpay-orange w-3.5 h-3.5 pointer-events-none" />
-              <span className="text-chainpay-blue-dark ml-1.5">Phone Number</span>
+              <Phone className="text-brand-primary w-3.5 h-3.5 pointer-events-none" />
+              <span className="text-text-primary ml-1.5">Phone Number</span>
             </div>
 
             <div className="flex items-center justify-end text-xs font-medium w-1/3">
-              <span className="text-chainpay-blue-dark ml-auto">Network Provider</span>
+              <span className="text-text-primary ml-auto">Network Provider</span>
             </div>
           </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="px-2.5 py-1.5 mt-1 rounded-md bg-red-50 border border-red-200">
-            <p className="text-xs text-red-600 flex items-center gap-1.5 font-medium">
+          <div className="px-2.5 py-1.5 mt-1 rounded-md bg-status-error/5 border border-status-error/10">
+            <p className="text-xs text-status-error flex items-center gap-1.5 font-medium">
               <AlertCircle className="w-3.5 h-3.5" />
               {error}
             </p>

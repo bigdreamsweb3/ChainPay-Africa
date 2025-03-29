@@ -335,7 +335,7 @@ const BillPaymentForm: React.FC = () => {
                     >
                       {step === 1 && (
                         <div className="space-y-4">
-                          <div className="bg-white backdrop-blur-sm border border-chainpay-blue-light/20 p-3 rounded-xl shadow-sm">
+                          <div className="bg-white backdrop-blur-sm border border-border-light p-3 rounded-xl shadow-sm">
                             {selectedService === "electricity" ? (
                               <MeterNumberInput
                                 error={errors.meterNumber?.message}
@@ -345,7 +345,6 @@ const BillPaymentForm: React.FC = () => {
                                 error={errors.phoneNumber?.message}
                                 onCarrierChange={(carrierData) => {
                                   setCarrier(carrierData);
-                                  // Update the network provider in payment state
                                   if (carrierData.name) {
                                     setPayment({
                                       ...payment,
@@ -365,7 +364,6 @@ const BillPaymentForm: React.FC = () => {
                                 setSelectedToken={(tokenId: string) => {
                                   setSelectedTokenId(tokenId);
                                   setValue("paymentToken", tokenId);
-                                  // Update payment state with the selected token
                                   setPayment({
                                     ...payment,
                                     tokenId: tokenId,
@@ -388,7 +386,9 @@ const BillPaymentForm: React.FC = () => {
                           )}
 
                           {/* Payment Button */}
-                          <div className="pt-2">
+                          <div className="pt-2 relative">
+                            {/* Subtle gold glow effect */}
+                            <div className="absolute inset-0 bg-chainpay-gold/20 blur-md opacity-30 rounded-lg"></div>
                             <ChainPayButton
                               type="submit"
                               data-action="submit-payment"
@@ -396,9 +396,12 @@ const BillPaymentForm: React.FC = () => {
                               variant="primary"
                               size="large"
                               fullWidth
-                              icon={<CreditCard className="w-4 h-4" />}
+                              className="bg-chainpay-gold border border-chainpay-gold/20 hover:bg-chainpay-gold/90 hover:shadow-lg hover:shadow-chainpay-gold/30 transition-all duration-300"
                             >
-                              Pay Now
+                              <div className="flex items-center justify-center gap-2 text-chainpay-blue-dark">
+                                <CreditCard className="w-4 h-4" />
+                                <span className="font-bold">Pay Now</span>
+                              </div>
                             </ChainPayButton>
                           </div>
                         </div>
@@ -409,13 +412,13 @@ const BillPaymentForm: React.FC = () => {
                   {submitStatus !== "success" && isAvailable && (
                     <>
                       {step > 0 && step < steps.length - 2 && (
-                        <div className="flex flex-col gap-2 pt-2 border-t border-chainpay-blue-light/20 mt-3">
+                        <div className="flex flex-col gap-2 pt-2 border-t border-border-light mt-3">
                           {step > 1 && (
                             <button
                               type="button"
                               onClick={prevStep}
                               disabled={isSubmitting}
-                              className="px-3 py-2 text-sm text-chainpay-blue bg-chainpay-blue-light/10 rounded-md hover:bg-chainpay-blue-light/20 transition-colors duration-200 font-medium border border-chainpay-blue-light/20"
+                              className="px-3 py-2 text-sm text-text-primary bg-background-light rounded-md hover:bg-background-medium transition-colors duration-200 font-medium border border-border-light"
                             >
                               Previous
                             </button>
@@ -424,8 +427,8 @@ const BillPaymentForm: React.FC = () => {
                       )}
 
                       {submitStatus === "error" && (
-                        <div className="mt-2 px-3 py-2 rounded-lg bg-red-50 border border-red-200">
-                          <p className="text-sm text-red-600 flex items-center gap-2 font-medium">
+                        <div className="mt-2 px-3 py-2 rounded-lg bg-status-error/5 border border-status-error/10">
+                          <p className="text-sm text-status-error flex items-center gap-2 font-medium">
                             <AlertCircle className="w-4 h-4" />
                             There was an error processing your payment. Please
                             try again.

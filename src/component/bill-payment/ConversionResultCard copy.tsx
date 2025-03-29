@@ -36,23 +36,23 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
             className="mt-4"
           >
             {/* Card Header */}
-            <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-lg bg-chainpay-gold/10 flex items-center justify-center">
-                  <ArrowRight className="w-3.5 h-3.5 text-chainpay-gold" />
+                <div className="w-5 h-5 rounded-full bg-orange-100 flex items-center justify-center">
+                  <ArrowRight className="w-3.5 h-3.5 text-orange-500" />
                 </div>
-                <h3 className="text-sm font-medium text-chainpay-blue-dark">
+                <h3 className="text-sm font-semibold text-gray-800">
                   Payment Summary
                 </h3>
               </div>
             </div>
 
             {/* Main Card */}
-            <div className="rounded-xl bg-white border border-border-light overflow-hidden shadow-sm">
+            <div className="rounded-xl bg-white border border-gray-200 shadow-sm overflow-hidden">
               {/* Token Info Section */}
-              <div className="p-4 border-b border-border-light">
+              <div className="p-4 border-b border-gray-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-border-light flex items-center justify-center bg-white">
+                  <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-200 flex items-center justify-center bg-white">
                     <Image
                       src={selectedTokenData?.icon || "/placeholder.svg"}
                       alt={`${selectedTokenData?.symbol} icon`}
@@ -62,8 +62,8 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                     />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">Selected Token</p>
-                    <p className="text-sm font-medium text-text-primary">
+                    <p className="text-xs text-gray-500">Selected Token</p>
+                    <p className="text-sm font-medium text-gray-800">
                       {selectedTokenData?.symbol}
                     </p>
                   </div>
@@ -71,32 +71,28 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
               </div>
 
               {/* Details Section */}
-              <div className="p-3 space-y-2.5">
-                {/* Credit Units */}
+              <div className="p-4 space-y-3">
+                {/* Credit Amount */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted">
-                    Credit Amount
-                  </span>
-                  <span className="text-sm font-medium text-text-primary">
+                  <span className="text-xs text-gray-500">Credit Amount</span>
+                  <span className="text-sm font-medium text-gray-800">
                     {creditAmount.toString()}
                   </span>
                 </div>
 
                 {/* Conversion Rate */}
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted">
-                    Current Rate
-                  </span>
-                  <span className="text-sm font-medium text-text-primary">
+                  <span className="text-xs text-gray-500">Current Rate</span>
+                  <span className="text-sm font-medium text-gray-800">
                     {conversionRate}
                   </span>
                 </div>
 
                 {/* Final Amount */}
-                <div className="pt-2.5 border-t border-border-light">
+                <div className="pt-3 border-t border-gray-100">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-chainpay-gold  border border-chainpay-gold">
+                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-orange-500">
                         {isConverting ? (
                           <Loader2
                             size={14}
@@ -106,18 +102,18 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                           <Minus size={14} className="text-white" />
                         )}
                       </div>
-                      <span className="text-sm font-medium text-text-primary">
+                      <span className="text-sm font-medium text-gray-800">
                         Final Amount
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       {isConverting ? (
-                        <div className="flex items-center gap-1.5 text-text-muted">
+                        <div className="flex items-center gap-1.5 text-gray-500">
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
                           <span className="text-xs">Calculating...</span>
                         </div>
                       ) : (
-                        <span className="text-sm font-semibold text-text-primary">
+                        <span className="text-sm font-semibold text-gray-800">
                           {localDisplayAmount} {selectedTokenData?.symbol}
                         </span>
                       )}
@@ -127,7 +123,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
 
                 {/* Error Message */}
                 {conversionError && (
-                  <div className="mt-2.5 flex items-start gap-2 text-xs bg-status-error/5 text-status-error p-2 rounded-lg border border-status-error/10">
+                  <div className="mt-3 flex items-start gap-2 text-xs bg-red-50 text-red-600 p-2 rounded-lg border border-red-100">
                     <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
                     <p className="font-medium leading-tight">
                       {conversionError}

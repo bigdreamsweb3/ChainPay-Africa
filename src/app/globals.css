@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,6 +15,21 @@
   --z-tooltip: 40;
   --z-header: 30;
   --z-footer: 10;
+
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-background-main text-text-primary;
+  }
 }
 
 html, body {
@@ -65,6 +82,30 @@ html, body {
   .responsive-container {
     @apply w-full px-3 sm:px-4 max-w-full mx-auto;
   }
+
+  .input-base {
+    @apply w-full rounded-lg border border-border-light bg-white px-4 py-2.5 text-sm text-text-primary placeholder-text-muted shadow-sm transition-colors focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20;
+  }
+
+  .btn-base {
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn-base bg-gradient-primary text-white hover:shadow-lg focus:ring-brand-primary/50;
+  }
+
+  .btn-secondary {
+    @apply btn-base bg-gradient-secondary text-text-primary hover:shadow-lg focus:ring-brand-secondary/50;
+  }
+
+  .card {
+    @apply rounded-xl border border-border-light bg-white p-4 shadow-sm;
+  }
+
+  .card-hover {
+    @apply card transition-all hover:shadow-md;
+  }
 }
 
 /* Responsive container sizes */
@@ -94,4 +135,31 @@ html, body {
     .container {
         max-width: 1024px;
     }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background-light;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-border-medium transition-colors hover:bg-border-dark;
+}
+
+/* Animations */
+.animate-fade-in {
+  @apply animate-[fadeIn_0.3s_ease-in-out];
+}
+
+.animate-slide-up {
+  @apply animate-[slideUp_0.3s_ease-in-out];
+}
+
+.animate-slide-down {
+  @apply animate-[slideDown_0.3s_ease-in-out];
 }

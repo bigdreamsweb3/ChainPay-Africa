@@ -4,6 +4,9 @@ require("dotenv").config();
 const {
     crossfiTestnetParams,
 } = require("./evm-contracts/chains/crossfiChain.js");
+const {
+    baseSepoliaParams,
+} = require("./evm-contracts/chains/baseChain.js");
 
 module.exports = {
     solidity: {
@@ -30,6 +33,7 @@ module.exports = {
         // },
 
         crossfiTestnet: crossfiTestnetParams([process.env.NEXT_PUBLIC_ACCOUNT_1]),
+        baseSepolia: baseSepoliaParams([process.env.NEXT_PUBLIC_ACCOUNT_1]),
     },
 
     mocha: {
