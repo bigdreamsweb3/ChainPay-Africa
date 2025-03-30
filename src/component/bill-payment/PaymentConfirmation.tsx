@@ -9,9 +9,10 @@ import {
   convertCreditToTokenAmount,
   convertToTokenUnits,
   formatTokenAmountDisplay,
-} from '@/lib/CP_NGN_USD_Vendor';
-import ChainPayButton from '../ui/ChainPayButton';
+} from "@/lib/CP_NGN_USD_Vendor";
+import ChainPayButton from "../ui/ChainPayButton";
 import { motion, AnimatePresence } from "framer-motion";
+import { createPortal } from "react-dom";
 
 interface FormData {
   phoneNumber: string;
@@ -47,7 +48,15 @@ interface PaymentConfirmationProps {
   skipInitialConversion?: boolean;
 }
 
-type TransactionStatus = "initializing" | "approving" | "waiting_approval" | "purchasing" | "completed" | "error" | "refreshing_price";
+type TransactionStatus =
+  | "idle"
+  | "initializing"
+  | "approving"
+  | "waiting_approval"
+  | "purchasing"
+  | "completed"
+  | "error"
+  | "refreshing_price";
 
 const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   selectedService,
@@ -62,21 +71,33 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 }) => {
   const { buyAirtime, isPending, data } = useBuyAirtime();
   const { chain } = useAccount();
-  const blockExplorerUrl = chain?.blockExplorers?.default?.url || "https://etherscan.io";
+  const blockExplorerUrl =
+    chain?.blockExplorers?.default?.url || "https://etherscan.io";
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
-  const [convertedAmount, setConvertedAmount] = useState<string>(initialConvertedAmount);
-  const [displayAmount, setDisplayAmount] = useState<string>(initialDisplayAmount);
+  const [transactionStatus, setTransactionStatus] =
+    useState<TransactionStatus>("idle");
+  const [convertedAmount, setConvertedAmount] = useState<string>(
+    initialConvertedAmount
+  );
+  const [displayAmount, setDisplayAmount] =
+    useState<string>(initialDisplayAmount);
   const [isConverting, setIsConverting] = useState(false);
   const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
+  const [mounted, setMounted] = useState(false);
 
   const amountStr = watch("amount");
 
   useEffect(() => {
-    if (skipInitialConversion &&
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (
+      skipInitialConversion &&
       initialConvertedAmount !== "0.00" &&
       initialDisplayAmount !== "0" &&
-      !isConverting) {
+      !isConverting
+    ) {
       setLastUpdateTime(Date.now());
       return;
     }
@@ -88,8 +109,9 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         try {
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
-
-          const tokenAmount = await convertCreditToTokenAmount(Number(amountStr));
+          const tokenAmount = await convertCreditToTokenAmount(
+            Number(amountStr)
+          );
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
           setLastUpdateTime(Date.now());
@@ -121,17 +143,29 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     initialConvertedAmount,
     initialDisplayAmount,
     isConverting,
-    lastUpdateTime
+    lastUpdateTime,
   ]);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (transactionStatus !== "idle" && transactionStatus !== "error") return;
+
     setErrorMessage(null);
     setTransactionStatus("initializing");
 
-    if (!selectedTokenDetails?.contractAddress) {
-      setErrorMessage("Please select a payment token");
-      setTransactionStatus(null);
+    const hasValidInputs =
+      carrier?.name &&
+      watch("phoneNumber") &&
+      watch("amount") &&
+      selectedTokenDetails?.contractAddress;
+
+    if (!hasValidInputs) {
+      setErrorMessage(
+        !selectedTokenDetails?.contractAddress
+          ? "Please select a payment token"
+          : "Please fill in all required fields"
+      );
+      setTransactionStatus("error");
       return;
     }
 
@@ -139,27 +173,25 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       const phoneNumber = watch("phoneNumber");
       const amountStr = watch("amount");
 
-      if (!phoneNumber || !amountStr) {
-        setErrorMessage("Please fill in all required fields");
-        setTransactionStatus(null);
-        return;
-      }
-
-      if (!carrier || carrier.enum_value === undefined || carrier.enum_value === null) {
+      if (
+        !carrier ||
+        carrier.enum_value === undefined ||
+        carrier.enum_value === null
+      ) {
         setErrorMessage("Please select a network provider");
-        setTransactionStatus(null);
+        setTransactionStatus("error");
         return;
       }
 
       if (carrier.enum_value < 0 || carrier.enum_value > 3) {
         setErrorMessage("Invalid network provider selected");
-        setTransactionStatus(null);
+        setTransactionStatus("error");
         return;
       }
 
       if (isConverting) {
         setErrorMessage("Please wait for price calculation to complete");
-        setTransactionStatus(null);
+        setTransactionStatus("error");
         return;
       }
 
@@ -173,8 +205,9 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         try {
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
-
-          const tokenAmount = await convertCreditToTokenAmount(Number(amountStr));
+          const tokenAmount = await convertCreditToTokenAmount(
+            Number(amountStr)
+          );
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
           setLastUpdateTime(Date.now());
@@ -182,7 +215,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         } catch (error) {
           console.error("Error refreshing conversion:", error);
           setErrorMessage("Failed to refresh price. Please try again.");
-          setTransactionStatus(null);
+          setTransactionStatus("error");
           return;
         } finally {
           setIsConverting(false);
@@ -192,7 +225,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
       if (!convertedAmount || parseFloat(convertedAmount) <= 0) {
         setErrorMessage("Invalid payment amount. Please try again.");
-        setTransactionStatus(null);
+        setTransactionStatus("error");
         return;
       }
 
@@ -210,10 +243,14 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           setTransactionStatus(status);
           switch (status) {
             case "approving":
-              setErrorMessage("Please approve the token spending in your wallet...");
+              setErrorMessage(
+                "Please approve the token spending in your wallet..."
+              );
               break;
             case "waiting_approval":
-              setErrorMessage("Waiting for approval transaction to be confirmed...");
+              setErrorMessage(
+                "Waiting for approval transaction to be confirmed..."
+              );
               break;
             case "purchasing":
               setErrorMessage("Initiating airtime purchase...");
@@ -231,18 +268,20 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       console.log("Transaction submitted successfully");
       setErrorMessage(null);
       setTransactionStatus("completed");
-
     } catch (error: unknown) {
       console.error("Error executing buyAirtime:", error);
       setTransactionStatus("error");
-
       if (error instanceof Error) {
-        if (error.message.includes("rejected in wallet")) {
+        if (error.message.includes("rejected in wallet") || error.message.includes("User denied transaction signature")) {
           setErrorMessage("Transaction was cancelled in your wallet");
         } else if (error.message.includes("Wallet not connected")) {
           setErrorMessage("Please connect your wallet to continue");
+        } else if (error.message.includes("insufficient funds")) {
+          setErrorMessage("Insufficient funds in your wallet");
+        } else if (error.message.includes("nonce")) {
+          setErrorMessage("Please try again. Transaction nonce error.");
         } else {
-          setErrorMessage(error.message || "Transaction failed. Please try again.");
+          setErrorMessage("Transaction failed. Please try again.");
         }
       } else {
         setErrorMessage("Transaction failed. Please try again.");
@@ -250,20 +289,37 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     }
   };
 
-  const isConfirmDisabled = !carrier?.name || !watch("phoneNumber") || !watch("amount") || !selectedTokenDetails;
+  const isProcessing = [
+    "initializing",
+    "approving",
+    "waiting_approval",
+    "purchasing",
+  ].includes(transactionStatus);
+  const canConfirm =
+    transactionStatus === "idle" || transactionStatus === "error";
+  const isConfirmDisabled =
+    !carrier?.name ||
+    !watch("phoneNumber") ||
+    !watch("amount") ||
+    !selectedTokenDetails ||
+    !canConfirm ||
+    isPending ||
+    isConverting;
 
-  return (
-    <div className="fixed inset-0 z-[50] flex items-center justify-center p-4 bg-background-overlay backdrop-blur-sm">
+  if (!mounted) return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] pointer-events-auto flex items-center justify-center p-4 bg-background-overlay backdrop-blur-sm">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="bg-white rounded-lg w-full max-w-md shadow-xl border border-border-light overflow-hidden"
+        className="bg-white rounded-lg w-full max-w-md shadow-xl border border-border-light flex flex-col max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-border-light">
+        <div className="p-6 border-b border-border-light flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center">
@@ -302,7 +358,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 flex-grow">
           <div className="space-y-4">
             {/* Success Message */}
             <AnimatePresence>
@@ -332,9 +388,12 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                       </svg>
                     </div>
                     <div className="text-center space-y-2">
-                      <h4 className="text-lg font-semibold text-text-primary">Transaction Successful!</h4>
+                      <h4 className="text-lg font-semibold text-text-primary">
+                        Transaction Successful!
+                      </h4>
                       <p className="text-sm text-text-muted">
-                        Your airtime will be delivered shortly. You can track the status using the transaction link below.
+                        Your airtime will be delivered shortly. You can track
+                        the status using the transaction link below.
                       </p>
                     </div>
                   </div>
@@ -347,30 +406,38 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
                   <span className="text-xs text-text-muted">Service</span>
-                  <span className="text-sm font-medium text-text-primary capitalize">{selectedService}</span>
+                  <span className="text-sm font-medium text-text-primary capitalize">
+                    {selectedService}
+                  </span>
                 </div>
-
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
                   <span className="text-xs text-text-muted">
-                    {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
+                    {selectedService === "electricity"
+                      ? "Meter Number"
+                      : "Phone Number"}
                   </span>
                   <span className="text-sm font-medium text-text-primary">
-                    {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
+                    {selectedService === "electricity"
+                      ? watch("meterNumber")
+                      : watch("phoneNumber")}
                   </span>
                 </div>
-
-                {(selectedService === "airtime" || selectedService === "data") && carrier && (
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                    <span className="text-xs text-text-muted">Network</span>
-                    <span className="text-sm font-medium text-text-primary">{carrier.name || "Unknown"}</span>
-                  </div>
-                )}
-
+                {(selectedService === "airtime" ||
+                  selectedService === "data") &&
+                  carrier && (
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                      <span className="text-xs text-text-muted">Network</span>
+                      <span className="text-sm font-medium text-text-primary">
+                        {carrier.name || "Unknown"}
+                      </span>
+                    </div>
+                  )}
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
                   <span className="text-xs text-text-muted">Amount</span>
-                  <span className="text-sm font-medium text-text-primary">{watch("amount")} Credits</span>
+                  <span className="text-sm font-medium text-text-primary">
+                    {watch("amount")} Credits
+                  </span>
                 </div>
-
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
                   <span className="text-xs text-text-muted">Pay Amount</span>
                   <span className="text-sm font-medium text-text-primary">
@@ -380,11 +447,12 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                         Calculating...
                       </span>
                     ) : (
-                      <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
+                      <>
+                        {displayAmount} {selectedTokenDetails?.symbol || ""}
+                      </>
                     )}
                   </span>
                 </div>
-
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
                   <span className="text-xs text-text-muted">Payment Token</span>
                   <span className="text-sm font-medium text-text-primary">
@@ -392,7 +460,9 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full bg-white border border-border-light flex items-center justify-center overflow-hidden">
                           <Image
-                            src={selectedTokenDetails.image || "/placeholder.svg"}
+                            src={
+                              selectedTokenDetails.image || "/placeholder.svg"
+                            }
                             alt={selectedTokenDetails.name}
                             width={16}
                             height={16}
@@ -410,7 +480,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             )}
 
             {/* Transaction Status */}
-            {transactionStatus && transactionStatus !== "completed" && (
+            {isProcessing && (
               <div className="mt-4 p-3 rounded-lg bg-background-light border border-border-light">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-text-muted">Status</span>
@@ -439,19 +509,13 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                         Processing purchase...
                       </>
                     )}
-                    {transactionStatus === "error" && (
-                      <>
-                        <AlertCircle className="w-4 h-4 text-status-error" />
-                        Transaction failed
-                      </>
-                    )}
                   </span>
                 </div>
               </div>
             )}
 
             {/* Error Message */}
-            {errorMessage && (
+            {errorMessage && transactionStatus !== "completed" && (
               <div className="mt-4 p-3 rounded-lg bg-status-error/10 border border-status-error/20">
                 <p className="text-xs text-status-error flex items-center gap-2">
                   <AlertCircle className="w-3.5 h-3.5" />
@@ -463,29 +527,55 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="p-6 border-t border-border-light">
+        <div className="p-6 border-t border-border-light flex-shrink-0">
           {transactionStatus === "completed" ? (
             <div className="space-y-4">
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => window.open(`${blockExplorerUrl}/tx/${data}`, '_blank')}
+                  onClick={() =>
+                    window.open(`${blockExplorerUrl}/tx/${data}`, "_blank")
+                  }
                   className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
                   </svg>
                   View Transaction on Explorer
                 </button>
                 <button
                   onClick={() => {
-                    navigator.clipboard.writeText(`${blockExplorerUrl}/tx/${data}`);
+                    navigator.clipboard.writeText(
+                      `${blockExplorerUrl}/tx/${data}`
+                    );
                     setErrorMessage("Transaction link copied to clipboard!");
                     setTimeout(() => setErrorMessage(null), 3000);
                   }}
                   className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                    />
                   </svg>
                   Copy Transaction Link
                 </button>
@@ -503,14 +593,14 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           ) : (
             <ChainPayButton
               type="button"
-              onClick={(e) => handleBuyAirtime(e)}
-              disabled={isPending || isConfirmDisabled || transactionStatus === "approving" || transactionStatus === "waiting_approval"}
-              isLoading={isPending || transactionStatus === "approving" || transactionStatus === "waiting_approval"}
+              onClick={handleBuyAirtime}
+              disabled={isConfirmDisabled}
+              isLoading={isProcessing}
               fullWidth
               variant="primary"
               size="large"
             >
-              {isPending || transactionStatus === "approving" || transactionStatus === "waiting_approval"
+              {isProcessing
                 ? "Processing..."
                 : transactionStatus === "error"
                 ? "Try Again"
@@ -519,7 +609,8 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           )}
         </div>
       </motion.div>
-    </div>
+    </div>,
+    document.getElementById("modal-root") || document.body
   );
 };
 

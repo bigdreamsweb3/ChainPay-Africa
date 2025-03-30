@@ -2,6 +2,7 @@ import type React from "react";
 import { CheckCircle, ExternalLink, Wallet } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAccount } from "wagmi";
+import { isAddress, getAddress } from 'viem';
 // 
 interface PaymentReceiptProps {
   transactionId: string;
@@ -32,6 +33,10 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
 }) => {
   const { chain } = useAccount();
 
+  // Validate and format addresses
+  const formattedWalletAddress = isAddress(walletAddress) ? getAddress(walletAddress) : walletAddress;
+  const formattedTxHash = blockchainTxHash.startsWith('0x') ? blockchainTxHash : `0x${blockchainTxHash}`;
+
   return (
     <motion.div
       className="bg-white p-6 rounded-lg shadow-sm max-w-md mx-auto"
@@ -56,7 +61,7 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
             Wallet:
           </span>
           <span className="font-mono text-gray-600">
-            {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+            {formattedWalletAddress.slice(0, 6)}...{formattedWalletAddress.slice(-4)}
           </span>
         </div>
 
@@ -96,12 +101,12 @@ const PaymentReceipt: React.FC<PaymentReceiptProps> = ({
         <div className="flex justify-between items-center">
           <span className="font-medium">Blockchain Tx:</span>
           <a
-            href={`${chain?.blockExplorers?.default.url}/${blockchainTxHash}`}
+            href={`${chain?.blockExplorers?.default.url}/tx/${formattedTxHash}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500 hover:text-blue-700 flex items-center"
           >
-            {blockchainTxHash.slice(0, 6)}...{blockchainTxHash.slice(-4)}
+            {formattedTxHash.slice(0, 6)}...{formattedTxHash.slice(-4)}
             <ExternalLink className="w-4 h-4 ml-1" />
           </a>
         </div>
