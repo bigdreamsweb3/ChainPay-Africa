@@ -1,8 +1,13 @@
 "use client"; // Ensure it's a Client Component
 
-import { useReadContract, useWalletClient, useWriteContract, usePublicClient } from "wagmi";
+import {
+  useReadContract,
+  useWalletClient,
+  useWriteContract,
+  usePublicClient,
+} from "wagmi";
 import contractArtifact from "../../../evm-contracts/artifacts/evm-contracts/contracts/chainpay_airtime.sol/ChainPay_Airtime.json";
-import { isAddress, getAddress } from 'viem';
+import { isAddress, getAddress } from "viem";
 
 // ERC20 Standard token ABI
 const defaultTokenABI = [
@@ -38,10 +43,18 @@ const defaultTokenABI = [
 const abi = contractArtifact.abi;
 
 // Update the contract address exports to be more build-friendly
-export const AIRTIME_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS as `0x${string}` || "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066";
-export const DATA_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_DATA_CONTRACT_ADDRESS as `0x${string}` || "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066";
-export const USDC_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS as `0x${string}` || "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897";
-export const USDT_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_USDT_TOKEN_ADDRESS as `0x${string}` || "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7";
+export const AIRTIME_CONTRACT_ADDRESS = validateAndFormatAddress(
+  process.env.NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS
+);
+export const DATA_CONTRACT_ADDRESS = validateAndFormatAddress(
+  process.env.NEXT_PUBLIC_DATA_CONTRACT_ADDRESS
+);
+export const USDC_TOKEN_ADDRESS = validateAndFormatAddress(
+  process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS
+);
+export const USDT_TOKEN_ADDRESS = validateAndFormatAddress(
+  process.env.NEXT_PUBLIC_USDT_TOKEN_ADDRESS
+);
 
 // Update the validation function to be more lenient during build time
 function validateAndFormatAddress(address: string | undefined): `0x${string}` {
@@ -63,7 +76,12 @@ function validateAndFormatAddress(address: string | undefined): `0x${string}` {
 
 // Type definitions
 type Network = 0 | 1 | 2 | 3; // MTN=0, Airtel=1, Glo=2, Etisalat=3
-type Status = "approving" | "waiting_approval" | "purchasing" | "completed" | "error";
+type Status =
+  | "approving"
+  | "waiting_approval"
+  | "purchasing"
+  | "completed"
+  | "error";
 
 // Add these type definitions at the top with other types
 type WalletError = {
@@ -113,17 +131,22 @@ export const useTokenAllowance = (
     },
   });
 
-  return { 
-    allowance: data as bigint | undefined, 
-    error, 
-    isLoading 
+  return {
+    allowance: data as bigint | undefined,
+    error,
+    isLoading,
   };
 };
 
 // Custom hook to buy airtime
 export function useBuyAirtime() {
   const { data: walletClient } = useWalletClient();
-  const { writeContractAsync, isPending, error: writeError, data } = useWriteContract();
+  const {
+    writeContractAsync,
+    isPending,
+    error: writeError,
+    data,
+  } = useWriteContract();
   const publicClient = usePublicClient(); // Add public client for waiting on transactions
 
   const buyAirtime = async (
@@ -140,7 +163,9 @@ export function useBuyAirtime() {
 
     // Validate addresses
     const validatedTokenAddress = validateAndFormatAddress(tokenAddress);
-    const validatedContractAddress = validateAndFormatAddress(AIRTIME_CONTRACT_ADDRESS);
+    const validatedContractAddress = validateAndFormatAddress(
+      AIRTIME_CONTRACT_ADDRESS
+    );
 
     try {
       // Request approval first
@@ -185,7 +210,7 @@ export function useBuyAirtime() {
     } catch (err) {
       console.error("Error buying airtime:", err);
       onStatusUpdate?.("error");
-      
+
       const error = err as WalletError | ContractError;
       if (error.code === 4001) {
         throw new Error("Transaction was rejected in wallet");
@@ -198,18 +223,23 @@ export function useBuyAirtime() {
     }
   };
 
-  return { 
-    buyAirtime, 
-    isPending, 
-    error: writeError, 
-    data 
+  return {
+    buyAirtime,
+    isPending,
+    error: writeError,
+    data,
   };
 }
 
 // Custom hook for token approval
 export function useTokenApproval() {
   const { data: walletClient } = useWalletClient();
-  const { writeContractAsync, isPending, error: writeError, data } = useWriteContract();
+  const {
+    writeContractAsync,
+    isPending,
+    error: writeError,
+    data,
+  } = useWriteContract();
   const publicClient = usePublicClient(); // Add public client for potential future use
 
   const approve = async (
@@ -258,10 +288,10 @@ export function useTokenApproval() {
     }
   };
 
-  return { 
-    approve, 
-    isPending, 
-    error: writeError, 
-    data 
+  return {
+    approve,
+    isPending,
+    error: writeError,
+    data,
   };
 }
