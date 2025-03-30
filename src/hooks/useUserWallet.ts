@@ -25,5 +25,3 @@ export const useUserWallet = (): UserWallet => {
     chainId: chainId || null
   };
 }; 
-
-// 
