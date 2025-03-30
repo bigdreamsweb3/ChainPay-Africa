@@ -38,7 +38,7 @@ const defaultTokenABI = [
 const abi = contractArtifact.abi;
 
 // Update the contract address exports to be more build-friendly
-export const AIRTIME_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS as `0x${string}` || "0x147C0BE455151f7A610733413da07F04A3aD0fd4";
+export const AIRTIME_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS as `0x${string}` || "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066";
 export const DATA_CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_DATA_CONTRACT_ADDRESS as `0x${string}` || "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066";
 export const USDC_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS as `0x${string}` || "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897";
 export const USDT_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_USDT_TOKEN_ADDRESS as `0x${string}` || "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7";
