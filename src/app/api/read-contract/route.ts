@@ -2,6 +2,7 @@ import { crossfiTestnet } from "@/utils/web3/chains";
 import { NextResponse } from "next/server";
 import { createPublicClient, http } from "viem";
 import abiFile from "../../../../evm-contracts/artifacts/evm-contracts/contracts/chainpay_airtime.sol/ChainPay_Airtime.json";
+import { CONTRACT_ADDRESSES } from "@/app-config";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -12,7 +13,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const contractAddress = "0x101c154ec2b82fbd05768546fef19bd3ef9c37b5"; // Your contract address
+    const contractAddress = CONTRACT_ADDRESSES.AIRTIME;
 
     const client = createPublicClient({
       chain: crossfiTestnet,
