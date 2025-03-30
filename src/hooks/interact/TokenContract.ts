@@ -44,6 +44,21 @@ export const USDT_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_USDT_TOKEN_ADDRESS as 
 type Network = 0 | 1 | 2 | 3; // MTN=0, Airtel=1, Glo=2, Etisalat=3
 type Status = "approving" | "waiting_approval" | "purchasing" | "completed" | "error";
 
+// Add these type definitions at the top with other types
+type WalletError = {
+  code: number;
+  message: string;
+  data?: unknown;
+  transaction?: unknown;
+};
+
+type ContractError = {
+  code: string;
+  message: string;
+  data?: unknown;
+  transaction?: unknown;
+};
+
 // Hook to check if token is accepted
 export const useIsTokenAccepted = (tokenAddress: `0x${string}` | undefined) => {
   const { data, error, isLoading } = useReadContract({
@@ -146,14 +161,15 @@ export function useBuyAirtime() {
       console.error("Error buying airtime:", err);
       onStatusUpdate?.("error");
       
-      if ((err as any).code === 4001) {
+      const error = err as WalletError | ContractError;
+      if (error.code === 4001) {
         throw new Error("Transaction was rejected in wallet");
-      } else if ((err as any).message?.includes("insufficient funds")) {
+      } else if (error.message?.includes("insufficient funds")) {
         throw new Error("Insufficient funds for gas or transaction");
-      } else if ((err as any).message?.includes("execution reverted")) {
+      } else if (error.message?.includes("execution reverted")) {
         throw new Error("Transaction reverted - check input parameters");
       }
-      throw new Error((err as Error).message || "Failed to process transaction");
+      throw new Error(error.message || "Failed to process transaction");
     }
   };
 
@@ -205,14 +221,15 @@ export function useTokenApproval() {
       console.error("Error approving token:", err);
       onStatusUpdate?.("error");
 
-      if ((err as any).code === 4001) {
+      const error = err as WalletError | ContractError;
+      if (error.code === 4001) {
         throw new Error("Approval rejected in wallet");
-      } else if ((err as any).message?.includes("insufficient funds")) {
+      } else if (error.message?.includes("insufficient funds")) {
         throw new Error("Insufficient funds for gas");
-      } else if ((err as any).message?.includes("execution reverted")) {
+      } else if (error.message?.includes("execution reverted")) {
         throw new Error("Approval reverted by the token contract");
       }
-      throw new Error((err as Error).message || "Failed to approve token");
+      throw new Error(error.message || "Failed to approve token");
     }
   };
 
