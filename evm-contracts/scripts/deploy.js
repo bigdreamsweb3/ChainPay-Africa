@@ -2,8 +2,8 @@ const { ethers } = require("hardhat");
 
 async function main() {
   // Token addresses on Base Sepolia
-  const usdcAddress = "0xa4151B2B3e269645181dCcF2D426cE75fcbDeca9"; // USDC on Base Sepolia
-  const usdtAddress = "0x900101d06A7426441Ae63e9AB3B9b0F63Be145F1"; // USDT on Base Sepolia
+  const usdcAddress = "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897"; // USDC on Base Sepolia
+  const usdtAddress = "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7"; // USDT on Base Sepolia
 
   try {
     console.log("🔍 Fetching network details...");

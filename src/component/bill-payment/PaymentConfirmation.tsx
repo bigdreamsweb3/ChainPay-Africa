@@ -1,14 +1,17 @@
+"use client";
+
 import { useBuyAirtime } from "@/hooks/interact/TokenContract";
 import { Loader2, AlertCircle, X } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useAccount } from "wagmi";
 import {
   convertCreditToTokenAmount,
   convertToTokenUnits,
   formatTokenAmountDisplay,
 } from '@/lib/CP_NGN_USD_Vendor';
 import ChainPayButton from '../ui/ChainPayButton';
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FormData {
   phoneNumber: string;
@@ -24,25 +27,27 @@ interface PaymentConfirmationProps {
     enum_value: number;
   };
   selectedTokenDetails:
-  | {
-    name: string;
-    symbol: string;
-    contractAddress: string;
-    image: string;
-    decimals: number;
-    network: string;
-    token: string;
-    address: string;
-    id: string;
-  }
-  | null
-  | undefined;
+    | {
+        name: string;
+        symbol: string;
+        contractAddress: string;
+        image: string;
+        decimals: number;
+        network: string;
+        token: string;
+        address: string;
+        id: string;
+      }
+    | null
+    | undefined;
   onClose: () => void;
   setParentIsConverting?: (state: boolean) => void;
   convertedAmount?: string;
   displayAmount?: string;
   skipInitialConversion?: boolean;
 }
+
+type TransactionStatus = "initializing" | "approving" | "waiting_approval" | "purchasing" | "completed" | "error" | "refreshing_price";
 
 const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   selectedService,
@@ -55,8 +60,11 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   displayAmount: initialDisplayAmount = "0",
   skipInitialConversion = false,
 }) => {
-  const { buyAirtime, isPending } = useBuyAirtime();
+  const { buyAirtime, isPending, data } = useBuyAirtime();
+  const { chain } = useAccount();
+  const blockExplorerUrl = chain?.blockExplorers?.default?.url || "https://etherscan.io";
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [transactionStatus, setTransactionStatus] = useState<TransactionStatus | null>(null);
   const [convertedAmount, setConvertedAmount] = useState<string>(initialConvertedAmount);
   const [displayAmount, setDisplayAmount] = useState<string>(initialDisplayAmount);
   const [isConverting, setIsConverting] = useState(false);
@@ -64,20 +72,15 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
   const amountStr = watch("amount");
 
-  // Convert credit units to token amount whenever the amount or selected token changes
-  // or if sufficient time has passed since the last update
   useEffect(() => {
-    // Skip initial conversion if values are provided and skipInitialConversion is true
     if (skipInitialConversion &&
       initialConvertedAmount !== "0.00" &&
       initialDisplayAmount !== "0" &&
       !isConverting) {
-      // Just update the last update time
       setLastUpdateTime(Date.now());
       return;
     }
 
-    // Prevent running this effect if we're already converting
     if (isConverting) return;
 
     const updateConvertedAmount = async () => {
@@ -87,7 +90,6 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
           if (setParentIsConverting) setParentIsConverting(true);
 
           const tokenAmount = await convertCreditToTokenAmount(Number(amountStr));
-
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
           setLastUpdateTime(Date.now());
@@ -105,11 +107,9 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
       }
     };
 
-    // Check if we need to update based on time elapsed
     const timeElapsed = Date.now() - lastUpdateTime;
-    const shouldUpdate = timeElapsed > 30000; // 30 seconds threshold
+    const shouldUpdate = timeElapsed > 30000;
 
-    // Only update if needed and not already converting
     if ((!skipInitialConversion || shouldUpdate) && !isConverting) {
       updateConvertedAmount();
     }
@@ -120,20 +120,18 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     skipInitialConversion,
     initialConvertedAmount,
     initialDisplayAmount,
-    // Including isConverting and lastUpdateTime in deps would cause infinite loops
-    // since they are updated within the effect itself
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     isConverting,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     lastUpdateTime
   ]);
 
   const handleBuyAirtime = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setErrorMessage(null);
+    setTransactionStatus("initializing");
 
     if (!selectedTokenDetails?.contractAddress) {
       setErrorMessage("Please select a payment token");
+      setTransactionStatus(null);
       return;
     }
 
@@ -143,41 +141,40 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
       if (!phoneNumber || !amountStr) {
         setErrorMessage("Please fill in all required fields");
+        setTransactionStatus(null);
         return;
       }
 
-      // Validate carrier and network enum
       if (!carrier || carrier.enum_value === undefined || carrier.enum_value === null) {
         setErrorMessage("Please select a network provider");
+        setTransactionStatus(null);
         return;
       }
 
-      // Network enum should be 0-3 (MTN=0, Airtel=1, Glo=2, Etisalat=3)
       if (carrier.enum_value < 0 || carrier.enum_value > 3) {
         setErrorMessage("Invalid network provider selected");
+        setTransactionStatus(null);
         return;
       }
 
-      // Wait for conversion to complete if it's still in progress
       if (isConverting) {
         setErrorMessage("Please wait for price calculation to complete");
+        setTransactionStatus(null);
         return;
       }
 
-      // Check if the conversion is stale (more than 2 minutes old)
       const timeElapsed = Date.now() - lastUpdateTime;
-      const isStale = timeElapsed > 120000; // 2 minutes threshold
+      const isStale = timeElapsed > 120000;
 
-      // If the conversion is stale, refresh it
       if (isStale) {
         setErrorMessage("Refreshing price information...");
+        setTransactionStatus("refreshing_price");
 
         try {
           setIsConverting(true);
           if (setParentIsConverting) setParentIsConverting(true);
 
           const tokenAmount = await convertCreditToTokenAmount(Number(amountStr));
-
           setConvertedAmount(tokenAmount);
           setDisplayAmount(formatTokenAmountDisplay(tokenAmount));
           setLastUpdateTime(Date.now());
@@ -185,6 +182,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         } catch (error) {
           console.error("Error refreshing conversion:", error);
           setErrorMessage("Failed to refresh price. Please try again.");
+          setTransactionStatus(null);
           return;
         } finally {
           setIsConverting(false);
@@ -192,52 +190,53 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         }
       }
 
-      // We need to use the converted token amount, not the credit units
-      // First, ensure we have a valid converted amount
       if (!convertedAmount || parseFloat(convertedAmount) <= 0) {
         setErrorMessage("Invalid payment amount. Please try again.");
+        setTransactionStatus(null);
         return;
       }
 
-      // Use our utility function to convert to token units
-      // Note: We use the full precision convertedAmount, not the displayAmount 
-      // to ensure accuracy in the blockchain transaction
       const decimals = selectedTokenDetails.decimals || 18;
       const tokenUnitsStr = convertToTokenUnits(convertedAmount, decimals);
       const tokenAmountInWei = BigInt(tokenUnitsStr);
 
-      console.log("Sending transaction with:", {
-        phoneNumber,
-        originalCreditUnits: amountStr, // Original credit units (for reference)
-        tokenSymbol: selectedTokenDetails.symbol,
-        humanReadableTokenAmount: convertedAmount, // Full precision token amount (e.g., 0.071428 XUSD)
-        formattedDisplayAmount: displayAmount, // UI-friendly amount (for reference)
-        tokenAmountInWei: tokenAmountInWei.toString(), // The token amount in wei sent to contract
-        tokenDecimals: decimals,
-        network: carrier.enum_value,
-        tokenAddress: selectedTokenDetails.contractAddress,
-        lastUpdateTime: new Date(lastUpdateTime).toISOString() // When the conversion was last updated
-      });
-
-      // IMPORTANT: We're passing the TOKEN AMOUNT (in wei), not credit units, to the contract
       await buyAirtime(
         phoneNumber,
-        tokenAmountInWei, // TOKEN AMOUNT in wei with proper decimals (NOT credit units)
-        carrier.enum_value,
-        selectedTokenDetails.contractAddress,
-        selectedTokenDetails.symbol // Pass the token symbol
+        tokenAmountInWei,
+        carrier.enum_value as 0 | 1 | 2 | 3,
+        selectedTokenDetails.contractAddress as `0x${string}`,
+        selectedTokenDetails.symbol,
+        (status: TransactionStatus) => {
+          setTransactionStatus(status);
+          switch (status) {
+            case "approving":
+              setErrorMessage("Please approve the token spending in your wallet...");
+              break;
+            case "waiting_approval":
+              setErrorMessage("Waiting for approval transaction to be confirmed...");
+              break;
+            case "purchasing":
+              setErrorMessage("Initiating airtime purchase...");
+              break;
+            case "completed":
+              setErrorMessage(null);
+              break;
+            case "error":
+              setErrorMessage("Transaction failed. Please try again.");
+              break;
+          }
+        }
       );
 
-      // Transaction was successful if we got here
       console.log("Transaction submitted successfully");
       setErrorMessage(null);
+      setTransactionStatus("completed");
 
     } catch (error: unknown) {
       console.error("Error executing buyAirtime:", error);
+      setTransactionStatus("error");
 
-      // Type guard for Error objects
       if (error instanceof Error) {
-        // Show user-friendly error messages
         if (error.message.includes("rejected in wallet")) {
           setErrorMessage("Transaction was cancelled in your wallet");
         } else if (error.message.includes("Wallet not connected")) {
@@ -251,18 +250,10 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
     }
   };
 
-  // Check if we can enable the confirm button
   const isConfirmDisabled = !carrier?.name || !watch("phoneNumber") || !watch("amount") || !selectedTokenDetails;
 
   return (
-    <div
-      className="fixed inset-0 z-[50] flex items-center justify-center p-4 bg-background-overlay backdrop-blur-sm"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-      }}
-    >
+    <div className="fixed inset-0 z-[50] flex items-center justify-center p-4 bg-background-overlay backdrop-blur-sm">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -291,7 +282,11 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-text-primary">Review Transaction</h3>
+              <h3 className="text-xl font-semibold text-text-primary">
+                {transactionStatus === "error"
+                  ? "Transaction Failed"
+                  : "Review Transaction"}
+              </h3>
             </div>
             <button
               onClick={(e) => {
@@ -307,95 +302,221 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-4">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-border-light">
-              <span className="text-xs text-text-muted">Service</span>
-              <span className="text-sm font-medium text-text-primary capitalize">{selectedService}</span>
-            </div>
+        <div className="p-6">
+          <div className="space-y-4">
+            {/* Success Message */}
+            <AnimatePresence>
+              {transactionStatus === "completed" && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="p-6 rounded-lg bg-gradient-to-br from-brand-primary/5 to-brand-primary/10 border border-brand-primary/20"
+                >
+                  <div className="flex flex-col items-center justify-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-8 w-8 text-brand-primary"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </div>
+                    <div className="text-center space-y-2">
+                      <h4 className="text-lg font-semibold text-text-primary">Transaction Successful!</h4>
+                      <p className="text-sm text-text-muted">
+                        Your airtime will be delivered shortly. You can track the status using the transaction link below.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-border-light">
-              <span className="text-xs text-text-muted">
-                {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
-              </span>
-              <span className="text-sm font-medium text-text-primary">
-                {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
-              </span>
-            </div>
+            {/* Transaction Details */}
+            {transactionStatus !== "completed" && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                  <span className="text-xs text-text-muted">Service</span>
+                  <span className="text-sm font-medium text-text-primary capitalize">{selectedService}</span>
+                </div>
 
-            {(selectedService === "airtime" || selectedService === "data") && carrier && (
-              <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-border-light">
-                <span className="text-xs text-text-muted">Network</span>
-                <span className="text-sm font-medium text-text-primary">{carrier.name || "Unknown"}</span>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                  <span className="text-xs text-text-muted">
+                    {selectedService === "electricity" ? "Meter Number" : "Phone Number"}
+                  </span>
+                  <span className="text-sm font-medium text-text-primary">
+                    {selectedService === "electricity" ? watch("meterNumber") : watch("phoneNumber")}
+                  </span>
+                </div>
+
+                {(selectedService === "airtime" || selectedService === "data") && carrier && (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                    <span className="text-xs text-text-muted">Network</span>
+                    <span className="text-sm font-medium text-text-primary">{carrier.name || "Unknown"}</span>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                  <span className="text-xs text-text-muted">Amount</span>
+                  <span className="text-sm font-medium text-text-primary">{watch("amount")} Credits</span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                  <span className="text-xs text-text-muted">Pay Amount</span>
+                  <span className="text-sm font-medium text-text-primary">
+                    {isConverting ? (
+                      <span className="flex items-center gap-1.5">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
+                        Calculating...
+                      </span>
+                    ) : (
+                      <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
+                    )}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
+                  <span className="text-xs text-text-muted">Payment Token</span>
+                  <span className="text-sm font-medium text-text-primary">
+                    {selectedTokenDetails ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-white border border-border-light flex items-center justify-center overflow-hidden">
+                          <Image
+                            src={selectedTokenDetails.image || "/placeholder.svg"}
+                            alt={selectedTokenDetails.name}
+                            width={16}
+                            height={16}
+                            className="w-4 h-4 object-contain"
+                          />
+                        </div>
+                        {selectedTokenDetails.symbol}
+                      </div>
+                    ) : (
+                      "None selected"
+                    )}
+                  </span>
+                </div>
               </div>
             )}
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-border-light">
-              <span className="text-xs text-text-muted">Amount</span>
-              <span className="text-sm font-medium text-text-primary">{watch("amount")} Credit Units</span>
-            </div>
-
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-border-light">
-              <span className="text-xs text-text-muted">Pay Amount</span>
-              <span className="text-sm font-medium text-text-primary">
-                {isConverting ? (
-                  <span className="flex items-center gap-1.5">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
-                    Calculating...
+            {/* Transaction Status */}
+            {transactionStatus && transactionStatus !== "completed" && (
+              <div className="mt-4 p-3 rounded-lg bg-background-light border border-border-light">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-text-muted">Status</span>
+                  <span className="text-sm font-medium text-text-primary flex items-center gap-2">
+                    {transactionStatus === "initializing" && (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
+                        Initializing...
+                      </>
+                    )}
+                    {transactionStatus === "approving" && (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
+                        Waiting for approval...
+                      </>
+                    )}
+                    {transactionStatus === "waiting_approval" && (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
+                        Confirming approval...
+                      </>
+                    )}
+                    {transactionStatus === "purchasing" && (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
+                        Processing purchase...
+                      </>
+                    )}
+                    {transactionStatus === "error" && (
+                      <>
+                        <AlertCircle className="w-4 h-4 text-status-error" />
+                        Transaction failed
+                      </>
+                    )}
                   </span>
-                ) : (
-                  <>{displayAmount} {selectedTokenDetails?.symbol || ""}</>
-                )}
-              </span>
-            </div>
+                </div>
+              </div>
+            )}
 
-            <div className="flex items-center justify-between p-3 rounded-lg bg-white border border-border-light">
-              <span className="text-xs text-text-muted">Payment Token</span>
-              <span className="text-sm font-medium text-text-primary">
-                {selectedTokenDetails ? (
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg bg-white border border-border-light flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={selectedTokenDetails.image || "/placeholder.svg"}
-                        alt={selectedTokenDetails.name}
-                        width={16}
-                        height={16}
-                        className="w-4 h-4 object-contain"
-                      />
-                    </div>
-                    {selectedTokenDetails.symbol}
-                  </div>
-                ) : (
-                  "None selected"
-                )}
-              </span>
-            </div>
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="mt-4 p-3 rounded-lg bg-status-error/10 border border-status-error/20">
+                <p className="text-xs text-status-error flex items-center gap-2">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  {errorMessage}
+                </p>
+              </div>
+            )}
           </div>
-
-          {/* Error Message */}
-          {errorMessage && (
-            <div className="mt-4 p-3 rounded-lg bg-status-error/5 border border-status-error/10">
-              <p className="text-xs text-status-error flex items-center gap-2">
-                <AlertCircle className="w-3.5 h-3.5" />
-                {errorMessage}
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Actions */}
-        <div className="p-4 border-t border-border-light">
-          <ChainPayButton
-            type="button"
-            onClick={(e) => handleBuyAirtime(e)}
-            disabled={isPending || isConfirmDisabled}
-            isLoading={isPending}
-            fullWidth
-            variant="primary"
-            size="large"
-          >
-            {isPending ? "Processing..." : "Confirm"}
-          </ChainPayButton>
+        <div className="p-6 border-t border-border-light">
+          {transactionStatus === "completed" ? (
+            <div className="space-y-4">
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => window.open(`${blockExplorerUrl}/tx/${data}`, '_blank')}
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  View Transaction on Explorer
+                </button>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${blockExplorerUrl}/tx/${data}`);
+                    setErrorMessage("Transaction link copied to clipboard!");
+                    setTimeout(() => setErrorMessage(null), 3000);
+                  }}
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                  Copy Transaction Link
+                </button>
+              </div>
+              <ChainPayButton
+                type="button"
+                onClick={onClose}
+                fullWidth
+                variant="secondary"
+                size="large"
+              >
+                Close
+              </ChainPayButton>
+            </div>
+          ) : (
+            <ChainPayButton
+              type="button"
+              onClick={(e) => handleBuyAirtime(e)}
+              disabled={isPending || isConfirmDisabled || transactionStatus === "approving" || transactionStatus === "waiting_approval"}
+              isLoading={isPending || transactionStatus === "approving" || transactionStatus === "waiting_approval"}
+              fullWidth
+              variant="primary"
+              size="large"
+            >
+              {isPending || transactionStatus === "approving" || transactionStatus === "waiting_approval"
+                ? "Processing..."
+                : transactionStatus === "error"
+                ? "Try Again"
+                : "Confirm"}
+            </ChainPayButton>
+          )}
         </div>
       </motion.div>
     </div>
@@ -403,4 +524,3 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 };
 
 export default PaymentConfirmation;
-

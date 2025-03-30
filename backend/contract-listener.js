@@ -18,7 +18,7 @@ const contractArtifact = JSON.parse(
 const CONTRACT_ABI = contractArtifact.abi;
 
 // Contract address (replace with your deployed contract address on Base Sepolia    )
-const CONTRACT_ADDRESS = "0x2E88a1AD457AD36C4738E487c941413bEA9a3aCd";
+const CONTRACT_ADDRESS = "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066";
 
 // Base Goerli RPC URL using Alchemy
 const RPC_URL =
