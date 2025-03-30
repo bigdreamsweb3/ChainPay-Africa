@@ -30,4 +30,24 @@ export const appConfig = {
   availableNetworks: ["MTN", "Airtel", "Glo", "9Mobile"],
 };
 
+export const CONTRACT_ADDRESSES = {
+  AIRTIME: process.env.NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS || "0x147C0BE455151f7A610733413da07F04A3aD0fd4",
+  VENDOR: process.env.NEXT_PUBLIC_VENDOR_CONTRACT_ADDRESS || "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066",
+};
+
+export const RPC_URLS = {
+  BASE_SEPOLIA: process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL || "https://base-sepolia.g.alchemy.com/v2/yVdus-sqxJkzkimp3MZ2B29ViIL7Y-FL",
+};
+
+export const NETWORK_TO_OPERATOR = {
+  0: "535", // MTN
+  1: "536", // Airtel
+  2: "537", // Glo
+  3: "538", // Etisalat
+} as const;
+
+export const BLOCK_EXPLORER_URLS = {
+  BASE_SEPOLIA: "https://sepolia.basescan.org",
+};
+
 // 

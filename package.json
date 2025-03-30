@@ -19,7 +19,8 @@
         "compile-evm-contracts": "npx hardhat compile",
         "deploy-evm-contracts": "npx hardhat run evm-contracts/scripts/deploy.js --network baseSepolia",
         "flatten-evm-contract": "npx hardhat flatten ./evm-contracts/contracts/chainpay_airtime.sol > ./evm-contracts/contracts/chainpay_airtime_Flattened.sol",
-        "start-contract-listener": "node backend/contract-listener.js"
+        "start-contract-listener": "node backend/contract-listener.js",
+        "setup-env": "cp .env.example .env"
     },
     "dependencies": {
         "@ethersproject/providers": "^5.7.2",
