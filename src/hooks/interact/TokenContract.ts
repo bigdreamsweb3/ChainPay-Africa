@@ -7,7 +7,6 @@ import {
   usePublicClient,
 } from "wagmi";
 import contractArtifact from "../../../evm-contracts/artifacts/evm-contracts/contracts/chainpay_airtime.sol/ChainPay_Airtime.json";
-import { isAddress, getAddress } from "viem";
 
 // ERC20 Standard token ABI
 const defaultTokenABI = [
@@ -42,37 +41,13 @@ const defaultTokenABI = [
 
 const abi = contractArtifact.abi;
 
-// Update the contract address exports to be more build-friendly
-export const AIRTIME_CONTRACT_ADDRESS = validateAndFormatAddress(
-  process.env.NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS
-);
-export const DATA_CONTRACT_ADDRESS = validateAndFormatAddress(
-  process.env.NEXT_PUBLIC_DATA_CONTRACT_ADDRESS
-);
-export const USDC_TOKEN_ADDRESS = validateAndFormatAddress(
-  process.env.NEXT_PUBLIC_USDC_TOKEN_ADDRESS
-);
-export const USDT_TOKEN_ADDRESS = validateAndFormatAddress(
-  process.env.NEXT_PUBLIC_USDT_TOKEN_ADDRESS
-);
-
-// Update the validation function to be more lenient during build time
-function validateAndFormatAddress(address: string | undefined): `0x${string}` {
-  if (!address) {
-    // Return a default address during build time
-    return "0x0000000000000000000000000000000000000000";
-  }
-  try {
-    if (!isAddress(address)) {
-      console.warn(`Invalid contract address: ${address}`);
-      return "0x0000000000000000000000000000000000000000";
-    }
-    return getAddress(address);
-  } catch (error) {
-    console.warn(`Error formatting address: ${address}`, error);
-    return "0x0000000000000000000000000000000000000000";
-  }
-}
+// Contract address exports
+export const AIRTIME_CONTRACT_ADDRESS = process.env
+  .NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS as `0x${string}`;
+export const USDC_TOKEN_ADDRESS = process.env
+  .NEXT_PUBLIC_USDC_TOKEN_ADDRESS as `0x${string}`;
+export const USDT_TOKEN_ADDRESS = process.env
+  .NEXT_PUBLIC_USDT_TOKEN_ADDRESS as `0x${string}`;
 
 // Type definitions
 type Network = 0 | 1 | 2 | 3; // MTN=0, Airtel=1, Glo=2, Etisalat=3
@@ -147,7 +122,7 @@ export function useBuyAirtime() {
     error: writeError,
     data,
   } = useWriteContract();
-  const publicClient = usePublicClient(); // Add public client for waiting on transactions
+  const publicClient = usePublicClient();
 
   const buyAirtime = async (
     phoneNumber: string,
@@ -161,20 +136,14 @@ export function useBuyAirtime() {
       throw new Error("Wallet or public client not connected");
     }
 
-    // Validate addresses
-    const validatedTokenAddress = validateAndFormatAddress(tokenAddress);
-    const validatedContractAddress = validateAndFormatAddress(
-      AIRTIME_CONTRACT_ADDRESS
-    );
-
     try {
       // Request approval first
       onStatusUpdate?.("approving");
       const approveTxHash = await writeContractAsync({
         abi: defaultTokenABI,
-        address: validatedTokenAddress,
+        address: tokenAddress,
         functionName: "approve",
-        args: [validatedContractAddress, BigInt(amount)],
+        args: [AIRTIME_CONTRACT_ADDRESS, BigInt(amount)],
       });
 
       // Wait for approval transaction to be confirmed
@@ -191,9 +160,9 @@ export function useBuyAirtime() {
       onStatusUpdate?.("purchasing");
       const purchaseTxHash = await writeContractAsync({
         abi,
-        address: validatedContractAddress,
+        address: AIRTIME_CONTRACT_ADDRESS,
         functionName: "buyAirtime",
-        args: [phoneNumber, BigInt(amount), network, validatedTokenAddress],
+        args: [phoneNumber, BigInt(amount), network, tokenAddress],
       });
 
       // Wait for purchase transaction to be confirmed
