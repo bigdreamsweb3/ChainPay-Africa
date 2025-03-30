@@ -86,13 +86,13 @@ export function useBuyAirtime() {
     try {
       // Request approval first
       onStatusUpdate?.("approving");
-      const approveTx = await writeContract({
-        abi: defaultTokenABI,
-        address: tokenAddress,
-        functionName: "approve",
-        args: [CONTRACT_ADDRESS, BigInt(amount)],
-        account: walletClient.account,
-      });
+      // const approveTx = await writeContract({
+      //   abi: defaultTokenABI,
+      //   address: tokenAddress,
+      //   functionName: "approve",
+      //   args: [CONTRACT_ADDRESS, BigInt(amount)],
+      //   account: walletClient.account,
+      // });
 
       // Wait for approval transaction to be mined
       onStatusUpdate?.("waiting_approval");
