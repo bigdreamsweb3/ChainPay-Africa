@@ -19,7 +19,7 @@ const theme = {
       main: '#FFFFFF',
       card: '#FFFFFF',
       dark: '#0A0F1E',
-      light: '#F5F9FF',
+      light: '#F5F7FA',
       overlay: 'rgba(10, 15, 30, 0.7)',
     },
     text: {

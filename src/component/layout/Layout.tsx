@@ -17,24 +17,38 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <>
-      <div className="min-h-screen flex flex-col relative bg-background-light overflow-x-hidden w-full scroll-smooth">
+      <div className="min-h-screen flex flex-col relative bg-gray-50 overflow-x-hidden w-full scroll-smooth">
         <WagmiProvider config={wagmiConfig}>
           <QueryClientProvider client={queryClient}>
+            {/* Header (assumed to be fixed as per the UI) */}
             <Header />
 
-            <NetworkSwitchNotification className="container mx-auto px-3 sm:px-4" />
+            {/* Network Switch Notification */}
+            <NetworkSwitchNotification className="container mx-auto px-4 sm:px-6 lg:px-8 mt-20 sm:mt-24" />
 
-            <main className="flex-grow relative z-0 overflow-visible py-4 sm:py-6 px-2 mt-16">
-              <div className="container mx-auto w-full max-w-md px-3 sm:px-4">
-                {children}
+            {/* Main Content */}
+            <main className="flex-grow relative z-0 overflow-visible py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-8 mt-16 sm:mt-20">
+              <div className="mx-auto w-full max-w-lg sm:max-w-md lg:max-w-md px-0 sm:px-0">
+                {/* Tagline for branding and trust */}
+                <div className="text-center mb-6 sm:mb-8">
+                  <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
+                    Pay Bills with Blockchain
+                  </h1>
+                  <p className="text-sm sm:text-base text-gray-600 mt-2">
+                    Fast, secure, and reliable payments across Africa.
+                  </p>
+                </div>
+                {/* Main content (e.g., bill payment form) */}
+                <div className="">{children}</div>
               </div>
             </main>
 
-            <footer className="w-full py-4 sm:py-6 mt-auto border-t border-border-light relative z-0 bg-white/50 backdrop-blur-sm">
-              <div className="container mx-auto px-3 sm:px-4">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
-                  <div className="text-text-muted text-xs flex items-center">
-                    <Blocks size={12} className="mr-1 text-brand-primary" />
+            {/* Footer */}
+            <footer className="w-full py-4 sm:py-6 lg:py-8 mt-auto border-t border-gray-200 relative z-0 bg-white sticky bottom-0">
+              <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
+                  <div className="text-gray-500 text-xs sm:text-sm flex items-center">
+                    <Blocks size={14} className="mr-2 text-blue-500" />
                     © {new Date().getFullYear()} ChainPay Africa
                   </div>
                   <div className="flex items-center space-x-4 sm:space-x-6">
@@ -48,9 +62,9 @@ export function Layout({ children }: LayoutProps) {
                         <a
                           key={item.name}
                           href="#"
-                          className="text-text-muted hover:text-brand-primary transition-colors text-xs flex items-center"
+                          className="text-gray-500 hover:text-blue-500 transition-colors text-xs sm:text-sm flex items-center"
                         >
-                          <Icon size={12} className="mr-1" />
+                          <Icon size={14} className="mr-1.5" />
                           {item.name}
                         </a>
                       );

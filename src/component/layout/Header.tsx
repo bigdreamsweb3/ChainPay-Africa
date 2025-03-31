@@ -11,7 +11,7 @@ export function Header() {
   const isHome = pathname === "/";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-white/80 backdrop-blur-lg border-b border-border-light transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-30 bborder-t border-border-light bg-white transition-all duration-300">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="h-16 flex items-center justify-between">
           {/* Left Section: Logo */}

@@ -151,91 +151,75 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
   const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="flex flex-col gap-2 bg-background-light rounded-lg p-3 border border-border-light">
+    <div className="w-full">
+      <div className="flex flex-col gap-3 bg-background-light  rounded-lg p-4">
         <div className="flex flex-col space-y-3">
-          <div className="flex flex-row justify-between items-center gap-3">
+          {/* Input Row */}
+          <div className="flex items-center justify-between gap-3">
             {/* Phone Number Input */}
-            <div className="relative w-2/3">
+            <div className="flex-1 min-w-0">
               <input
                 type="tel"
                 placeholder="Enter phone number"
                 {...register("phoneNumber", {
                   validate: validatePhoneNumber,
                 })}
-                className="w-full text-lg font-medium bg-transparent outline-none text-text-primary placeholder:text-text-muted pr-10"
+                className="w-full text-base font-medium bg-transparent outline-none text-text-primary placeholder:text-text-muted"
               />
-
-              {phoneNumber && (
-                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                  {isPhoneValid ? (
-                    <div className="flex items-center justify-center p-0.5 rounded-full w-4 h-4 border border-status-success/20">
-                      <Check size={12} className="text-status-success" />
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center p-0.5 rounded-full w-4 h-4 border border-status-error/20">
-                      <AlertCircle size={12} className="text-status-error" />
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
 
-            {/* Network Selection Button */}
-            <div className="relative" ref={dropdownRef}>
+            {/* Network Selection */}
+            <div className="relative shrink-0" ref={dropdownRef}>
               <button
-                id="networkSelect"
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                aria-label="Select network"
-                aria-expanded={isDropdownOpen}
-                className="bg-white rounded-lg py-1.5 px-3 flex items-center gap-2 w-fit cursor-pointer border border-border-light hover:border-border-medium transition-colors duration-200"
+                className="bg-white rounded-lg py-2 px-3 flex items-center gap-2 min-w-[100px] border border-border-light hover:bg-gray-50 transition-colors duration-200"
               >
-                <div className="inline-flex items-center justify-center overflow-hidden w-3.5 h-3.5 min-w-3.5">
+                <div className="w-4 h-4 flex items-center justify-center">
                   <Image
                     src={selectedNetwork.iconUrl || "/placeholder.svg"}
                     alt={selectedNetwork.name}
-                    width={14}
-                    height={14}
-                    className="w-full h-full"
+                    width={16}
+                    height={16}
+                    className="w-full h-full object-contain"
                   />
                 </div>
-                <span className="font-medium text-sm text-text-primary">
+                <span className="font-medium text-sm text-text-primary truncate">
                   {selectedNetwork.name?.replace(/\s?Nigeria\s?/g, "")}
                 </span>
-                <ChevronDown className="w-4 h-4 text-brand-primary" />
+                <ChevronDown className="w-4 h-4 text-brand-primary shrink-0" />
               </button>
 
               {/* Network Dropdown */}
               {isDropdownOpen && (
-                <div className="absolute z-50 right-0 mt-1 w-44 bg-white rounded-lg border border-border-light overflow-hidden shadow-sm">
-                  <div className="p-1.5 space-y-0.5">
+                <div className="absolute z-50 right-0 mt-1 w-44 bg-white rounded-lg border border-border-light shadow-sm">
+                  <div className="p-1">
                     {networks.map((network) => (
-                      <div
+                      <button
                         key={network.id}
                         onClick={() => handleNetworkSelect(network)}
-                        className={`flex items-center gap-2 p-2 rounded-md cursor-pointer transition-colors duration-200 ${
+                        className={`w-full flex items-center gap-2 p-2 rounded-md transition-colors ${
                           selectedNetwork.id === network.id
-                            ? "bg-brand-primary/10 border border-brand-primary"
-                            : "hover:bg-background-light border border-transparent"
+                            ? "bg-brand-primary/5 text-brand-primary"
+                            : "hover:bg-gray-50 text-text-primary"
                         }`}
                       >
-                        <div className="inline-flex items-center justify-center overflow-hidden w-3.5 h-3.5 min-w-3.5">
+                        <div className="w-4 h-4 flex items-center justify-center">
                           <Image
                             src={network.iconUrl || "/placeholder.svg"}
                             alt={network.name}
-                            width={14}
-                            height={14}
-                            className="w-full h-full"
+                            width={16}
+                            height={16}
+                            className="w-full h-full object-contain"
                           />
                         </div>
-                        <span className="text-xs font-medium text-text-primary truncate">{network.name}</span>
+                        <span className="text-sm font-medium truncate flex-1">
+                          {network.name}
+                        </span>
                         {selectedNetwork.id === network.id && (
-                          <div className="ml-auto w-4 h-4 rounded-full bg-brand-primary flex items-center justify-center">
-                            <Check size={10} className="text-white" />
-                          </div>
+                          <Check className="w-4 h-4 text-brand-primary shrink-0" />
                         )}
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -243,25 +227,23 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
             </div>
           </div>
 
-          <div className="flex flex-row justify-between items-center gap-4">
-            <div className="flex items-center text-xs font-medium w-2/3">
-              <Phone className="text-brand-primary w-3.5 h-3.5 pointer-events-none" />
-              <span className="text-text-primary ml-1.5">Phone Number</span>
+          {/* Labels Row */}
+          <div className="flex items-center justify-between text-xs font-medium">
+            <div className="flex items-center text-text-primary">
+              <Phone className="w-3.5 h-3.5 text-brand-primary" />
+              <span className="ml-1.5 whitespace-nowrap">Phone Number</span>
             </div>
-
-            <div className="flex items-center justify-end text-xs font-medium w-1/3">
-              <span className="text-text-primary ml-auto">Network Provider</span>
+            <div className="text-text-primary whitespace-nowrap">
+              Network Provider
             </div>
           </div>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="px-2.5 py-1.5 mt-1 rounded-md bg-status-error/5 border border-status-error/10">
-            <p className="text-xs text-status-error flex items-center gap-1.5 font-medium">
-              <AlertCircle className="w-3.5 h-3.5" />
-              {error}
-            </p>
+          <div className="px-3 py-2 rounded-md bg-status-error/5 text-status-error text-xs flex items-center gap-1.5">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span className="font-medium">{error}</span>
           </div>
         )}
       </div>

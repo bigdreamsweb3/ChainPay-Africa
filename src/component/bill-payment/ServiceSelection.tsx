@@ -3,22 +3,50 @@
 import type React from "react";
 import { useEffect, useRef } from "react";
 import { Controller, type Control } from "react-hook-form";
-import { Phone, Wifi, Zap, Blocks } from "lucide-react";
+import { Phone, Tv, Wifi, Zap } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import { appConfig } from "../../app-config";
 
-const services = [
-  { id: "airtime", name: "Airtime", icon: Phone },
-  { id: "data", name: "Data", icon: Wifi },
-  { id: "electricity", name: "Electricity", icon: Zap },
+interface Service {
+  id: "airtime" | "data" | "electricity" | "tv";
+  name: string;
+  icon: LucideIcon;
+  badge?: string;
+}
+
+const services: Service[] = [
+  {
+    id: "airtime",
+    name: "Airtime",
+    icon: Phone,
+    // badge: "Up to 6%"
+  },
+  {
+    id: "data",
+    name: "Data",
+    icon: Wifi,
+    // badge: "Up to 6%"
+  },
+  {
+    id: "electricity",
+    name: "Electricity",
+    icon: Zap,
+  },
+  {
+    id: "tv",
+    name: "TV",
+    icon: Tv,
+  },
 ] as const;
 
 interface BillPaymentFormData {
-  serviceType: "airtime" | "data" | "electricity";
+  serviceType: "airtime" | "data" | "electricity" | "tv";
   amount: string;
   paymentToken: string;
   phoneNumber?: string;
   meterNumber?: string;
+  tvNumber?: string;
 }
 
 interface ServiceSelectionProps {
@@ -38,9 +66,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
 
   useEffect(() => {
     const defaultService = services[0];
-    const isAvailable = appConfig.availableServices.includes(
-      defaultService.name
-    );
+    const isAvailable = appConfig.availableServices.includes(defaultService.name);
 
     if (isAvailable) {
       setStep(1);
@@ -52,94 +78,74 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   }, [setStep, setUnavailableServiceMessage]);
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-3">
-      <div className="flex items-center gap-2 mb-1">
-        <div className="flex items-center gap-1.5 text-chainpay-blue-dark">
-          <Blocks className="w-3.5 h-3.5 text-chainpay-gold" />
-          <span className="text-sm font-semibold">Select Service</span>
-        </div>
-      </div>
+    <div className="w-full bg-background-light rounded-lg p-4">
+      <div className="grid grid-cols-4 gap-3">
+        {services.map((service) => {
+          const isAvailable = appConfig.availableServices.includes(service.name);
+          const Icon = service.icon;
 
-      {/* Service Selection Card */}
-      <div className="w-full bg-white backdrop-blur-sm border border-border-light space-y-5 p-3 rounded-xl shadow-sm">
-        <div className="grid grid-cols-3 gap-2">
-          {services.map((service) => {
-            const isAvailable = appConfig.availableServices.includes(
-              service.name
-            );
-            const Icon = service.icon;
+          return (
+            <Controller
+              key={service.id}
+              name="serviceType"
+              control={control}
+              render={({ field }) => (
+                <button
+                  type="button"
+                  onClick={() => {
+                    prevServiceRef.current = field.value;
+                    field.onChange(service.id);
 
-            return (
-              <Controller
-                key={service.id}
-                name="serviceType"
-                control={control}
-                render={({ field }) => (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      prevServiceRef.current = field.value;
-                      field.onChange(service.id);
+                    if (isAvailable) {
+                      setStep(1);
+                      setUnavailableServiceMessage(null);
 
-                      if (isAvailable) {
-                        setStep(1);
-                        setUnavailableServiceMessage(null);
-
-                        if (
-                          preserveCalculation &&
-                          prevServiceRef.current === service.id
-                        ) {
-                          console.log(
-                            `Returning to ${service.name} - preserving calculations`
-                          );
-                        }
-                      } else {
-                        setStep(0);
-                        setUnavailableServiceMessage(service.name);
+                      if (
+                        preserveCalculation &&
+                        prevServiceRef.current === service.id
+                      ) {
+                        console.log(
+                          `Returning to ${service.name} - preserving calculations`
+                        );
                       }
-                    }}
-                    className={`relative flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-200 ease-in-out max-w-[100px] transform border ${
-                      field.value === service.id
-                        ? "bg-gradient-to-br from-chainpay-blue to-chainpay-blue-dark text-white scale-105 shadow-md"
-                        : "bg-white text-chainpay-blue-dark hover:bg-chainpay-blue-light/5 border-chainpay-blue-light/20 hover:border-chainpay-blue-light/30"
-                    }`}
-                    aria-label={`Select ${service.name}`}
-                  >
-                    <Icon
-                      size={20}
-                      className={`mb-1 transition-colors duration-200 ${
-                        field.value === service.id
-                          ? "text-white"
-                          : "text-brand-primary"
-                      }`}
-                    />
-                    <span
-                      className={`text-xs font-medium transition-colors duration-200 ${
-                        field.value === service.id
-                          ? "text-white"
-                          : "text-text-primary"
-                      }`}
-                    >
-                      {service.name}
+                    } else {
+                      setStep(0);
+                      setUnavailableServiceMessage(service.name);
+                    }
+                  }}
+                  className="relative flex flex-col items-center justify-center p-3 rounded-xl transition-all duration-200 ease-in-out"
+                >
+                  {service.badge && (
+                    <span className="absolute -top-1 right-0 bg-red-400/90 text-white text-[10px] px-1.5 py-0.5 rounded-full font-medium">
+                      {service.badge}
                     </span>
-
-                    {field.value === service.id && (
-                      <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-0.5 bg-brand-accent rounded-full shadow-sm" />
-                    )}
-                  </button>
-                )}
-              />
-            );
-          })}
-        </div>
+                  )}
+                  <div
+                    className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${
+                      field.value === service.id
+                        ? "bg-brand-primary text-white"
+                        : "bg-white text-brand-primary shadow-sm"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span
+                    className={`text-xs font-medium ${
+                      field.value === service.id
+                        ? "text-brand-primary"
+                        : "text-text-primary"
+                    }`}
+                  >
+                    {service.name}
+                  </span>
+                </button>
+              )}
+            />
+          );
+        })}
       </div>
     </div>
   );
 };
-
-// Mock appConfig for the component to work
-// const appConfig = {
-//   availableServices: ["Airtime", "Data", "Electricity"],
-// };
 
 export default ServiceSelection;

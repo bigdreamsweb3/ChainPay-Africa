@@ -14,7 +14,6 @@ import UnavailableServiceMessage from "../UnavailableServiceMessage";
 import PaymentTokenSelector from "./PaymentTokenSelector";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { appConfig } from "@/app-config";
-
 import { usePayment, useSetPayment } from "@/hooks/states";
 import { PaymentToken as TokenSelectorToken } from "@/constants/token";
 import { ChainPayButton } from "../ui";
@@ -41,17 +40,15 @@ const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
 };
 
 const billPaymentSchema = z.object({
-  serviceType: z.enum(["airtime", "data", "electricity"]),
+  serviceType: z.enum(["airtime", "data", "electricity", "tv"]),
   phoneNumber: z.string().optional(),
   meterNumber: z.string().optional(),
   amount: z
     .string()
     .min(1, "Amount is required")
     .refine(
-      (val) => !isNaN(Number.parseFloat(val)) && Number.parseFloat(val) >= 50, // Ensure amount is at least 50
-      {
-        message: "Minimum amount is 50 credit units",
-      }
+      (val) => !isNaN(Number.parseFloat(val)) && Number.parseFloat(val) >= 50,
+      { message: "Minimum amount is 50 credit units" }
     ),
   paymentToken: z.string(),
 });
@@ -117,7 +114,6 @@ const BillPaymentForm: React.FC = () => {
     (token) => token.id === selectedTokenId
   ) as PaymentToken | undefined;
 
-  // Ensure selectedTokenData is of type TokenData
   const tokenData: TokenData | undefined = selectedTokenDetails
     ? {
         id: selectedTokenDetails.id,
@@ -140,7 +136,6 @@ const BillPaymentForm: React.FC = () => {
     }
   }, [setValue]);
 
-  // Track service changes to optimize calculations but simplify to just update the ref
   useEffect(() => {
     prevServiceRef.current = selectedService;
   }, [selectedService]);
@@ -148,7 +143,6 @@ const BillPaymentForm: React.FC = () => {
   const payment = usePayment();
   const setPayment = useSetPayment();
 
-  // Sync form data with payment state
   useEffect(() => {
     setPayment({
       amount: amount || "",
@@ -182,7 +176,6 @@ const BillPaymentForm: React.FC = () => {
   );
 
   const isPaymentValid = useCallback(() => {
-    // For airtime/data services
     if (selectedService === "airtime" || selectedService === "data") {
       return (
         amount &&
@@ -191,9 +184,7 @@ const BillPaymentForm: React.FC = () => {
         phoneNumber &&
         carrier.id !== null
       );
-    }
-    // For electricity service
-    else if (selectedService === "electricity") {
+    } else if (selectedService === "electricity") {
       return (
         amount &&
         parseFloat(amount) >= 50 &&
@@ -215,9 +206,7 @@ const BillPaymentForm: React.FC = () => {
   const handleSubmitForm = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Check if the form is valid first
     if (isPaymentValid()) {
-      // Log that we're showing the payment confirmation
       console.log("Form is valid, showing payment confirmation");
       setShowConfirmation(true);
       return;
@@ -226,7 +215,6 @@ const BillPaymentForm: React.FC = () => {
     console.log("Form is not valid, cannot proceed to payment");
   };
 
-  // Debug: log when the form validation state changes
   useEffect(() => {
     const formValid = isPaymentValid();
     console.log("Form valid:", formValid);
@@ -329,10 +317,7 @@ const BillPaymentForm: React.FC = () => {
               ) : (
                 <div className="w-full">
                   <div className="max-w-md mx-auto">
-                    <form
-                      onSubmit={handleSubmitForm}
-                      className="w-full"
-                    >
+                    <form onSubmit={handleSubmitForm} className="w-full">
                       {step === 1 && (
                         <div className="space-y-4">
                           <div className="bg-white backdrop-blur-sm border border-border-light p-3 rounded-xl shadow-sm">
@@ -364,16 +349,12 @@ const BillPaymentForm: React.FC = () => {
                                 setSelectedToken={(tokenId: string) => {
                                   setSelectedTokenId(tokenId);
                                   setValue("paymentToken", tokenId);
-                                  setPayment({
-                                    ...payment,
-                                    tokenId: tokenId,
-                                  });
+                                  setPayment({ ...payment, tokenId });
                                 }}
                               />
                             </div>
                           </div>
 
-                          {/* Conversion Result */}
                           {tokenData && amount && amount !== "0" && (
                             <ConversionResultCard
                               selectedTokenData={tokenData}
@@ -385,9 +366,7 @@ const BillPaymentForm: React.FC = () => {
                             />
                           )}
 
-                          {/* Payment Button */}
                           <div className="pt-2 relative">
-                            {/* Subtle gold glow effect */}
                             <div className="absolute inset-0 bg-chainpay-gold/20 blur-md opacity-30 rounded-lg"></div>
                             <ChainPayButton
                               type="submit"
@@ -412,7 +391,7 @@ const BillPaymentForm: React.FC = () => {
                   {submitStatus !== "success" && isAvailable && (
                     <>
                       {step > 0 && step < steps.length - 2 && (
-                        <div className="flex flex-col gap-2 pt-2 border-t border-border-light mt-3">
+                        <div className="">
                           {step > 1 && (
                             <button
                               type="button"
@@ -438,7 +417,6 @@ const BillPaymentForm: React.FC = () => {
                     </>
                   )}
 
-                  {/* Payment Confirmation Modal */}
                   {showConfirmation && (
                     <PaymentConfirmation
                       selectedService={selectedService}
