@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Theme color for browser toolbar/status bar */}
-        <meta name="theme-color" content="#FFB800" /> 
+        <meta name="theme-color" content="#E6F0FF" /> 
         {/* For mobile browsers (e.g., Chrome on Android) */}
         <meta name="mobile-web-app-capable" content="yes" />
         {/* For iOS Safari status bar */}
