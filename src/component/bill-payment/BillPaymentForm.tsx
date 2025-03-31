@@ -320,7 +320,7 @@ const BillPaymentForm: React.FC = () => {
                     <form onSubmit={handleSubmitForm} className="w-full">
                       {step === 1 && (
                         <div className="space-y-4">
-                          <div className="bg-white backdrop-blur-sm border border-border-light p-4 rounded-xl shadow-sm">
+                          <div className="bg-white backdrop-blur-sm border border-border-light/10 p-4 rounded-xl shadow-sm">
                             {selectedService === "electricity" ? (
                               <MeterNumberInput
                                 error={errors.meterNumber?.message}
