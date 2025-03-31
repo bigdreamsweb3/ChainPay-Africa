@@ -372,14 +372,14 @@ const BillPaymentForm: React.FC = () => {
                               type="submit"
                               data-action="submit-payment"
                               disabled={!isPaymentValid() || isConverting}
-                              variant="secondary"
+                              variant="primary"
                               size="large"
                               fullWidth
-                              className="bg-chainpay-gold border border-chainpay-gold/20 hover:bg-chainpay-gold/90 hover:shadow-lg hover:shadow-chainpay-gold/30 transition-all duration-300"
+                              className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark border border-chainpay-blue-dark/20 hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:ring-4 focus:ring-[#3B82F6]/50 transition-all duration-300"
                             >
-                              <div className="flex items-center justify-center gap-2 text-chainpay-blue-dark">
+                              <div className="flex items-center justify-center gap-2 text-white font-bold">
                                 <CreditCard className="w-4 h-4" />
-                                <span className="font-bold">Pay Now</span>
+                                <span>Pay Now</span>
                               </div>
                             </ChainPayButton>
                           </div>
