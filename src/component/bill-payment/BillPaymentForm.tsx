@@ -372,7 +372,7 @@ const BillPaymentForm: React.FC = () => {
                               type="submit"
                               data-action="submit-payment"
                               disabled={!isPaymentValid() || isConverting}
-                              variant="primary"
+                              variant="secondary"
                               size="large"
                               fullWidth
                               className="bg-chainpay-gold border border-chainpay-gold/20 hover:bg-chainpay-gold/90 hover:shadow-lg hover:shadow-chainpay-gold/30 transition-all duration-300"
