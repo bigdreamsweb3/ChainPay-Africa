@@ -78,7 +78,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   }, [setStep, setUnavailableServiceMessage]);
 
   return (
-    <div className="w-full bg-background-light rounded-lg p-4">
+    <div className="w-full bg-background-light  rounded-lg p-4">
       <div className="grid grid-cols-4 gap-3">
         {services.map((service) => {
           const isAvailable = appConfig.availableServices.includes(service.name);

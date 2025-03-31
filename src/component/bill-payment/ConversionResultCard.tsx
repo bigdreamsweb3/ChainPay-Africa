@@ -33,7 +33,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            className="mt-4 p-4 bg-white backdrop-blur-sm rounded-xl"
+            className="mt-4 p-4 bg-white backdrop-blur-sm rounded-xl shadow-sm"
           >
             {/* Card Header */}
             <div className="flex items-center justify-between mb-2.5">
@@ -48,7 +48,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
             </div>
 
             {/* Main Card */}
-            <div className="rounded-xl bg-background-light border border-border-light overflow-hidden shadow-sm">
+            <div className="rounded-xl bg-background-light border border-border-light overflow-hidden">
               {/* Token Info Section */}
               <div className="p-4 border-b border-border-light">
                 <div className="flex items-center gap-3">
