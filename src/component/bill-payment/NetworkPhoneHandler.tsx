@@ -148,7 +148,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
     return true
   }, [])
 
-  const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true
+  // const isPhoneValid = phoneNumber && validatePhoneNumber(phoneNumber) === true
 
   return (
     <div className="w-full">
