@@ -1,7 +1,7 @@
 {
     "name": "ChainPay Africa",
     "short_name": "ChainPay",
-    "theme_color": "#FFD700",
+    "theme_color": "#FFB800",
     "background_color": "#1E3A8A",
     "display": "standalone",
     "start_url": "/"
