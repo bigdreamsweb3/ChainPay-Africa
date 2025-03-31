@@ -353,6 +353,23 @@ const BillPaymentForm: React.FC = () => {
                                 }}
                               />
                             </div>
+
+                            <div className="mt-4">
+                              <ChainPayButton
+                                type="submit"
+                                data-action="submit-payment"
+                                disabled={!isPaymentValid() || isConverting}
+                                variant="primary"
+                                size="large"
+                                fullWidth
+                                className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark border border-chainpay-blue-dark/20 hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:ring-4 focus:ring-[#3B82F6]/50 transition-all duration-300"
+                              >
+                                <div className="flex items-center justify-center gap-2 text-white font-bold">
+                                  <CreditCard className="w-4 h-4" />
+                                  <span>Pay Now</span>
+                                </div>
+                              </ChainPayButton>
+                            </div>
                           </div>
 
                           {tokenData && amount && amount !== "0" && (
@@ -365,24 +382,6 @@ const BillPaymentForm: React.FC = () => {
                               conversionError={conversionError}
                             />
                           )}
-
-                          <div className="pt-2 relative">
-                            <div className="absolute inset-0 bg-chainpay-gold/20 blur-md opacity-30 rounded-lg"></div>
-                            <ChainPayButton
-                              type="submit"
-                              data-action="submit-payment"
-                              disabled={!isPaymentValid() || isConverting}
-                              variant="primary"
-                              size="large"
-                              fullWidth
-                              className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark border border-chainpay-blue-dark/20 hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:ring-4 focus:ring-[#3B82F6]/50 transition-all duration-300"
-                            >
-                              <div className="flex items-center justify-center gap-2 text-white font-bold">
-                                <CreditCard className="w-4 h-4" />
-                                <span>Pay Now</span>
-                              </div>
-                            </ChainPayButton>
-                          </div>
                         </div>
                       )}
                     </form>
