@@ -32,7 +32,7 @@ export function Layout({ children }: LayoutProps) {
                 {/* Tagline for branding and trust */}
                 <div className="text-center mb-6 sm:mb-8">
                   <h1 className="text-xl sm:text-2xl font-semibold text-gray-800">
-                    Pay Bills with Blockchain
+                    Pay Bills with Crypto
                   </h1>
                   <p className="text-sm sm:text-base text-gray-600 mt-2">
                     Fast, secure, and reliable payments across Africa.
@@ -48,8 +48,8 @@ export function Layout({ children }: LayoutProps) {
               <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 sm:gap-6">
                   <div className="text-gray-500 text-xs sm:text-sm flex items-center">
-                    <Blocks size={14} className="mr-2 text-blue-500" />
-                    © {new Date().getFullYear()} ChainPay Africa
+                    <Blocks size={14} className="mr-2 text-blue-500" />©{" "}
+                    {new Date().getFullYear()} ChainPay Africa
                   </div>
                   <div className="flex items-center space-x-4 sm:space-x-6">
                     {[
