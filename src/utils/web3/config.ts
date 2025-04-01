@@ -1,10 +1,12 @@
 import { http, createConfig } from "wagmi";
+import { mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 
 import { baseSepolia, monadTestnet } from "./chains";
 import { useAccount } from "wagmi";
 
 export const SUPPORTED_CHAIN_IDS = [
+  mainnet,
   baseSepolia,
   monadTestnet,
 ];
@@ -16,7 +18,7 @@ declare module "wagmi" {
 }
 
 export const wagmiConfig = createConfig({
-  chains: [baseSepolia, monadTestnet],
+  chains: [mainnet, baseSepolia, monadTestnet],
   connectors: [
     injected(),
     walletConnect({
@@ -26,6 +28,7 @@ export const wagmiConfig = createConfig({
     safe(),
   ],
   transports: {
+    [mainnet.id]: http(),
     [baseSepolia.id]: http(),
     [monadTestnet.id]: http(),
   },
@@ -53,7 +56,8 @@ export const useAcceptedTokens = (): PaymentToken[] => {
   const acceptedTokens =
     chain.id === baseSepolia.id
       ? baseSepolia.payAcceptedTokens
-      : {};
+      : monadTestnet.payAcceptedTokens;
+      {}
 
   return Object.values(acceptedTokens) as PaymentToken[]; // Cast to PaymentToken[]
 };

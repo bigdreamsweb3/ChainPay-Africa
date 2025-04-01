@@ -76,7 +76,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const handleNetworkSwitch = async (chainId: number) => {
     try {
-      await switchChain({ chainId: chainId as 84532 | 10143 });
+      await switchChain({ chainId: chainId as 1 | 84532 | 10143 });
       // Don't close modal immediately to allow user to see the new tokens
       setTimeout(() => {
         setIsModalOpen(false);
