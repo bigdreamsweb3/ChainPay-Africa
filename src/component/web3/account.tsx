@@ -71,24 +71,30 @@ export function Account() {
         whileTap={{ scale: 0.98 }}
       >
         {isConnected && connector ? (
-          <Image
-            src={walletIconSrc}
-            alt={`${connector.name} icon`}
-            width={20}
-            height={20}
-            className="w-5 h-5 rounded-full object-contain"
-            onError={(e) => (e.currentTarget.src = "/default-wallet-icon.svg")}
-          />
+          <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+            <Image
+              src={walletIconSrc}
+              alt={`${connector.name} icon`}
+              width={20}
+              height={20}
+              className="w-4 h-4 rounded-full object-contain"
+              onError={(e) => (e.currentTarget.src = "/default-wallet-icon.svg")}
+            />
+          </div>
         ) : ensAvatar ? (
-          <Image
-            src={ensAvatar || "/placeholder.svg"}
-            alt="ENS Avatar"
-            width={20}
-            height={20}
-            className="w-5 h-5 rounded-full"
-          />
+          <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+            <Image
+              src={ensAvatar || "/placeholder.svg"}
+              alt="ENS Avatar"
+              width={20}
+              height={20}
+              className="w-4 h-4 rounded-full"
+            />
+          </div>
         ) : (
-          <User className="w-5 h-5 text-white" />
+          <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+            <User className="w-4 h-4 text-white" />
+          </div>
         )}
         <span className="text-white hidden sm:inline">{ensName || shortenedAddress}</span>
         <ChevronDown className={`w-4 h-4 text-white transition-transform ${isOpen ? "rotate-180" : ""}`} />

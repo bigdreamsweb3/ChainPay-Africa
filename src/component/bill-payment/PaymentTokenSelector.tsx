@@ -76,7 +76,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const handleNetworkSwitch = async (chainId: number) => {
     try {
-      await switchChain({ chainId: chainId as 1 | 84532 | 10143 });
+      await switchChain({ chainId: chainId as 84532 | 10143 });
       // Don't close modal immediately to allow user to see the new tokens
       setTimeout(() => {
         setIsModalOpen(false);
@@ -152,6 +152,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                     !isNaN(Number(value)) || "Amount must be a number",
                 })}
                 className="w-full text-base font-medium bg-transparent outline-none text-text-primary dark:text-text-light placeholder:text-text-muted dark:placeholder:text-text-muted/70 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors duration-200"
+                onWheel={(e) => e.currentTarget.blur()}
               />
 
               {creditAmount && (

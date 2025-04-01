@@ -24,7 +24,7 @@ import {
 } from "@/utils/conversionUtils";
 import ConversionResultCard from "./ConversionResultCard";
 import type { TokenData } from "@/types/token";
-import { useAccount} from "wagmi";
+import { useAccount } from "wagmi";
 import { WalletOptions } from "@/component/web3/wallet-options";
 
 // Adapter to convert between PaymentToken interfaces
@@ -248,48 +248,53 @@ const BillPaymentForm: React.FC = () => {
     fetchRate();
   }, []);
 
-  const updateConversionAmount = useCallback(async (amount: string, token: string) => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-
-    if (amount === prevAmountRef.current && token === prevTokenRef.current) {
-      return;
-    }
-
-    setConversionError(null);
-
-    debounceTimerRef.current = setTimeout(async () => {
-      if (selectedTokenDetails && amount && !isNaN(Number(amount))) {
-        try {
-          prevAmountRef.current = amount;
-          prevTokenRef.current = token;
-          lastCalculationTimeRef.current = Date.now();
-
-          setIsConverting(true);
-
-          const formattedAmount = await convertAmount(
-            amount,
-            selectedTokenDetails
-          );
-          setDisplayAmount(formattedAmount);
-          setConvertedAmount(formattedAmount);
-        } catch (error) {
-          console.error("Error converting amount:", error);
-          setConversionError("Network error. Using estimated conversion rate.");
-
-          const formattedAmount = handleConversionError(amount);
-          setDisplayAmount(formattedAmount);
-          setConvertedAmount(formattedAmount);
-        } finally {
-          setIsConverting(false);
-        }
-      } else {
-        setDisplayAmount("0");
-        setConvertedAmount("0");
+  const updateConversionAmount = useCallback(
+    async (amount: string, token: string) => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
       }
-    }, 800);
-  }, [selectedTokenDetails]);
+
+      if (amount === prevAmountRef.current && token === prevTokenRef.current) {
+        return;
+      }
+
+      setConversionError(null);
+
+      debounceTimerRef.current = setTimeout(async () => {
+        if (selectedTokenDetails && amount && !isNaN(Number(amount))) {
+          try {
+            prevAmountRef.current = amount;
+            prevTokenRef.current = token;
+            lastCalculationTimeRef.current = Date.now();
+
+            setIsConverting(true);
+
+            const formattedAmount = await convertAmount(
+              amount,
+              selectedTokenDetails
+            );
+            setDisplayAmount(formattedAmount);
+            setConvertedAmount(formattedAmount);
+          } catch (error) {
+            console.error("Error converting amount:", error);
+            setConversionError(
+              "Network error. Using estimated conversion rate."
+            );
+
+            const formattedAmount = handleConversionError(amount);
+            setDisplayAmount(formattedAmount);
+            setConvertedAmount(formattedAmount);
+          } finally {
+            setIsConverting(false);
+          }
+        } else {
+          setDisplayAmount("0");
+          setConvertedAmount("0");
+        }
+      }, 800);
+    },
+    [selectedTokenDetails]
+  );
 
   useEffect(() => {
     if (amount && amount !== "0") {
@@ -358,6 +363,18 @@ const BillPaymentForm: React.FC = () => {
                               />
                             </div>
 
+                            {tokenData && amount && amount !== "0" && (
+                              <ConversionResultCard
+                                selectedTokenData={tokenData}
+                                creditAmount={amount}
+                                localDisplayAmount={displayAmount}
+                                conversionRate={conversionRate}
+                                isConverting={isConverting}
+                                conversionError={conversionError}
+                                serviceType={selectedService}
+                              />
+                            )}
+
                             <div className="mt-4">
                               {isConnected ? (
                                 <ChainPayButton
@@ -381,17 +398,6 @@ const BillPaymentForm: React.FC = () => {
                               )}
                             </div>
                           </div>
-
-                          {tokenData && amount && amount !== "0" && (
-                            <ConversionResultCard
-                              selectedTokenData={tokenData}
-                              creditAmount={amount}
-                              localDisplayAmount={displayAmount}
-                              conversionRate={conversionRate}
-                              isConverting={isConverting}
-                              conversionError={conversionError}
-                            />
-                          )}
                         </div>
                       )}
                     </form>

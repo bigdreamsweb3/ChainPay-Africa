@@ -112,21 +112,12 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
   }, [phoneNumber])
 
   // Handle manual network selection
-  const handleNetworkSelect = useCallback(
-    (network: {
-      id: string
-      name: string
-      iconUrl: string
-      color: string
-      enum_value: number
-    }) => {
-      setSelectedNetwork(network)
-      onCarrierChange(network)
-      setIsDropdownOpen(false)
-      setIsManualSelection(true)
-    },
-    [onCarrierChange],
-  )
+  const handleNetworkSelect = useCallback((network: { id: string; name: string; iconUrl: string; color: string; enum_value: number }) => {
+    setSelectedNetwork(network);
+    onCarrierChange(network);
+    setIsDropdownOpen(false);
+    setIsManualSelection(true);
+  }, [onCarrierChange]);
 
   // Validate phone number format
   const validatePhoneNumber = useCallback((value: string) => {
@@ -135,6 +126,11 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
     }
 
     const cleanedValue = value.replace(/\D/g, "")
+
+    // Check if the number is too long
+    if (cleanedValue.length > 14) {
+      return "Phone number is too long"
+    }
 
     const isValid =
       (cleanedValue.length === 11 && cleanedValue.startsWith("0")) ||
@@ -161,6 +157,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
               <input
                 type="tel"
                 placeholder="Enter phone number"
+                maxLength={14}
                 {...register("phoneNumber", {
                   validate: validatePhoneNumber,
                 })}

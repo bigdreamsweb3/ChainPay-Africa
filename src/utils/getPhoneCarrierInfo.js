@@ -30,49 +30,104 @@ export const networks = [
 ];
 
 const phoneCarriers = [
-    { prefix: "+234903", carrier: "MTN Nigeria", id: "mtn" },
+    // MTN Nigeria
     { prefix: "+234803", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234806", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234810", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234813", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234814", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234816", carrier: "MTN Nigeria", id: "mtn" },
     { prefix: "+234703", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234706", carrier: "MTN Nigeria", id: "mtn" },
-    { prefix: "+234802", carrier: "Airtel Nigeria", id: "airtel" },
-    { prefix: "+234808", carrier: "Airtel Nigeria", id: "airtel" },
-    { prefix: "+234812", carrier: "Airtel Nigeria", id: "airtel" },
-    { prefix: "+234701", carrier: "Airtel Nigeria", id: "airtel" },
-    { prefix: "+234902", carrier: "Airtel Nigeria", id: "airtel" },
-    { prefix: "+234807", carrier: "Glo Nigeria", id: "glo" },
-    { prefix: "+234815", carrier: "Glo Nigeria", id: "glo" },
-    { prefix: "+234905", carrier: "Glo Nigeria", id: "glo" },
-    { prefix: "+234909", carrier: "Glo Nigeria", id: "glo" },
-    { prefix: "+234818", carrier: "9mobile Nigeria", id: "9mobile" },
-    { prefix: "+234817", carrier: "9mobile Nigeria", id: "9mobile" },
-    { prefix: "+234908", carrier: "9mobile Nigeria", id: "9mobile" },
+    { prefix: "+2340903", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340806", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340706", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340813", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340810", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340814", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340816", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340906", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340913", carrier: "MTN Nigeria", id: "mtn" },
+    { prefix: "+2340916", carrier: "MTN Nigeria", id: "mtn" },
+
+    // Glo (Globacom)
+    { prefix: "+2340805", carrier: "Glo Nigeria", id: "glo" },
+    { prefix: "+2340807", carrier: "Glo Nigeria", id: "glo" },
+    { prefix: "+2340705", carrier: "Glo Nigeria", id: "glo" },
+    { prefix: "+2340811", carrier: "Glo Nigeria", id: "glo" },
+    { prefix: "+2340815", carrier: "Glo Nigeria", id: "glo" },
+    { prefix: "+2340905", carrier: "Glo Nigeria", id: "glo" },
+    { prefix: "+2340915", carrier: "Glo Nigeria", id: "glo" },
+
+    // Airtel Nigeria
+    { prefix: "+2340802", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340808", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340708", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340701", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340812", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340901", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340902", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340904", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340907", carrier: "Airtel Nigeria", id: "airtel" },
+    { prefix: "+2340912", carrier: "Airtel Nigeria", id: "airtel" },
+
+    // 9mobile (formerly Etisalat)
+    { prefix: "+2340809", carrier: "9mobile Nigeria", id: "9mobile" },
+    { prefix: "+2340817", carrier: "9mobile Nigeria", id: "9mobile" },
+    { prefix: "+2340818", carrier: "9mobile Nigeria", id: "9mobile" },
+    { prefix: "+2340908", carrier: "9mobile Nigeria", id: "9mobile" },
+    { prefix: "+2340909", carrier: "9mobile Nigeria", id: "9mobile" },
+
+    // Ntel
+    // { prefix: "+2340804", carrier: "Ntel", id: "ntel" },
+
+    // Starcomms
+    // { prefix: "+2340819", carrier: "Starcomms", id: "starcomms" },
+    // { prefix: "+23407028", carrier: "Starcomms", id: "starcomms" },
+    // { prefix: "+23407029", carrier: "Starcomms", id: "starcomms" },
 ];
 
 export function detectCarrier(phoneNumber) {
+    // Handle invalid input
+    if (!phoneNumber || typeof phoneNumber !== 'string') {
+        return { carrier: "Invalid Number", id: null, iconUrl: null, enum_value: null };
+    }
+
     // Normalize the phone number
-    if (phoneNumber.startsWith("0")) {
-        phoneNumber = "+234" + phoneNumber.slice(1); // Convert local format to international
-    } else if (phoneNumber.startsWith("234")) {
-        phoneNumber = "+" + phoneNumber; // Convert to international format with +
-    } else if (!phoneNumber.startsWith("+234")) {
-        // If it doesn't start with +234, prepend it
-        phoneNumber = "+234" + phoneNumber;
+    let normalizedNumber = phoneNumber.replace(/[\s\-\(\)]/g, ''); // Remove spaces, dashes, and parentheses
+    
+    // Truncate the number to the correct length based on format
+    if (normalizedNumber.startsWith('+234')) {
+        normalizedNumber = normalizedNumber.slice(0, 14); // +234 + 10 digits
+    } else if (normalizedNumber.startsWith('234')) {
+        normalizedNumber = normalizedNumber.slice(0, 13); // 234 + 10 digits
+    } else if (normalizedNumber.startsWith('0')) {
+        normalizedNumber = normalizedNumber.slice(0, 11); // 0 + 10 digits
+    } else {
+        normalizedNumber = normalizedNumber.slice(0, 10); // Just 10 digits
+    }
+    
+    // Validate number format
+    const isValidFormat = 
+        normalizedNumber.match(/^\+234\d{10}$/) || // +2348031234567
+        normalizedNumber.match(/^0\d{10}$/) ||     // 08031234567
+        normalizedNumber.match(/^234\d{10}$/);     // 2348031234567
+
+    if (!isValidFormat) {
+        return { carrier: "Invalid Format", id: null, iconUrl: null, enum_value: null };
+    }
+
+    // Convert to international format for comparison
+    let comparisonNumber = normalizedNumber;
+    if (normalizedNumber.startsWith("0")) {
+        comparisonNumber = "+2340" + normalizedNumber.slice(1); // Keep the 0 after 234
+    } else if (normalizedNumber.startsWith("234")) {
+        comparisonNumber = "+" + normalizedNumber;
     }
 
     // Find the carrier based on the prefix
     for (let { prefix, carrier, id } of phoneCarriers) {
-        if (phoneNumber.startsWith(prefix)) {
+        if (comparisonNumber.startsWith(prefix)) {
             const network = networks.find((network) => network.id === id);
             return {
                 carrier,
                 id,
-                iconUrl: network ? network.iconUrl : null, // Return iconUrl if network is found
-                enum_value: network ? network.enum_value : null // Return enum_value if network is found
+                iconUrl: network ? network.iconUrl : null,
+                enum_value: network ? network.enum_value : null
             };
         }
     }
