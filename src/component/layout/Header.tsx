@@ -8,7 +8,7 @@ import { WalletButton } from "../web3/wallet-options";
 import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Header() {
-  const pathname = usePathname();
+  // const pathname = usePathname();
   // const isHome = pathname === "/";
 
   return (
