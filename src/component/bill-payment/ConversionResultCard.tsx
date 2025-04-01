@@ -23,7 +23,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
   // conversionRate,
   isConverting,
   conversionError,
-  serviceType,
+  // serviceType,
 }) => {
   const formatNumber = (num: string) => {
     return Number(num).toLocaleString("en-NG", { maximumFractionDigits: 2 });
