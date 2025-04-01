@@ -1,7 +1,7 @@
 "use client";
 
 import { ChainPayLogo } from "../web3/chainpay-logo";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "next/navigation";
 // import { cn } from "@/lib/utils";
 // import { appConfig } from "@/app-config";
 import { WalletButton } from "../web3/wallet-options";
