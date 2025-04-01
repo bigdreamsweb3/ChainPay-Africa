@@ -59,8 +59,6 @@ const ChainPayButton = React.forwardRef<HTMLButtonElement, ChainPayButtonProps>(
       fullWidth,
       isLoading,
       icon,
-      whileHover,
-      whileTap,
       ...props
     },
     ref

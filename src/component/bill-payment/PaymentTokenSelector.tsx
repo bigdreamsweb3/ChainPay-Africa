@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 import Image from "next/image";
 import { useAccount, useSwitchChain } from "wagmi";
@@ -58,9 +58,11 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   );
 
   // Get current network's tokens
-  const currentNetworkTokens = networksWithTokens.find(
-    (network) => network.chain.id === chain?.id
-  )?.tokens || [];
+  const currentNetworkTokens = useMemo(() => 
+    networksWithTokens.find(
+      (network) => network.chain.id === chain?.id
+    )?.tokens || []
+  , [chain?.id, networksWithTokens]);
 
   // Auto-select first token when network changes or when no token is selected
   useEffect(() => {
@@ -279,7 +281,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                       <div className="space-y-4">
                         <div className="p-4 bg-status-warning/5 dark:bg-status-warning/10 rounded-lg">
                           <p className="text-sm text-status-warning">
-                            Your current network doesn't support any payment tokens. Please switch to a supported network.
+                            Your current network doesn&apos;t support any payment tokens. Please switch to a supported network.
                           </p>
                         </div>
                         <div className="space-y-2">

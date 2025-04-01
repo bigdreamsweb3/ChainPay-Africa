@@ -24,7 +24,7 @@ import {
 } from "@/utils/conversionUtils";
 import ConversionResultCard from "./ConversionResultCard";
 import type { TokenData } from "@/types/token";
-import { useAccount, useConnect, Connector } from "wagmi";
+import { useAccount, useConnect} from "wagmi";
 import { WalletOptions } from "@/component/web3/wallet-options";
 
 // Adapter to convert between PaymentToken interfaces
@@ -92,7 +92,7 @@ const BillPaymentForm: React.FC = () => {
   const lastCalculationTimeRef = useRef<number>(0);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { isConnected } = useAccount();
-  const { connectors, connect, error, isPending } = useConnect();
+  const { connectors, connect, error, isPending: isWalletConnecting } = useConnect();
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
@@ -248,7 +248,7 @@ const BillPaymentForm: React.FC = () => {
     fetchRate();
   }, []);
 
-  const updateConversionAmount = async (amount: string, token: string) => {
+  const updateConversionAmount = useCallback(async (amount: string, token: string) => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
@@ -289,7 +289,7 @@ const BillPaymentForm: React.FC = () => {
         setConvertedAmount("0");
       }
     }, 800);
-  };
+  }, [selectedTokenDetails]);
 
   useEffect(() => {
     if (amount && amount !== "0") {

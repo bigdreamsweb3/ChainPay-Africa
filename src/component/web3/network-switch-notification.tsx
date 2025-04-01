@@ -33,7 +33,7 @@ export default function NetworkSwitchNotification({
 
   useEffect(() => {
     setShowNotification(!!address && chain?.id !== targetChain.id);
-  }, [address, chain]);
+  }, [address, chain, targetChain.id]);
 
   return (
     <div
