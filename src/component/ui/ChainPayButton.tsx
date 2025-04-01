@@ -68,8 +68,8 @@ const ChainPayButton = React.forwardRef<HTMLButtonElement, ChainPayButtonProps>(
     return (
       <motion.button
         ref={ref}
-        whileHover={whileHover || { scale: 1.02 }}
-        whileTap={whileTap || { scale: 0.98 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         className={cn(buttonVariants({ variant, size, fullWidth }), className)}
         disabled={isLoading || props.disabled}
         {...props}

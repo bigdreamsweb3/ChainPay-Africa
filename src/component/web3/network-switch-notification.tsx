@@ -46,7 +46,7 @@ export default function NetworkSwitchNotification({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.3 }}
-            className="bg-gradient-to-r from-brand-primary/5 via-brand-accent/5 to-chainpay-gold/5 dark:from-brand-primary/10 dark:via-brand-accent/10 dark:to-chainpay-gold/10 border border-border-light dark:border-border-dark p-4 rounded-lg shadow-lg backdrop-blur-sm"
+            className="bg-gradient-to-r from-brand-primary/5 via-brand-accent/5 to-chainpay-gold/5 dark:from-brand-primary/10 dark:via-brand-accent/10 dark:to-chainpay-gold/10 p-4 rounded-lg shadow-lg backdrop-blur-sm"
           >
             <h2 className="font-semibold text-text-primary dark:text-text-dark-primary text-lg flex items-center gap-2">
               Switch to {targetChain.name}

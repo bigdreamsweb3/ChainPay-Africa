@@ -24,6 +24,8 @@ import {
 } from "@/utils/conversionUtils";
 import ConversionResultCard from "./ConversionResultCard";
 import type { TokenData } from "@/types/token";
+import { useAccount, useConnect, Connector } from "wagmi";
+import { WalletOptions } from "@/component/web3/wallet-options";
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
@@ -89,6 +91,8 @@ const BillPaymentForm: React.FC = () => {
   const prevTokenRef = useRef<string>("");
   const lastCalculationTimeRef = useRef<number>(0);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const { isConnected } = useAccount();
+  const { connectors, connect, error, isPending } = useConnect();
 
   const methods = useForm<BillPaymentFormData>({
     resolver: zodResolver(billPaymentSchema),
@@ -355,20 +359,26 @@ const BillPaymentForm: React.FC = () => {
                             </div>
 
                             <div className="mt-4">
-                              <ChainPayButton
-                                type="submit"
-                                data-action="submit-payment"
-                                disabled={!isPaymentValid() || isConverting}
-                                variant="primary"
-                                size="large"
-                                fullWidth
-                                className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark border border-chainpay-blue-dark/20 hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:ring-4 focus:ring-[#3B82F6]/50 transition-all duration-300 dark:from-chainpay-blue-dark dark:to-chainpay-blue-dark/90 dark:hover:from-chainpay-blue-dark/90 dark:hover:to-[#3B82F6] dark:hover:shadow-[#3B82F6]/20"
-                              >
-                                <div className="flex items-center justify-center gap-2 text-white font-bold">
-                                  <CreditCard className="w-4 h-4" />
-                                  <span>Pay Now</span>
+                              {isConnected ? (
+                                <ChainPayButton
+                                  type="submit"
+                                  data-action="submit-payment"
+                                  disabled={!isPaymentValid() || isConverting}
+                                  variant="primary"
+                                  size="large"
+                                  fullWidth
+                                  className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-[1.02] hover:shadow-lg hover:shadow-[#3B82F6]/20 focus:outline-none transition-all duration-300 dark:from-chainpay-blue-dark dark:to-chainpay-blue-dark/90 dark:hover:from-chainpay-blue-dark/90 dark:hover:to-[#3B82F6] dark:hover:shadow-[#3B82F6]/20"
+                                >
+                                  <div className="flex items-center justify-center gap-2 text-white font-bold">
+                                    <CreditCard className="w-4 h-4" />
+                                    <span>Pay Now</span>
+                                  </div>
+                                </ChainPayButton>
+                              ) : (
+                                <div className="w-full">
+                                  <WalletOptions variant="full" />
                                 </div>
-                              </ChainPayButton>
+                              )}
                             </div>
                           </div>
 

@@ -7,21 +7,47 @@ import { Wallet, ChevronRight, CheckCircle, XCircle, X } from "lucide-react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { Account } from "./account";
+import { useWalletModal } from "@/context/WalletModalContext";
 
-export function WalletButton() {
-  const { isConnected } = useAccount();
-  return <>{isConnected ? <Account /> : <WalletOptions />}</>;
+interface WalletOptionsProps {
+  variant?: "mini" | "full";
 }
 
-export function WalletOptions() {
+export function WalletButton({ variant = "mini" }: WalletOptionsProps) {
+  const { isConnected } = useAccount();
+  const { isPending } = useConnect();
+  const { connectionStatus } = useWalletModal();
+  const isConnecting = isPending || connectionStatus === "connecting";
+
+  return (
+    <>
+      {isConnected ? (
+        <Account />
+      ) : (
+        <WalletOptions 
+          variant={variant}
+          isConnecting={isConnecting}
+        />
+      )}
+    </>
+  );
+}
+
+export function WalletOptions({ 
+  variant = "mini",
+  isConnecting: parentIsConnecting
+}: WalletOptionsProps & { isConnecting?: boolean }) {
   const { connectors, connect, error, isPending } = useConnect();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedConnector, setSelectedConnector] = useState<string | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<
-    "idle" | "connecting" | "success" | "error"
-  >("idle");
   const [isClient, setIsClient] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const { 
+    isModalOpen, 
+    setIsModalOpen, 
+    connectionStatus, 
+    setConnectionStatus,
+    selectedConnector,
+    setSelectedConnector
+  } = useWalletModal();
 
   useEffect(() => {
     setIsClient(true);
@@ -29,14 +55,12 @@ export function WalletOptions() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isModalOpen && modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        setIsModalOpen(false);
-      }
+      return;
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isModalOpen]);
+  }, [isModalOpen, setIsModalOpen]);
 
   useEffect(() => {
     if (selectedConnector) {
@@ -53,19 +77,18 @@ export function WalletOptions() {
         }, 1500);
       }
     }
-  }, [isPending, error, selectedConnector, connectionStatus]);
+  }, [isPending, error, selectedConnector, connectionStatus, setConnectionStatus, setIsModalOpen, setSelectedConnector]);
 
   const handleConnect = async (connector: Connector) => {
     setSelectedConnector(connector.uid);
     setConnectionStatus("connecting");
-    setIsModalOpen(false);
 
     const timeout = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("Connection timed out")), 10000) // 10 seconds timeout
+      setTimeout(() => reject(new Error("Connection timed out")), 10000)
     );
 
     try {
-      await Promise.race([connect({ connector }), timeout]); // Race between connect and timeout
+      await Promise.race([connect({ connector }), timeout]);
       setConnectionStatus("success");
     } catch (err) {
       console.error("Connection error:", err);
@@ -78,20 +101,29 @@ export function WalletOptions() {
     connector.name.toLowerCase() !== "injected"
   );
 
+  // Use parent's connecting state if provided, otherwise use local state
+  const isConnecting = parentIsConnecting ?? (isPending || connectionStatus === "connecting");
+
   return (
-    <div className="relative">
+    <div className={`relative ${variant === "full" ? "w-full" : "inline-block"}`}>
       {/* Connect Wallet Button with clear CTA */}
       <button
         onClick={() => setIsModalOpen(true)}
-        disabled={isPending || !isClient}
-        className={`flex items-center space-x-2 hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50 text-sm font-medium ${
-          isPending || !isClient ? "bg-gray-100 text-gray-600 cursor-not-allowed" : "bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white"
+        disabled={isConnecting || !isClient}
+        className={`flex items-center justify-center gap-2 transition-all duration-300 font-medium ${
+          variant === "mini"
+            ? "text-sm px-4 py-2 rounded-lg bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-[1.02] hover:shadow-lg hover:shadow-[#3B82F6]/20 focus:outline-none dark:from-chainpay-blue-dark dark:to-chainpay-blue-dark/90 dark:hover:from-chainpay-blue-dark/90 dark:hover:to-[#3B82F6] dark:hover:shadow-[#3B82F6]/20 text-white"
+            : "text-base px-4 py-2.5 rounded-lg w-full bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-[1.02] hover:shadow-lg hover:shadow-[#3B82F6]/20 focus:outline-none dark:from-chainpay-blue-dark dark:to-chainpay-blue-dark/90 dark:hover:from-chainpay-blue-dark/90 dark:hover:to-[#3B82F6] dark:hover:shadow-[#3B82F6]/20 text-white"
+        } ${
+          isConnecting || !isClient
+            ? "opacity-50 cursor-not-allowed bg-background-light/50 dark:bg-background-dark-light/50 text-text-muted dark:text-text-dark-muted" 
+            : ""
         }`}
         aria-label="Connect your wallet to continue"
       >
-        {isPending ? (
+        {isConnecting ? (
           <>
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
             <span>Connecting...</span>
           </>
         ) : !isClient ? (
@@ -102,7 +134,9 @@ export function WalletOptions() {
         ) : (
           <>
             <Wallet className="w-4 h-4" />
-            <span>Connect</span>
+            <span className="font-bold">
+              {variant === "mini" ? "Connect" : "Connect Wallet"}
+            </span>
           </>
         )}
       </button>
@@ -117,7 +151,6 @@ export function WalletOptions() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 bg-background-overlay dark:bg-background-dark/80 backdrop-blur-sm flex items-center justify-center p-4"
-              onClick={() => setIsModalOpen(false)}
             >
               <motion.div
                 ref={modalRef}
@@ -126,7 +159,6 @@ export function WalletOptions() {
                 exit={{ scale: 0.95, opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
                 className="w-full max-w-md bg-white dark:bg-background-dark-card shadow-xl rounded-lg overflow-hidden relative"
-                onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={() => setIsModalOpen(false)}
@@ -136,13 +168,13 @@ export function WalletOptions() {
                   <X className="w-5 h-5" />
                 </button>
 
-                <div className="p-6 border-b border-border-light dark:border-border-dark">
+                <div className="p-6">
                   <h2 className="text-xl font-semibold text-text-primary dark:text-text-dark-primary flex items-center gap-2">
                     <Wallet className="w-5 h-5 text-brand-primary" />
-                    Connect Your Wallet
+                    Welcome to ChainPay
                   </h2>
                   <p className="text-sm text-text-muted dark:text-text-dark-muted mt-1">
-                    Select your preferred wallet provider to continue
+                    Let's connect your wallet to start your secure blockchain journey
                   </p>
                 </div>
 
@@ -159,9 +191,9 @@ export function WalletOptions() {
                         disabled={isPending}
                         className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
                           selectedConnector === connector.uid
-                            ? "bg-brand-primary/10 dark:bg-brand-primary/20 border border-brand-primary"
-                            : "hover:bg-background-light dark:hover:bg-background-dark-light border border-border-light dark:border-border-dark"
-                        }`}
+                            ? "bg-brand-primary/10 dark:bg-brand-primary/20"
+                            : "hover:bg-background-light dark:hover:bg-background-dark-light"
+                        } ${isPending ? "cursor-not-allowed opacity-50" : ""}`}
                         whileTap={{ scale: 0.98 }}
                         transition={{ duration: 0.1 }}
                       >
@@ -195,7 +227,7 @@ export function WalletOptions() {
                   </div>
 
                   <div className="mt-4 text-center text-xs text-text-muted">
-                    By connecting, you agree to our Terms of Service
+                    Your security is our priority. By connecting, you agree to our Terms of Service
                   </div>
                 </div>
 
@@ -207,7 +239,7 @@ export function WalletOptions() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
                       transition={{ duration: 0.2 }}
-                      className="p-4 border-t border-border-light"
+                      className="p-4 bg-background-light dark:bg-background-dark-light"
                     >
                       {connectionStatus === "connecting" && (
                         <div className="flex items-center justify-center text-brand-primary">
@@ -220,13 +252,13 @@ export function WalletOptions() {
                               ease: "linear",
                             }}
                           />
-                          <span>Awaiting confirmation in your wallet</span>
+                          <span>Waiting for your wallet confirmation...</span>
                         </div>
                       )}
                       {connectionStatus === "success" && (
                         <div className="flex items-center justify-center text-status-success">
                           <CheckCircle className="w-4 h-4 mr-2" />
-                          <span>Wallet connected successfully!</span>
+                          <span>Perfect! Your wallet is now securely connected</span>
                         </div>
                       )}
                       {connectionStatus === "error" && (
@@ -240,8 +272,11 @@ export function WalletOptions() {
                 </AnimatePresence>
 
                 {error && (
-                  <div className="p-4 border-t border-border-light bg-status-error/5 text-status-error text-sm">
-                    {error.message}
+                  <div className="p-4 bg-status-error/5 text-status-error text-sm">
+                    <div className="flex items-center gap-2">
+                      <XCircle className="w-4 h-4" />
+                      <span>{error.message}</span>
+                    </div>
                   </div>
                 )}
               </motion.div>

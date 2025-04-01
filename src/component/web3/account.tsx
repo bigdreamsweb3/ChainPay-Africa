@@ -57,12 +57,11 @@ export function Account() {
   const isSwitching = switchStatus === "pending";
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      {/* Account Button */}
+    <div className="relative inline-block" ref={dropdownRef}>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 bg-gradient-to-r from-[#0099FF] to-[#0066FF] text-white hover:opacity-90 active:scale-95 px-3 py-1.5 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#60A5FA]/50"
-        whileHover={{ opacity: 0.9 }}
+        className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 font-medium text-sm bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:outline-none focus:ring-0 text-white"
+        whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
         {ensAvatar ? (
@@ -76,7 +75,7 @@ export function Account() {
         ) : (
           <User className="w-5 h-5 text-white" />
         )}
-
+        <span className="text-white hidden sm:inline">{ensName || shortenedAddress}</span>
         <ChevronDown className={`w-4 h-4 text-white transition-transform ${isOpen ? "rotate-180" : ""}`} />
       </motion.button>
 
@@ -88,7 +87,7 @@ export function Account() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-64 bg-white dark:bg-background-dark-card rounded-lg shadow-xl z-50 border border-border-light dark:border-border-dark overflow-hidden"
+            className="absolute right-0 mt-2 w-64 bg-white dark:bg-background-dark-card rounded-lg shadow-xl z-50 overflow-hidden"
           >
             {/* Connection Status Bar */}
             <div className={`px-3 py-2 text-xs font-medium flex items-center ${
@@ -105,7 +104,7 @@ export function Account() {
             </div>
 
             {/* Account Info */}
-            <div className="p-3 border-b border-border-light dark:border-border-dark">
+            <div className="p-3">
               <div className="flex items-center space-x-3">
                 {ensAvatar ? (
                   <Image
@@ -113,10 +112,10 @@ export function Account() {
                     alt="ENS Avatar"
                     width={40}
                     height={40}
-                    className="w-10 h-10 rounded-full border-2 border-border-light dark:border-border-dark"
+                    className="w-10 h-10 rounded-full"
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center border-2 border-border-light dark:border-border-dark">
+                  <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center">
                     <User className="w-6 h-6 text-white" />
                   </div>
                 )}
@@ -165,7 +164,7 @@ export function Account() {
                     {isSwitching ? (
                       <Loader2 className="w-4 h-4 animate-spin text-brand-primary" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center">
+                      <div className="w-4 h-4 rounded-full bg-brand-primary/10 dark:bg-brand-primary/20 flex items-center justify-center">
                         <div className="w-2 h-2 rounded-full bg-brand-primary" />
                       </div>
                     )}

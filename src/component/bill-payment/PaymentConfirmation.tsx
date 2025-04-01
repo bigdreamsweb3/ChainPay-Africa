@@ -309,20 +309,20 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
   if (!mounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] pointer-events-auto flex items-center justify-center p-4 bg-background-overlay backdrop-blur-sm">
+    <div className="fixed inset-0 z-[9999] pointer-events-auto flex items-center justify-center p-4 bg-background-overlay dark:bg-background-dark/80 backdrop-blur-sm">
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="bg-white rounded-lg w-full max-w-md shadow-xl border border-border-light flex flex-col max-h-[90vh] overflow-y-auto"
+        className="bg-white dark:bg-background-dark-card rounded-lg w-full max-w-md shadow-xl flex flex-col max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-border-light flex-shrink-0">
+        <div className="p-6 flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-brand-primary/10 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-brand-primary/10 dark:bg-brand-primary/20 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 text-brand-primary"
@@ -338,7 +338,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-text-primary">
+              <h3 className="text-xl font-semibold text-text-primary dark:text-text-dark-primary">
                 {transactionStatus === "error"
                   ? "Transaction Failed"
                   : "Review Transaction"}
@@ -350,7 +350,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                 e.stopPropagation();
                 onClose();
               }}
-              className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-background-light transition-colors focus:outline-none"
+              className="p-1.5 rounded-lg text-text-muted dark:text-text-dark-muted hover:text-text-primary dark:hover:text-text-dark-primary hover:bg-background-light dark:hover:bg-background-dark-light transition-colors focus:outline-none"
             >
               <X className="h-5 w-5" />
             </button>
@@ -358,7 +358,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Content */}
-        <div className="p-6 flex-grow">
+        <div className="px-6 pb-6 flex-grow">
           <div className="space-y-4">
             {/* Success Message */}
             <AnimatePresence>
@@ -368,10 +368,10 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="p-6 rounded-lg bg-gradient-to-br from-brand-primary/5 to-brand-primary/10 border border-brand-primary/20"
+                  className="p-6 rounded-lg bg-gradient-to-br from-brand-primary/5 dark:from-brand-primary/10 to-brand-primary/10 dark:to-brand-primary/20"
                 >
                   <div className="flex flex-col items-center justify-center gap-4">
-                    <div className="w-16 h-16 rounded-full bg-brand-primary/10 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-brand-primary/10 dark:bg-brand-primary/20 flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-8 w-8 text-brand-primary"
@@ -388,10 +388,10 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                       </svg>
                     </div>
                     <div className="text-center space-y-2">
-                      <h4 className="text-lg font-semibold text-text-primary">
+                      <h4 className="text-lg font-semibold text-text-primary dark:text-text-dark-primary">
                         Transaction Successful!
                       </h4>
-                      <p className="text-sm text-text-muted">
+                      <p className="text-sm text-text-muted dark:text-text-dark-muted">
                         Your airtime will be delivered shortly. You can track
                         the status using the transaction link below.
                       </p>
@@ -404,19 +404,19 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             {/* Transaction Details */}
             {transactionStatus !== "completed" && (
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                  <span className="text-xs text-text-muted">Service</span>
-                  <span className="text-sm font-medium text-text-primary capitalize">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
+                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Service</span>
+                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary capitalize">
                     {selectedService}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                  <span className="text-xs text-text-muted">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
+                  <span className="text-xs text-text-muted dark:text-text-dark-muted">
                     {selectedService === "electricity"
                       ? "Meter Number"
                       : "Phone Number"}
                   </span>
-                  <span className="text-sm font-medium text-text-primary">
+                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
                     {selectedService === "electricity"
                       ? watch("meterNumber")
                       : watch("phoneNumber")}
@@ -425,22 +425,22 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                 {(selectedService === "airtime" ||
                   selectedService === "data") &&
                   carrier && (
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                      <span className="text-xs text-text-muted">Network</span>
-                      <span className="text-sm font-medium text-text-primary">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
+                      <span className="text-xs text-text-muted dark:text-text-dark-muted">Network</span>
+                      <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
                         {carrier.name || "Unknown"}
                       </span>
                     </div>
                   )}
-                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                  <span className="text-xs text-text-muted">Amount</span>
-                  <span className="text-sm font-medium text-text-primary">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
+                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Amount</span>
+                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
                     {watch("amount")} Credits
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                  <span className="text-xs text-text-muted">Pay Amount</span>
-                  <span className="text-sm font-medium text-text-primary">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
+                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Pay Amount</span>
+                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
                     {isConverting ? (
                       <span className="flex items-center gap-1.5">
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
@@ -453,12 +453,12 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                     )}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light border border-border-light">
-                  <span className="text-xs text-text-muted">Payment Token</span>
-                  <span className="text-sm font-medium text-text-primary">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
+                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Payment Token</span>
+                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
                     {selectedTokenDetails ? (
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-white border border-border-light flex items-center justify-center overflow-hidden">
+                        <div className="w-6 h-6 rounded-full bg-white dark:bg-background-dark flex items-center justify-center overflow-hidden">
                           <Image
                             src={
                               selectedTokenDetails.image || "/placeholder.svg"
@@ -481,10 +481,10 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
             {/* Transaction Status */}
             {isProcessing && (
-              <div className="mt-4 p-3 rounded-lg bg-background-light border border-border-light">
+              <div className="mt-4 p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted">Status</span>
-                  <span className="text-sm font-medium text-text-primary flex items-center gap-2">
+                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Status</span>
+                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary flex items-center gap-2">
                     {transactionStatus === "initializing" && (
                       <>
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
@@ -516,7 +516,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
 
             {/* Error Message */}
             {errorMessage && transactionStatus !== "completed" && (
-              <div className="mt-4 p-3 rounded-lg bg-status-error/10 border border-status-error/20">
+              <div className="mt-4 p-3 rounded-lg bg-status-error/10 dark:bg-status-error/20">
                 <p className="text-xs text-status-error flex items-center gap-2">
                   <AlertCircle className="w-3.5 h-3.5" />
                   {errorMessage}
@@ -527,7 +527,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="p-6 border-t border-border-light flex-shrink-0">
+        <div className="p-6 flex-shrink-0">
           {transactionStatus === "completed" ? (
             <div className="space-y-4">
               <div className="flex flex-col gap-3">
@@ -535,7 +535,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   onClick={() =>
                     window.open(`${blockExplorerUrl}/tx/${data}`, "_blank")
                   }
-                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-colors"
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 dark:bg-brand-primary/10 hover:bg-brand-primary/10 dark:hover:bg-brand-primary/20 rounded-lg transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -561,7 +561,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                     setErrorMessage("Transaction link copied to clipboard!");
                     setTimeout(() => setErrorMessage(null), 3000);
                   }}
-                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 hover:bg-brand-primary/10 rounded-lg transition-colors"
+                  className="flex items-center justify-center gap-2 px-4 py-3 text-sm text-brand-primary bg-brand-primary/5 dark:bg-brand-primary/10 hover:bg-brand-primary/10 dark:hover:bg-brand-primary/20 rounded-lg transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
