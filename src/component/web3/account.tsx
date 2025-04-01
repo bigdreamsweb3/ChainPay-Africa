@@ -13,9 +13,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, LogOut, ChevronDown, ExternalLink, Check, AlertCircle, Loader2 } from "lucide-react";
 import { SUPPORTED_CHAIN_IDS } from "@/utils/web3/config";
 import Image from "next/image";
+import { getWalletIcon } from "@/app-config";
 
 export function Account() {
-  const { address, chain, isConnected, isConnecting, isDisconnected, isReconnecting } = useAccount();
+  const { address, chain, isConnected, isConnecting, isDisconnected, isReconnecting, connector } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });
@@ -56,6 +57,11 @@ export function Account() {
   const status = getConnectionStatus();
   const isSwitching = switchStatus === "pending";
 
+  // Get the wallet icon for the connected connector (for the button)
+  const walletIconSrc = connector
+    ? getWalletIcon(connector)
+    : "/default-wallet-icon.svg";
+
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <motion.button
@@ -64,7 +70,16 @@ export function Account() {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        {ensAvatar ? (
+        {isConnected && connector ? (
+          <Image
+            src={walletIconSrc}
+            alt={`${connector.name} icon`}
+            width={20}
+            height={20}
+            className="w-5 h-5 rounded-full object-contain"
+            onError={(e) => (e.currentTarget.src = "/default-wallet-icon.svg")}
+          />
+        ) : ensAvatar ? (
           <Image
             src={ensAvatar || "/placeholder.svg"}
             alt="ENS Avatar"
@@ -90,13 +105,15 @@ export function Account() {
             className="absolute right-0 mt-2 w-64 bg-white dark:bg-background-dark-card rounded-lg shadow-xl z-50 overflow-hidden"
           >
             {/* Connection Status Bar */}
-            <div className={`px-3 py-2 text-xs font-medium flex items-center ${
-              status === "connected" 
-                ? "bg-status-success/5 dark:bg-status-success/10 text-status-success" 
-                : status === "connecting" 
-                ? "bg-brand-primary/5 dark:bg-brand-primary/10 text-brand-primary"
-                : "bg-status-error/5 dark:bg-status-error/10 text-status-error"
-            }`}>
+            <div
+              className={`px-3 py-2 text-xs font-medium flex items-center ${
+                status === "connected"
+                  ? "bg-status-success/5 dark:bg-status-success/10 text-status-success"
+                  : status === "connecting"
+                  ? "bg-brand-primary/5 dark:bg-brand-primary/10 text-brand-primary"
+                  : "bg-status-error/5 dark:bg-status-error/10 text-status-error"
+              }`}
+            >
               {status === "connected" && <Check className="w-3 h-3 mr-1.5" />}
               {status === "connecting" && <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />}
               {status === "disconnected" && <AlertCircle className="w-3 h-3 mr-1.5" />}
@@ -121,20 +138,24 @@ export function Account() {
                 )}
                 <div className="overflow-hidden">
                   <h3 className="text-sm font-semibold text-text-primary dark:text-text-dark-primary truncate">
-                    {ensName || `${chain?.name} Account`}
+                    {ensName || `${chain?.name || "Unknown"} Account`}
                   </h3>
                   <p className="text-xs text-text-muted dark:text-text-dark-muted font-mono truncate">
                     {shortenedAddress}
                   </p>
                   <div className="mt-1 flex items-center">
-                    <span className={`inline-block w-2 h-2 rounded-full mr-1 ${
-                      status === "connected" 
-                        ? "bg-status-success" 
-                        : status === "connecting" 
-                        ? "bg-brand-primary" 
-                        : "bg-status-error"
-                    }`} />
-                    <span className="text-xs text-text-muted dark:text-text-dark-muted">{chain?.name || "Unknown Network"}</span>
+                    <span
+                      className={`inline-block w-2 h-2 rounded-full mr-1 ${
+                        status === "connected"
+                          ? "bg-status-success"
+                          : status === "connecting"
+                          ? "bg-brand-primary"
+                          : "bg-status-error"
+                      }`}
+                    />
+                    <span className="text-xs text-text-muted dark:text-text-dark-muted">
+                      {chain?.name || "Unknown Network"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -171,7 +192,9 @@ export function Account() {
                     <span>Switch Network</span>
                   </div>
                   <ChevronDown
-                    className={`w-4 h-4 text-brand-primary transition-transform ${isNetworkDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-4 h-4 text-brand-primary transition-transform ${
+                      isNetworkDropdownOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
@@ -191,8 +214,8 @@ export function Account() {
                             onClick={() => handleSwitchChain(supportedChain)}
                             disabled={isSwitching}
                             className={`flex items-center w-full px-2 py-1.5 text-xs rounded-md focus:outline-none ${
-                              supportedChain.id === chainId 
-                                ? "bg-brand-primary/10 dark:bg-brand-primary/20 text-text-primary dark:text-text-dark-primary" 
+                              supportedChain.id === chainId
+                                ? "bg-brand-primary/10 dark:bg-brand-primary/20 text-text-primary dark:text-text-dark-primary"
                                 : "hover:bg-brand-primary/5 dark:hover:bg-brand-primary/10 text-text-primary dark:text-text-dark-primary"
                             }`}
                           >

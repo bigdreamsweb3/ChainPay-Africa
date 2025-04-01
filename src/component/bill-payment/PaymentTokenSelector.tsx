@@ -9,7 +9,7 @@ import { AlertCircle, Coins, Check, ChevronDown, X, ChevronRight } from "lucide-
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import type { PaymentToken } from "@/constants/token";
-import { baseSepolia, crossfiTestnet } from "@/utils/web3/chains";
+import { baseSepolia, monadTestnet } from "@/utils/web3/chains";
 
 interface PaymentTokenSelectorProps {
   paymentTokens: PaymentToken[];
@@ -43,12 +43,12 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   // Get networks with accepted tokens
   const networksWithTokens = [
     {
-      chain: crossfiTestnet,
-      tokens: Object.values(crossfiTestnet.payAcceptedTokens),
-    },
-    {
       chain: baseSepolia,
       tokens: Object.values(baseSepolia.payAcceptedTokens),
+    },
+    {
+      chain: monadTestnet,
+      tokens: Object.values(monadTestnet.payAcceptedTokens),
     },
   ];
 
@@ -76,7 +76,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const handleNetworkSwitch = async (chainId: number) => {
     try {
-      await switchChain({ chainId: chainId as 1 | 84532 | 4157 | 10143 });
+      await switchChain({ chainId: chainId as 84532 | 10143 });
       // Don't close modal immediately to allow user to see the new tokens
       setTimeout(() => {
         setIsModalOpen(false);
@@ -93,20 +93,21 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   useEffect(() => {
     const fetchTokenIcons = async () => {
       try {
-        const tokenIconMap: { [key: string]: string } = {
-          "ethereum-usdt": "/network-icons/ethereum-usdt.png",
-          "ethereum-usdc": "/network-icons/ethereum-usdc.png",
-          "polygon-usdt": "/network-icons/polygon-usdt.png",
-          "polygon-usdc": "/network-icons/polygon-usdc.png",
-          "binance-usdt": "/network-icons/binance-usdt.png",
-          "binance-usdc": "/network-icons/binance-usdc.png",
-          "arbitrum-usdt": "/network-icons/arbitrum-usdt.png",
-          "arbitrum-usdc": "/network-icons/arbitrum-usdc.png",
-          "optimism-usdt": "/network-icons/optimism-usdt.png",
-          "optimism-usdc": "/network-icons/optimism-usdc.png",
-          "base-usdt": "/network-icons/base-usdt.png",
-          "base-usdc": "/network-icons/base-usdc.png",
-        };
+        const tokenIconMap: { [key: string]: string } = {};
+        
+        // Add icons from Base Sepolia
+        Object.values(baseSepolia.payAcceptedTokens).forEach(token => {
+          if (token.icon) {
+            tokenIconMap[`${token.network.toLowerCase()}-${token.token.toLowerCase()}`] = token.icon;
+          }
+        });
+
+        // Add icons from Monad Testnet
+        Object.values(monadTestnet.payAcceptedTokens).forEach(token => {
+          if (token.icon) {
+            tokenIconMap[`${token.network.toLowerCase()}-${token.token.toLowerCase()}`] = token.icon;
+          }
+        });
 
         setTokenImages(tokenIconMap);
       } catch (error) {
@@ -300,7 +301,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                               <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-background-dark-medium">
                                   <Image
-                                    src={`/network-icons/${network.chain.name.toLowerCase()}.png`}
+                                    src={network.chain.icon}
                                     alt={network.chain.name}
                                     width={32}
                                     height={32}

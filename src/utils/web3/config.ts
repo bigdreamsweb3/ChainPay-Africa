@@ -1,14 +1,11 @@
 import { http, createConfig } from "wagmi";
-import { mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
-import { monadTestnet } from "./chains/monadChain";
-import { baseSepolia, crossfiTestnet } from "./chains";
+
+import { baseSepolia, monadTestnet } from "./chains";
 import { useAccount } from "wagmi";
 
 export const SUPPORTED_CHAIN_IDS = [
-  mainnet,
   baseSepolia,
-  crossfiTestnet,
   monadTestnet,
 ];
 
@@ -19,10 +16,9 @@ declare module "wagmi" {
 }
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, baseSepolia, crossfiTestnet, monadTestnet],
+  chains: [baseSepolia, monadTestnet],
   connectors: [
     injected(),
-
     walletConnect({
       projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
     }),
@@ -30,9 +26,7 @@ export const wagmiConfig = createConfig({
     safe(),
   ],
   transports: {
-    [mainnet.id]: http(),
     [baseSepolia.id]: http(),
-    [crossfiTestnet.id]: http(),
     [monadTestnet.id]: http(),
   },
 });
@@ -57,9 +51,7 @@ export const useAcceptedTokens = (): PaymentToken[] => {
   if (!chain) return []; // Return empty if no chain is connected
 
   const acceptedTokens =
-    chain.id === crossfiTestnet.id
-      ? crossfiTestnet.payAcceptedTokens
-      : chain.id === baseSepolia.id
+    chain.id === baseSepolia.id
       ? baseSepolia.payAcceptedTokens
       : {};
 

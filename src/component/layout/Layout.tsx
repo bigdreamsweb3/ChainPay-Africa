@@ -9,6 +9,7 @@ import NetworkSwitchNotification from "../web3/network-switch-notification";
 import { Blocks, Shield, Heart } from "lucide-react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WalletModalProvider } from "@/context/WalletModalContext";
+import { WalletOptionsModal } from "@/component/web3/wallet-options-modal";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,6 +24,14 @@ export function Layout({ children }: LayoutProps) {
         <div className="min-h-screen flex flex-col relative bg-background-light dark:bg-background-dark overflow-x-hidden w-full scroll-smooth">
           <WagmiProvider config={wagmiConfig}>
             <QueryClientProvider client={queryClient}>
+              {/* Modal Portal Container - Must be first */}
+              <div
+                id="modal-root"
+                className="fixed inset-0 z-[100] pointer-events-none"
+              />
+
+              <WalletOptionsModal />
+
               {/* Header (assumed to be fixed as per the UI) */}
               <Header />
 
@@ -79,12 +88,6 @@ export function Layout({ children }: LayoutProps) {
             </QueryClientProvider>
           </WagmiProvider>
         </div>
-
-        {/* Modal Portal Container */}
-        <div
-          id="modal-root"
-          className="fixed inset-0 z-[100] pointer-events-none"
-        />
       </WalletModalProvider>
     </ThemeProvider>
   );

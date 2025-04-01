@@ -18,10 +18,10 @@ export default function NetworkSwitchNotification({
   const [showNotification, setShowNotification] = useState(false);
 
   const availableChains = useAvailableChains();
-  const targetChain = availableChains[0];
+  const targetChain = availableChains?.[0];
 
   const onSwitch = async () => {
-    if (chain?.id !== targetChain.id) {
+    if (targetChain && chain?.id !== targetChain.id) {
       try {
         switchChain({ chainId: targetChain.id });
         setShowNotification(true);
@@ -32,13 +32,13 @@ export default function NetworkSwitchNotification({
   };
 
   useEffect(() => {
-    setShowNotification(!!address && chain?.id !== targetChain.id);
-  }, [address, chain, targetChain.id]);
+    setShowNotification(!!address && !!targetChain && chain?.id !== targetChain.id);
+  }, [address, chain, targetChain]);
+
+  if (!targetChain) return null;
 
   return (
-    <div
-      className={`${className} flex items-center justify-end w-full max-w-sm mx-auto px-4 pt-4 lg:px-8 ${showNotification ? "block" : "hidden"}`}
-    >
+    <div className={`${className} flex items-center justify-end w-full max-w-sm mx-auto px-4 pt-4 lg:px-8 ${showNotification ? "block" : "hidden"}`}>
       <AnimatePresence>
         {showNotification && (
           <motion.div

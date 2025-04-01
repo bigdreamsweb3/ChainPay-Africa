@@ -1,3 +1,5 @@
+import { Connector } from "wagmi";
+
 export const appConfig = {
   appFullName: "ChainPay",
   appNameWord1: "Chain",
@@ -51,3 +53,17 @@ export const BLOCK_EXPLORER_URLS = {
 };
 
 // 
+
+// Custom wallet icon mapping (same as in WalletModal)
+ const walletIcons: Record<string, string> = {
+  MetaMask: "/icons/metamask.svg",
+  WalletConnect: "/icons/walletconnect.svg",
+  "Coinbase Wallet": "/icons/coinbase.svg",
+  // Add more wallet icons as needed
+};
+
+
+export const getWalletIcon = (connector: Connector) => {
+  return walletIcons[connector.name] || connector.icon || "/default-wallet-icon.svg";
+};
+
