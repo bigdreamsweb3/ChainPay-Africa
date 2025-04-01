@@ -82,7 +82,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                     </div>
                     <div className="text-right">
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        You'll Pay
+                        You&apos;ll Pay
                       </p>
                       {isConverting ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-chainpay-gold" />
