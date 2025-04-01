@@ -15,7 +15,7 @@ export function ChainPayLogo({ className }: ChainPayLogoProps) {
         alt="ChainPay Logo"
         width={40}
         height={40}
-        className="w-full h-full object-contain"
+        className="w-full h-full object-contain dark:brightness-110 transition-all duration-300"
         priority
       />
     </div>

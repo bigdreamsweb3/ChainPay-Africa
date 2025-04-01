@@ -7,6 +7,7 @@ module.exports = {
         "./src/component/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
@@ -55,6 +56,8 @@ module.exports = {
                 'gradient-primary': theme.colors.gradients.primary,
                 'gradient-secondary': theme.colors.gradients.secondary,
                 'gradient-dark': theme.colors.gradients.dark,
+                'gradient-dark-primary': theme.colors.gradients['dark-primary'],
+                'gradient-dark-secondary': theme.colors.gradients['dark-secondary'],
             },
             animation: {
                 'fade-in': 'fadeIn 0.3s ease-in-out',

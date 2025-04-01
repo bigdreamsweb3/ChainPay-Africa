@@ -116,7 +116,7 @@ export function WalletOptions() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-background-overlay backdrop-blur-sm flex items-center justify-center p-4"
+              className="fixed inset-0 bg-background-overlay dark:bg-background-dark/80 backdrop-blur-sm flex items-center justify-center p-4"
               onClick={() => setIsModalOpen(false)}
             >
               <motion.div
@@ -125,23 +125,23 @@ export function WalletOptions() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
-                className="w-full max-w-md bg-white shadow-xl rounded-lg overflow-hidden relative"
+                className="w-full max-w-md bg-white dark:bg-background-dark-card shadow-xl rounded-lg overflow-hidden relative"
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="absolute top-4 right-4 text-text-muted hover:text-text-primary p-1 rounded-full hover:bg-background-light transition-colors"
+                  className="absolute top-4 right-4 text-text-muted dark:text-text-dark-muted hover:text-text-primary dark:hover:text-text-dark-primary p-1 rounded-full hover:bg-background-light dark:hover:bg-background-dark-light transition-colors"
                   aria-label="Close wallet connection modal"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
-                <div className="p-6 border-b border-border-light">
-                  <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+                <div className="p-6 border-b border-border-light dark:border-border-dark">
+                  <h2 className="text-xl font-semibold text-text-primary dark:text-text-dark-primary flex items-center gap-2">
                     <Wallet className="w-5 h-5 text-brand-primary" />
                     Connect Your Wallet
                   </h2>
-                  <p className="text-sm text-text-muted mt-1">
+                  <p className="text-sm text-text-muted dark:text-text-dark-muted mt-1">
                     Select your preferred wallet provider to continue
                   </p>
                 </div>
@@ -159,8 +159,8 @@ export function WalletOptions() {
                         disabled={isPending}
                         className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
                           selectedConnector === connector.uid
-                            ? "bg-brand-primary/10 border border-brand-primary"
-                            : "hover:bg-background-light border border-border-light"
+                            ? "bg-brand-primary/10 dark:bg-brand-primary/20 border border-brand-primary"
+                            : "hover:bg-background-light dark:hover:bg-background-dark-light border border-border-light dark:border-border-dark"
                         }`}
                         whileTap={{ scale: 0.98 }}
                         transition={{ duration: 0.1 }}
@@ -179,7 +179,7 @@ export function WalletOptions() {
                             <span className={`font-medium ${
                               selectedConnector === connector.uid
                                 ? "text-brand-primary"
-                                : "text-text-primary"
+                                : "text-text-primary dark:text-text-dark-primary"
                             }`}>
                               {connector.name}
                             </span>

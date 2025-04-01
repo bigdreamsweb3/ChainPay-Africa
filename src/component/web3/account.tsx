@@ -88,15 +88,15 @@ export function Account() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl z-50 border border-border-light overflow-hidden"
+            className="absolute right-0 mt-2 w-64 bg-white dark:bg-background-dark-card rounded-lg shadow-xl z-50 border border-border-light dark:border-border-dark overflow-hidden"
           >
             {/* Connection Status Bar */}
             <div className={`px-3 py-2 text-xs font-medium flex items-center ${
               status === "connected" 
-                ? "bg-status-success/5 text-status-success" 
+                ? "bg-status-success/5 dark:bg-status-success/10 text-status-success" 
                 : status === "connecting" 
-                ? "bg-brand-primary/5 text-brand-primary"
-                : "bg-status-error/5 text-status-error"
+                ? "bg-brand-primary/5 dark:bg-brand-primary/10 text-brand-primary"
+                : "bg-status-error/5 dark:bg-status-error/10 text-status-error"
             }`}>
               {status === "connected" && <Check className="w-3 h-3 mr-1.5" />}
               {status === "connecting" && <Loader2 className="w-3 h-3 mr-1.5 animate-spin" />}
@@ -105,7 +105,7 @@ export function Account() {
             </div>
 
             {/* Account Info */}
-            <div className="p-3 border-b border-border-light">
+            <div className="p-3 border-b border-border-light dark:border-border-dark">
               <div className="flex items-center space-x-3">
                 {ensAvatar ? (
                   <Image
@@ -113,18 +113,18 @@ export function Account() {
                     alt="ENS Avatar"
                     width={40}
                     height={40}
-                    className="w-10 h-10 rounded-full border-2 border-border-light"
+                    className="w-10 h-10 rounded-full border-2 border-border-light dark:border-border-dark"
                   />
                 ) : (
-                  <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center border-2 border-border-light">
+                  <div className="w-10 h-10 bg-brand-primary rounded-full flex items-center justify-center border-2 border-border-light dark:border-border-dark">
                     <User className="w-6 h-6 text-white" />
                   </div>
                 )}
                 <div className="overflow-hidden">
-                  <h3 className="text-sm font-semibold text-text-primary truncate">
+                  <h3 className="text-sm font-semibold text-text-primary dark:text-text-dark-primary truncate">
                     {ensName || `${chain?.name} Account`}
                   </h3>
-                  <p className="text-xs text-text-muted font-mono truncate">
+                  <p className="text-xs text-text-muted dark:text-text-dark-muted font-mono truncate">
                     {shortenedAddress}
                   </p>
                   <div className="mt-1 flex items-center">
@@ -135,7 +135,7 @@ export function Account() {
                         ? "bg-brand-primary" 
                         : "bg-status-error"
                     }`} />
-                    <span className="text-xs text-text-muted">{chain?.name || "Unknown Network"}</span>
+                    <span className="text-xs text-text-muted dark:text-text-dark-muted">{chain?.name || "Unknown Network"}</span>
                   </div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ export function Account() {
                 href={`${chain?.blockExplorers?.default?.url || "https://etherscan.io"}/address/${address}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center space-x-2 px-3 py-2 text-sm text-text-primary hover:bg-background-light rounded-md transition-colors duration-150 focus:outline-none"
+                className="flex items-center space-x-2 px-3 py-2 text-sm text-text-primary dark:text-text-dark-primary hover:bg-background-light dark:hover:bg-background-dark-light rounded-md transition-colors duration-150 focus:outline-none"
               >
                 <ExternalLink className="w-4 h-4 text-brand-primary" />
                 <span>View on Explorer</span>
@@ -159,13 +159,13 @@ export function Account() {
                 <button
                   onClick={() => setIsNetworkDropdownOpen(!isNetworkDropdownOpen)}
                   disabled={isSwitching}
-                  className="flex items-center justify-between w-full px-3 py-2 text-sm text-text-primary hover:bg-background-light rounded-md transition-colors duration-150 focus:outline-none"
+                  className="flex items-center justify-between w-full px-3 py-2 text-sm text-text-primary dark:text-text-dark-primary hover:bg-background-light dark:hover:bg-background-dark-light rounded-md transition-colors duration-150 focus:outline-none"
                 >
                   <div className="flex items-center space-x-2">
                     {isSwitching ? (
                       <Loader2 className="w-4 h-4 animate-spin text-brand-primary" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-border-light flex items-center justify-center">
+                      <div className="w-4 h-4 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center">
                         <div className="w-2 h-2 rounded-full bg-brand-primary" />
                       </div>
                     )}
@@ -185,7 +185,7 @@ export function Account() {
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden z-50"
                     >
-                      <div className="mt-1 space-y-1 pl-2 pr-1 py-1 bg-background-light rounded-md">
+                      <div className="mt-1 space-y-1 pl-2 pr-1 py-1 bg-background-light dark:bg-background-dark-light rounded-md">
                         {chains.map((supportedChain) => (
                           <button
                             key={supportedChain.id}
@@ -193,8 +193,8 @@ export function Account() {
                             disabled={isSwitching}
                             className={`flex items-center w-full px-2 py-1.5 text-xs rounded-md focus:outline-none ${
                               supportedChain.id === chainId 
-                                ? "bg-brand-primary/10 text-text-primary" 
-                                : "hover:bg-brand-primary/5 text-text-primary"
+                                ? "bg-brand-primary/10 dark:bg-brand-primary/20 text-text-primary dark:text-text-dark-primary" 
+                                : "hover:bg-brand-primary/5 dark:hover:bg-brand-primary/10 text-text-primary dark:text-text-dark-primary"
                             }`}
                           >
                             {supportedChain.id === chainId ? (
@@ -217,7 +217,7 @@ export function Account() {
                   disconnect();
                   setIsOpen(false);
                 }}
-                className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-status-error hover:bg-status-error/5 rounded-md transition-colors duration-150 focus:outline-none"
+                className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-status-error hover:bg-status-error/5 dark:hover:bg-status-error/10 rounded-md transition-colors duration-150 focus:outline-none"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Disconnect Wallet</span>

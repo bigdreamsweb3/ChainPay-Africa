@@ -4,14 +4,15 @@ import { ChainPayLogo } from "../web3/chainpay-logo";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { appConfig } from "@/app-config";
-import { WalletButton } from "../web3/wallet-options"; // This import should now work
+import { WalletButton } from "../web3/wallet-options";
+import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bborder-t border-border-light bg-white transition-all duration-300">
+    <header className="fixed top-0 left-0 right-0 z-30 border-t border-border-light dark:border-border-dark bg-white dark:bg-background-dark transition-all duration-300">
       <div className="container mx-auto px-3 sm:px-4">
         <div className="h-16 flex items-center justify-between">
           {/* Left Section: Logo */}
@@ -19,7 +20,7 @@ export function Header() {
             <div className="relative">
               <ChainPayLogo className="w-8 h-8 drop-shadow-sm" />
             </div>
-            <div className="flex items-center">
+            {/* <div className="flex items-center">
               <div
                 className={cn(
                   "flex items-center",
@@ -35,11 +36,12 @@ export function Header() {
                   </span>
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
-          {/* Right Section: Wallet Button */}
-          <div className="flex items-center">
+          {/* Right Section: Theme Toggle and Wallet Button */}
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <div className="flex-shrink-0">
               <WalletButton />
             </div>

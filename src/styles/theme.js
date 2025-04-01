@@ -20,7 +20,12 @@ const theme = {
       card: '#FFFFFF',
       dark: '#0A0F1E',
       light: '#F5F7FA',
+      medium: '#E8EDF5',
       overlay: 'rgba(10, 15, 30, 0.7)',
+      'dark-main': '#0A0F1E',
+      'dark-card': '#1A2235',
+      'dark-light': '#2A3348',
+      'dark-medium': '#3A445B',
     },
     text: {
       primary: '#0A0F1E',
@@ -28,16 +33,24 @@ const theme = {
       muted: '#8F96A7',
       dark: '#0A0F1E',
       light: '#FFFFFF',
+      'dark-primary': '#FFFFFF',
+      'dark-secondary': '#B4BDCC',
+      'dark-muted': '#8F96A7',
     },
     border: {
       light: '#E8EDF5',
       medium: '#D1D8E5',
       dark: '#B4BDCC',
+      'dark-light': '#2A3348',
+      'dark-medium': '#3A445B',
+      'dark-dark': '#4A556E',
     },
     gradients: {
       primary: 'linear-gradient(135deg, #0066FF 0%, #00C2FF 100%)',
       secondary: 'linear-gradient(135deg, #FFB800 0%, #FFD600 100%)',
       dark: 'linear-gradient(135deg, #0A0F1E 0%, #1A2235 100%)',
+      'dark-primary': 'linear-gradient(135deg, #1A2235 0%, #2A3348 100%)',
+      'dark-secondary': 'linear-gradient(135deg, #2A3348 0%, #3A445B 100%)',
     },
   },
   radius: {
@@ -55,6 +68,10 @@ const theme = {
     md: '0 4px 6px rgba(10, 15, 30, 0.07)',
     lg: '0 8px 16px rgba(10, 15, 30, 0.1)',
     xl: '0 12px 24px rgba(10, 15, 30, 0.15)',
+    'dark-sm': '0 2px 4px rgba(0, 0, 0, 0.2)',
+    'dark-md': '0 4px 6px rgba(0, 0, 0, 0.25)',
+    'dark-lg': '0 8px 16px rgba(0, 0, 0, 0.3)',
+    'dark-xl': '0 12px 24px rgba(0, 0, 0, 0.35)',
   },
   typography: {
     fontFamily: {

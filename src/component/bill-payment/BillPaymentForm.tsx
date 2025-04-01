@@ -320,7 +320,7 @@ const BillPaymentForm: React.FC = () => {
                     <form onSubmit={handleSubmitForm} className="w-full">
                       {step === 1 && (
                         <div className="space-y-4">
-                          <div className="bg-white backdrop-blur-sm p-4 rounded-xl shadow-sm">
+                          <div className="bg-white dark:bg-background-dark-card backdrop-blur-sm p-4 rounded-xl shadow-sm dark:shadow-lg dark:shadow-background-dark/20 transition-colors duration-300">
                             {selectedService === "electricity" ? (
                               <MeterNumberInput
                                 error={errors.meterNumber?.message}
@@ -362,7 +362,7 @@ const BillPaymentForm: React.FC = () => {
                                 variant="primary"
                                 size="large"
                                 fullWidth
-                                className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark border border-chainpay-blue-dark/20 hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:ring-4 focus:ring-[#3B82F6]/50 transition-all duration-300"
+                                className="bg-gradient-to-r from-chainpay-blue to-chainpay-blue-dark border border-chainpay-blue-dark/20 hover:from-chainpay-blue-dark hover:to-[#3B82F6] hover:scale-105 hover:shadow-xl hover:shadow-[#3B82F6]/30 focus:ring-4 focus:ring-[#3B82F6]/50 transition-all duration-300 dark:from-chainpay-blue-dark dark:to-chainpay-blue-dark/90 dark:hover:from-chainpay-blue-dark/90 dark:hover:to-[#3B82F6] dark:hover:shadow-[#3B82F6]/20"
                               >
                                 <div className="flex items-center justify-center gap-2 text-white font-bold">
                                   <CreditCard className="w-4 h-4" />
@@ -396,7 +396,7 @@ const BillPaymentForm: React.FC = () => {
                               type="button"
                               onClick={prevStep}
                               disabled={isSubmitting}
-                              className="px-3 py-2 text-sm text-text-primary bg-background-light rounded-md hover:bg-background-medium transition-colors duration-200 font-medium border border-border-light"
+                              className="px-3 py-2 text-sm text-text-primary dark:text-text-light bg-background-light dark:bg-background-dark rounded-md hover:bg-background-medium dark:hover:bg-background-dark-medium transition-colors duration-200 font-medium border border-border-light dark:border-border-dark"
                             >
                               Previous
                             </button>
@@ -405,7 +405,7 @@ const BillPaymentForm: React.FC = () => {
                       )}
 
                       {submitStatus === "error" && (
-                        <div className="mt-2 px-3 py-2 rounded-lg bg-status-error/5 border border-status-error/10">
+                        <div className="mt-2 px-3 py-2 rounded-lg bg-status-error/5 dark:bg-status-error/10 border border-status-error/10">
                           <p className="text-sm text-status-error flex items-center gap-2 font-medium">
                             <AlertCircle className="w-4 h-4" />
                             There was an error processing your payment. Please

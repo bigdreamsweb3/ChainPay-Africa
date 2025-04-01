@@ -81,7 +81,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   return (
     <div className="w-full">
-      <div className="flex flex-col gap-3 bg-background-light border border-border-light rounded-lg p-4">
+      <div className="flex flex-col gap-3 bg-background-light dark:bg-background-dark rounded-lg p-4 transition-colors duration-300">
         <div className="flex flex-col space-y-3">
           {/* Input Row */}
           <div className="flex items-center justify-between gap-3">
@@ -102,12 +102,12 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                   validate: (value) =>
                     !isNaN(Number(value)) || "Amount must be a number",
                 })}
-                className="w-full text-base font-medium bg-transparent outline-none text-text-primary placeholder:text-text-muted [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="w-full text-base font-medium bg-transparent outline-none text-text-primary dark:text-text-light placeholder:text-text-muted dark:placeholder:text-text-muted/70 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors duration-200"
               />
 
               {creditAmount && (
                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                  <span className="text-xs text-text-muted font-medium px-2 py-1 bg-white rounded-md">
+                  <span className="text-xs text-text-muted font-medium px-2 py-1 bg-white dark:bg-background-dark rounded-md transition-colors duration-200">
                     Credit
                   </span>
                 </div>
@@ -120,7 +120,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 type="button"
                 onClick={() => setIsModalOpen(true)}
                 disabled={!isConnected}
-                className={`bg-white rounded-lg py-2 px-3 flex items-center gap-2 min-w-[100px] border border-border-light hover:bg-gray-50 transition-colors duration-200 ${
+                className={`bg-white dark:bg-background-dark-card rounded-lg py-2 px-3 flex items-center gap-2 min-w-[100px] hover:bg-gray-50 dark:hover:bg-background-dark-medium transition-colors duration-200 ${
                   isConnected ? "" : "cursor-not-allowed opacity-50"
                 }`}
               >
@@ -136,7 +136,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <span className="font-medium text-sm text-text-primary truncate">
+                      <span className="font-medium text-sm text-text-primary dark:text-text-light truncate">
                         {selectedTokenData.symbol}
                       </span>
                       <ChevronDown className="w-4 h-4 text-brand-primary shrink-0" />
@@ -152,14 +152,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <span className="font-medium text-sm text-text-primary truncate">
+                      <span className="font-medium text-sm text-text-primary dark:text-text-light truncate">
                         Select
                       </span>
                       <ChevronDown className="w-4 h-4 text-brand-primary shrink-0" />
                     </>
                   )
                 ) : (
-                  <span className="font-medium text-sm text-text-muted whitespace-nowrap">
+                  <span className="font-medium text-sm text-text-muted dark:text-text-muted/70 whitespace-nowrap">
                     Connect Wallet
                   </span>
                 )}
@@ -169,11 +169,11 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
           {/* Labels Row */}
           <div className="flex items-center justify-between text-xs font-medium">
-            <div className="flex items-center text-text-primary">
+            <div className="flex items-center text-text-primary dark:text-text-light">
               <Coins className="w-3.5 h-3.5 text-brand-primary" />
               <span className="ml-1.5 whitespace-nowrap">Amount</span>
             </div>
-            <div className="text-text-primary whitespace-nowrap">
+            <div className="text-text-primary dark:text-text-light whitespace-nowrap">
               Payment Token
             </div>
           </div>
@@ -181,7 +181,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
         {/* Error Message */}
         {errors.amount && (
-          <div className="px-3 py-2 rounded-md bg-status-error/5 text-status-error text-xs flex items-center gap-1.5">
+          <div className="px-3 py-2 rounded-md bg-status-error/5 dark:bg-status-error/10 text-status-error text-xs flex items-center gap-1.5">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
             <span className="font-medium">{errors.amount?.message?.toString()}</span>
           </div>
@@ -199,7 +199,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="fixed inset-0 bg-background-overlay backdrop-blur-sm flex items-center justify-center p-4"
+                className="fixed inset-0 bg-background-overlay dark:bg-background-overlay/80 backdrop-blur-sm flex items-center justify-center p-4"
                 onClick={() => setIsModalOpen(false)}
               >
                 <motion.div
@@ -208,22 +208,22 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.95, opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="w-full max-w-md bg-white shadow-lg rounded-lg overflow-hidden relative"
+                  className="w-full max-w-md bg-white dark:bg-background-dark shadow-lg dark:shadow-xl dark:shadow-background-dark/20 rounded-lg overflow-hidden relative"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
                     onClick={() => setIsModalOpen(false)}
-                    className="absolute top-4 right-4 text-text-muted hover:text-text-primary p-1 rounded-full hover:bg-gray-50 transition-colors"
+                    className="absolute top-4 right-4 text-text-muted dark:text-text-muted/70 hover:text-text-primary dark:hover:text-text-light p-1 rounded-full hover:bg-gray-50 dark:hover:bg-background-dark-medium transition-colors"
                   >
                     <X className="w-5 h-5" />
                   </button>
 
-                  <div className="p-6 border-b border-border-light">
-                    <h2 className="text-xl font-semibold text-text-primary flex items-center gap-2">
+                  <div className="p-6 border-b border-border-light dark:border-border-dark">
+                    <h2 className="text-xl font-semibold text-text-primary dark:text-text-light flex items-center gap-2">
                       <Coins className="w-5 h-5 text-brand-primary" />
                       Select Payment Token
                     </h2>
-                    <p className="text-sm text-text-muted mt-1">
+                    <p className="text-sm text-text-muted dark:text-text-muted/70 mt-1">
                       Choose your preferred token for payment
                     </p>
                   </div>
@@ -236,13 +236,13 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           onClick={() => handleTokenSelect(token)}
                           className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
                             selectedToken === token.id
-                              ? "bg-brand-primary/5 text-brand-primary"
-                              : "hover:bg-gray-50 text-text-primary"
+                              ? "bg-brand-primary/5 dark:bg-brand-primary/10 text-brand-primary"
+                              : "hover:bg-gray-50 dark:hover:bg-background-dark-medium text-text-primary dark:text-text-light"
                           }`}
                           whileTap={{ scale: 0.98 }}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50">
+                            <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-background-dark-medium">
                               <Image
                                 src={getTokenImageSource(token.network, token.token)}
                                 alt={`${token.token} on ${token.network}`}
@@ -255,7 +255,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                               <span className="font-medium block">
                                 {token.token}
                               </span>
-                              <span className="text-xs text-text-muted">
+                              <span className="text-xs text-text-muted dark:text-text-muted/70">
                                 {token.network}
                               </span>
                             </div>
