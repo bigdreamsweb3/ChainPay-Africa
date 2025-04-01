@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import { appConfig } from "@/app-config";
-import { Globe, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
 
 export default function ChainPayInfoCard() {
   return (

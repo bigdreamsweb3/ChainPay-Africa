@@ -20,7 +20,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
   selectedTokenData,
   creditAmount,
   localDisplayAmount,
-  conversionRate,
+  // conversionRate,
   isConverting,
   conversionError,
   serviceType,
@@ -29,9 +29,9 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
     return Number(num).toLocaleString("en-NG", { maximumFractionDigits: 2 });
   };
 
-  const displayServiceType = serviceType
-    ? serviceType.charAt(0).toUpperCase() + serviceType.slice(1)
-    : "Service";
+  // const displayServiceType = serviceType
+  //   ? serviceType.charAt(0).toUpperCase() + serviceType.slice(1)
+  //   : "Service";
 
   return (
     <AnimatePresence>
