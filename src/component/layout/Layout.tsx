@@ -10,7 +10,6 @@ import { Blocks, Shield, Heart } from "lucide-react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WalletModalProvider } from "@/context/WalletModalContext";
 import { WalletOptionsModal } from "@/component/web3/wallet-options-modal";
-import ChainPayInfoCard from "../chainpay-info-card";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -43,8 +42,13 @@ export function Layout({ children }: LayoutProps) {
               <main className="flex-grow relative z-0 overflow-visible py-6 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-8 mt-16 sm:mt-20">
                 <div className="mx-auto w-full max-w-lg sm:max-w-md lg:max-w-md px-0 sm:px-0">
                   {/* Tagline for branding and trust */}
-                  <div className="mb-6 sm:mb-8">
-                   <ChainPayInfoCard />
+                  <div className="text-center mb-6 sm:mb-8">
+                    <h1 className="text-xl sm:text-2xl font-semibold text-text-primary dark:text-text-light">
+                      Pay Bills with Crypto
+                    </h1>
+                    <p className="text-sm sm:text-base text-text-secondary dark:text-text-dark-secondary mt-2">
+                      Fast, secure, and seamless crypto payments.
+                    </p>
                   </div>
                   {/* Main content (e.g., bill payment form) */}
                   <div className="">{children}</div>
