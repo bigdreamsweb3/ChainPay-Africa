@@ -50,9 +50,9 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
             {/* Main Card */}
             <div className="rounded-xl bg-white dark:bg-background-dark-card shadow-md overflow-hidden transition-colors duration-300">
               {/* Token Info Section */}
-              <div className="p-4 border-b border-border-light dark:border-border-dark">
+              <div className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden border border-border-light dark:border-border-dark flex items-center justify-center bg-white dark:bg-background-dark">
+                  <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center bg-white dark:bg-background-dark">
                     <Image
                       src={selectedTokenData?.icon || "/placeholder.svg"}
                       alt={`${selectedTokenData?.symbol} icon`}
@@ -71,7 +71,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
               </div>
 
               {/* Details Section */}
-              <div className="p-3 space-y-2.5">
+              <div className="px-4 pb-4 space-y-3">
                 {/* Credit Units */}
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-text-muted dark:text-text-dark-muted">
@@ -93,10 +93,10 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                 </div>
 
                 {/* Final Amount */}
-                <div className="pt-2.5 border-t border-border-light dark:border-border-dark">
+                <div className="pt-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-chainpay-gold border border-chainpay-gold">
+                      <div className="flex items-center justify-center p-0.5 rounded-full w-5 h-5 bg-chainpay-gold">
                         {isConverting ? (
                           <Loader2
                             size={14}
@@ -127,7 +127,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
 
                 {/* Error Message */}
                 {conversionError && (
-                  <div className="mt-2.5 flex items-start gap-2 text-xs bg-status-error/5 dark:bg-status-error/10 text-status-error p-2 rounded-lg border border-status-error/10">
+                  <div className="mt-3 flex items-start gap-2 text-xs bg-status-error/5 dark:bg-status-error/10 text-status-error p-2 rounded-lg">
                     <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
                     <p className="font-medium leading-tight">
                       {conversionError}
