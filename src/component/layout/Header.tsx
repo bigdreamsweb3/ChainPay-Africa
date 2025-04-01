@@ -2,14 +2,14 @@
 
 import { ChainPayLogo } from "../web3/chainpay-logo";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { appConfig } from "@/app-config";
+// import { cn } from "@/lib/utils";
+// import { appConfig } from "@/app-config";
 import { WalletButton } from "../web3/wallet-options";
 import { ThemeToggle } from "../ui/ThemeToggle";
 
 export function Header() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  // const isHome = pathname === "/";
 
   return (
     <header className="fixed top-0 left-0 right-0 z-30 border-t border-border-light dark:border-border-dark bg-white dark:bg-background-dark transition-all duration-300">
