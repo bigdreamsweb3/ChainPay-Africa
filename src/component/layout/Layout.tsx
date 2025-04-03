@@ -6,7 +6,6 @@ import { wagmiConfig } from "@/utils/web3/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import NetworkSwitchNotification from "../web3/network-switch-notification";
-import { Blocks, Shield, Heart } from "lucide-react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WalletModalProvider } from "@/context/WalletModalContext";
 import { WalletOptionsModal } from "@/component/web3/wallet-options-modal";
