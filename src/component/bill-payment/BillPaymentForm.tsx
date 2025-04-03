@@ -406,10 +406,7 @@ const BillPaymentForm: React.FC = () => {
                                 <>
                                   <ConversionRate
                                     selectedTokenData={tokenData}
-                                    creditAmount={amount}
-                                    localDisplayAmount={displayAmount}
                                     conversionRate={conversionRate}
-                                    isConverting={isConverting}
                                     conversionError={conversionError}
                                     serviceType={selectedService}
                                   />

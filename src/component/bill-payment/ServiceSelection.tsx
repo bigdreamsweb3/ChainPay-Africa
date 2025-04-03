@@ -80,7 +80,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
   }, [setStep, setUnavailableServiceMessage]);
 
   return (
-    <div className="w-full bg-white dark:bg-background-dark-card rounded-lg p-4 shadow-md transition-colors duration-300">
+    <div className="w-full bg-white dark:bg-background-dark-card backdrop-blur-sm p-4 rounded-xl shadow-sm dark:shadow-lg dark:shadow-background-dark/20 transition-colors duration-300">
       <div className="grid grid-cols-4 gap-3">
         {services.map((service) => {
           const isAvailable = appConfig.availableServices.includes(
@@ -128,7 +128,7 @@ const ServiceSelection: React.FC<ServiceSelectionProps> = ({
                     className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center transition-colors duration-200 ${
                       field.value === service.id
                         ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/20"
-                        : "bg-white dark:bg-background-dark text-brand-primary dark:text-brand-primary/80 shadow-sm hover:shadow-md hover:shadow-brand-primary/10"
+                        : "bg-background-light dark:bg-background-dark text-brand-primary dark:text-brand-primary/80 shadow-sm hover:shadow-md hover:shadow-brand-primary/10"
                     }`}
                   >
                     <Icon className="w-5 h-5" />

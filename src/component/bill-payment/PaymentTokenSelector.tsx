@@ -41,20 +41,22 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   const creditAmount = watch("amount");
 
   // Get networks with accepted tokens
-  const networksWithTokens = [
-    {
-      chain: baseSepolia,
-      tokens: Object.values(baseSepolia.payAcceptedTokens),
-    },
-    {
-      chain: monadTestnet,
-      tokens: Object.values(monadTestnet.payAcceptedTokens),
-    },
-  ];
+  const networksWithTokens = useMemo(() => {
+    return [
+      {
+        chain: baseSepolia,
+        tokens: paymentTokens.filter((token) => token.network === "Base Sepolia"),
+      },
+      {
+        chain: monadTestnet,
+        tokens: paymentTokens.filter((token) => token.network === "Monad Testnet"),
+      },
+    ];
+  }, [paymentTokens]);
 
   // Check if current network has accepted tokens
   const currentNetworkHasTokens = networksWithTokens.some(
-    (network) => network.chain.id === chain?.id
+    (network) => network.chain.id === chain?.id && network.tokens.length > 0
   );
 
   // Get current network's tokens

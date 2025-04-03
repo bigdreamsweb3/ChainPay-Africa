@@ -1,6 +1,6 @@
 "use client";
 
-import { Zap, Shield, ArrowRight } from "lucide-react";
+import { Zap } from "lucide-react";
 
 export default function ChainPayInfoCard() {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   useAccount,
   useDisconnect,
@@ -38,14 +38,35 @@ export function Account() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (!address) return null;
+  const handleSwitchChain = async (chain: (typeof SUPPORTED_CHAIN_IDS)[number]) => {
+    try {
+      await switchChain({ chainId: chain.id });
+      setIsNetworkDropdownOpen(false);
+    } catch (error) {
+      console.error("Failed to switch network:", error);
+    }
+  };
+
+  useEffect(() => {
+    setIsOpen(false);
+    setIsNetworkDropdownOpen(false);
+  }, [chainId]);
+
+  useEffect(() => {
+    if (isDisconnected) {
+      setIsOpen(false);
+      setIsNetworkDropdownOpen(false);
+    }
+  }, [isDisconnected]);
+
+  const handleDisconnect = useCallback(() => {
+    disconnect();
+    setIsOpen(false);
+  }, [disconnect]);
+
+  if (!address || !isConnected) return null;
 
   const shortenedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
-
-  const handleSwitchChain = (chain: (typeof SUPPORTED_CHAIN_IDS)[number]) => {
-    switchChain({ chainId: chain.id });
-    setIsNetworkDropdownOpen(false);
-  };
 
   const getConnectionStatus = () => {
     if (isConnecting || isReconnecting) return "connecting";
@@ -57,7 +78,6 @@ export function Account() {
   const status = getConnectionStatus();
   const isSwitching = switchStatus === "pending";
 
-  // Get the wallet icon for the connected connector (for the button)
   const walletIconSrc = connector
     ? getWalletIcon(connector)
     : "/default-wallet-icon.svg";
@@ -241,10 +261,7 @@ export function Account() {
 
               {/* Disconnect Option */}
               <button
-                onClick={() => {
-                  disconnect();
-                  setIsOpen(false);
-                }}
+                onClick={handleDisconnect}
                 className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-status-error hover:bg-status-error/5 dark:hover:bg-status-error/10 rounded-md transition-colors duration-150 focus:outline-none"
               >
                 <LogOut className="w-4 h-4" />

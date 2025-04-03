@@ -52,7 +52,9 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                   {/* Left Side - Amount to Pay */}
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded bg-chainpay-gold/10 dark:bg-chainpay-gold/20 flex items-center justify-center">
-                      <span className="text-xs font-medium text-chainpay-gold">₦</span>
+                      <span className="text-xs font-medium text-chainpay-gold-dark dark:text-chainpay-gold">
+                        ₦
+                      </span>
                     </div>
                     <div>
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
@@ -73,7 +75,9 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded bg-chainpay-gold/10 dark:bg-chainpay-gold/20 flex items-center justify-center">
                       <Image
-                        src={selectedTokenData?.icon?.trim() || "/placeholder.svg"}
+                        src={
+                          selectedTokenData?.icon?.trim() || "/placeholder.svg"
+                        }
                         alt={`${selectedTokenData?.symbol} icon`}
                         width={16}
                         height={16}
@@ -91,9 +95,12 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                           <span className="text-sm font-semibold text-chainpay-blue-dark dark:text-chainpay-blue-light">
                             {localDisplayAmount}
                           </span>
-                          <span className="text-xs font-semibold text-chainpay-gold">
-                            {selectedTokenData?.symbol}
-                          </span>
+
+                          <div className="rounded bg-chainpay-gold/10 dark:bg-chainpay-gold/20 flex items-center justify-center px-1">
+                            <span className="text-xs font-semibold text-chainpay-gold-dark dark:text-chainpay-gold">
+                              {selectedTokenData?.symbol}
+                            </span>
+                          </div>
                         </div>
                       )}
                     </div>
