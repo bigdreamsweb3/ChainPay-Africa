@@ -26,6 +26,7 @@ import ConversionResultCard from "./ConversionResultCard";
 import type { TokenData } from "@/types/token";
 import { useAccount } from "wagmi";
 import { WalletOptions } from "@/component/web3/wallet-options";
+import ConversionRate from "./ConversionRate";
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
@@ -363,19 +364,23 @@ const BillPaymentForm: React.FC = () => {
                               />
                             </div>
 
-                            {tokenData && amount && amount !== "0" && (
-                              <ConversionResultCard
-                                selectedTokenData={tokenData}
-                                creditAmount={amount}
-                                localDisplayAmount={displayAmount}
-                                conversionRate={conversionRate}
-                                isConverting={isConverting}
-                                conversionError={conversionError}
-                                serviceType={selectedService}
-                              />
-                            )}
-
                             <div className="mt-4">
+                              {tokenData && (
+                                <>
+                                  {amount && amount !== "0" && (
+                                    <ConversionResultCard
+                                      selectedTokenData={tokenData}
+                                      creditAmount={amount}
+                                      localDisplayAmount={displayAmount}
+                                      conversionRate={conversionRate}
+                                      isConverting={isConverting}
+                                      conversionError={conversionError}
+                                      serviceType={selectedService}
+                                    />
+                                  )}
+                                </>
+                              )}
+
                               {isConnected ? (
                                 <ChainPayButton
                                   type="submit"
@@ -395,6 +400,20 @@ const BillPaymentForm: React.FC = () => {
                                 <div className="w-full">
                                   <WalletOptions variant="full" />
                                 </div>
+                              )}
+
+                              {tokenData && (
+                                <>
+                                  <ConversionRate
+                                    selectedTokenData={tokenData}
+                                    creditAmount={amount}
+                                    localDisplayAmount={displayAmount}
+                                    conversionRate={conversionRate}
+                                    isConverting={isConverting}
+                                    conversionError={conversionError}
+                                    serviceType={selectedService}
+                                  />
+                                </>
                               )}
                             </div>
                           </div>

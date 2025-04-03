@@ -6,8 +6,8 @@ import {
 } from "@/lib/CP_NGN_USD_Vendor";
 
 // Function to fetch conversion rate
-export const fetchConversionRate = async () => {
-  return await getConversionRateDisplay();
+export const fetchConversionRate = async (tokenSymbol: string = "USDT") => {
+  return await getConversionRateDisplay(tokenSymbol);
 };
 
 // Function to convert credit to token amount

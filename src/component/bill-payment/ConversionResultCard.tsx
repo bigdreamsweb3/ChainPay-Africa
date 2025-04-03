@@ -43,7 +43,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
             initial={{ opacity: 0, y: -5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -5 }}
-            className="mt-4"
+            className="mt-2 mb-4"
           >
             <div className="bg-white dark:bg-gray-800 rounded-lg">
               {/* Main Content */}
@@ -55,10 +55,10 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                       <span className="text-xs font-medium text-chainpay-gold">₦</span>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                         Amount
                       </p>
-                      <p className="text-sm font-medium text-chainpay-blue-dark dark:text-chainpay-blue-light">
+                      <p className="text-sm font-semibold text-chainpay-blue-dark dark:text-chainpay-blue-light">
                         ₦{formatNumber(creditAmount)}
                       </p>
                     </div>
@@ -73,7 +73,7 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                   <div className="flex items-center gap-2">
                     <div className="w-6 h-6 rounded bg-chainpay-gold/10 dark:bg-chainpay-gold/20 flex items-center justify-center">
                       <Image
-                        src={selectedTokenData?.icon || "/placeholder.svg"}
+                        src={selectedTokenData?.icon?.trim() || "/placeholder.svg"}
                         alt={`${selectedTokenData?.symbol} icon`}
                         width={16}
                         height={16}
@@ -81,17 +81,17 @@ const ConversionResultCard: React.FC<ConversionResultCardProps> = ({
                       />
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400">
                         You&apos;ll Pay
                       </p>
                       {isConverting ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-chainpay-gold" />
                       ) : (
                         <div className="flex items-center gap-1">
-                          <span className="text-sm font-medium text-chainpay-blue-dark dark:text-chainpay-blue-light">
+                          <span className="text-sm font-semibold text-chainpay-blue-dark dark:text-chainpay-blue-light">
                             {localDisplayAmount}
                           </span>
-                          <span className="text-xs text-chainpay-gold">
+                          <span className="text-xs font-semibold text-chainpay-gold">
                             {selectedTokenData?.symbol}
                           </span>
                         </div>

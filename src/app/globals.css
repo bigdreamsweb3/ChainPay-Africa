@@ -1,14 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Import Manrope */
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --primary: #0A82CD;
-  --secondary: #35B0FF;
-  --accent: #F39C12;
-  
+  --primary: #0a82cd;
+  --secondary: #35b0ff;
+  --accent: #f39c12;
+
   /* Z-index layers */
   --z-dropdown: 50;
   --z-modal: 100;
@@ -16,15 +17,17 @@
   --z-header: 30;
   --z-footer: 10;
 
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  /* Font Update */
+  --font-sans: "Manrope", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
-    @apply antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   body {
@@ -32,11 +35,12 @@
   }
 }
 
-html, body {
+html,
+body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #FFFFFF;
-  color: #1A202C;
+  background-color: #ffffff;
+  color: #1a202c;
   overflow-x: hidden;
   position: relative;
   max-width: 100vw;
@@ -65,15 +69,15 @@ html, body {
   .app-card {
     @apply bg-background-card rounded-medium border border-border-light;
   }
-  
+
   .app-button {
-    @apply px-4 py-2 rounded-pill bg-brand-primary text-white font-medium;
+    @apply px-4 py-2 rounded-pill bg-brand-primary text-white font-bold tracking-wide;
   }
-  
+
   .accent-button {
-    @apply px-4 py-2 rounded-pill bg-brand-accent text-white font-medium;
+    @apply px-4 py-2 rounded-pill bg-brand-accent text-white font-bold tracking-wide;
   }
-  
+
   .outlined-border {
     @apply border border-border-medium rounded-medium;
   }
@@ -84,57 +88,91 @@ html, body {
   }
 
   .input-base {
-    @apply w-full rounded-lg border border-border-light bg-white px-4 py-2.5 text-sm text-text-primary placeholder-text-muted shadow-sm transition-colors focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20;
+    @apply w-full rounded-lg border border-border-light bg-white px-4 py-2.5 text-sm text-text-primary placeholder-text-muted shadow-sm transition-colors focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/20 font-medium;
   }
 
   .btn-base {
-    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-bold transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-primary {
-    @apply btn-base bg-gradient-primary text-white hover:shadow-lg focus:ring-brand-primary/50;
+    @apply btn-base bg-gradient-primary text-white hover:shadow-lg focus:ring-brand-primary/50 font-bold text-base tracking-tight;
   }
 
   .btn-secondary {
-    @apply btn-base bg-gradient-secondary text-text-primary hover:shadow-lg focus:ring-brand-secondary/50;
+    @apply btn-base bg-gradient-secondary text-text-primary hover:shadow-lg focus:ring-brand-secondary/50 font-bold tracking-tight;
   }
 
   .card {
-    @apply rounded-xl border border-border-light bg-white p-4 shadow-sm;
+    @apply rounded-xl border border-border-light bg-white p-4 shadow-sm font-medium;
   }
 
   .card-hover {
     @apply card transition-all hover:shadow-md;
   }
+
+  /* Mobile-optimized typography */
+  h1 {
+    @apply text-xl sm:text-2xl font-bold tracking-tight leading-tight;
+  }
+
+  h2 {
+    @apply text-lg sm:text-xl font-bold tracking-tight leading-tight;
+  }
+
+  h3 {
+    @apply text-base sm:text-lg font-semibold tracking-tight leading-tight;
+  }
+
+  p, .text-body {
+    @apply text-sm sm:text-base font-medium leading-relaxed;
+  }
+
+  .text-small {
+    @apply text-xs sm:text-sm font-medium;
+  }
+
+  .text-caption {
+    @apply text-xs font-medium text-text-secondary;
+  }
+
+  /* Mobile-optimized spacing */
+  .section-spacing {
+    @apply py-4 sm:py-6;
+  }
+
+  .content-spacing {
+    @apply px-3 sm:px-4;
+  }
 }
 
 /* Responsive container sizes */
 .container {
-    width: 100%;
-    margin-right: auto;
-    margin-left: auto;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 
 @media (min-width: 640px) {
-    .container {
-        max-width: 640px;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
+  .container {
+    max-width: 640px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 @media (min-width: 768px) {
-    .container {
-        max-width: 768px;
-    }
+  .container {
+    max-width: 768px;
+  }
 }
 
 @media (min-width: 1024px) {
-    .container {
-        max-width: 1024px;
-    }
+  .container {
+    max-width: 1024px;
+  }
 }
 
 /* Custom scrollbar */

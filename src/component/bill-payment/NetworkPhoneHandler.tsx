@@ -172,7 +172,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="bg-white dark:bg-background-dark-card rounded-lg py-2 px-3 flex items-center gap-2 min-w-[100px] hover:bg-gray-50 dark:hover:bg-background-dark-medium transition-colors duration-200"
               >
-                <div className="w-4 h-4 flex items-center justify-center">
+                <div className="w-4 h-4 flex items-center justify-center rounded-lg overflow-hidden">
                   <Image
                     src={selectedNetwork.iconUrl || "/placeholder.svg"}
                     alt={selectedNetwork.name}
@@ -181,8 +181,8 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                     className="w-full h-full object-contain"
                   />
                 </div>
-                <span className="font-medium text-sm text-text-primary dark:text-text-light truncate">
-                  {selectedNetwork.name?.replace(/\s?Nigeria\s?/g, "")}
+                <span className="font-semibold text-sm text-text-primary dark:text-text-light truncate max-w-[60px]">
+                  {selectedNetwork.name?.replace(/\s?Nigeria\s?/g, "").toUpperCase()}
                 </span>
                 <ChevronDown className="w-4 h-4 text-brand-primary shrink-0" />
               </button>
@@ -201,7 +201,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                             : "hover:bg-gray-50 dark:hover:bg-background-dark-medium text-text-primary dark:text-text-light"
                         }`}
                       >
-                        <div className="w-4 h-4 flex items-center justify-center">
+                        <div className="w-4 h-4 flex items-center justify-center rounded-lg overflow-hidden">
                           <Image
                             src={network.iconUrl || "/placeholder.svg"}
                             alt={network.name}
@@ -210,7 +210,7 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <span className="text-sm font-medium truncate flex-1">
+                        <span className="text-sm font-semibold truncate flex-1">
                           {network.name}
                         </span>
                         {selectedNetwork.id === network.id && (
@@ -228,9 +228,9 @@ const NetworkPhoneHandler: React.FC<PhoneNumberInputProps> = ({ error, onCarrier
           <div className="flex items-center justify-between text-xs font-medium">
             <div className="flex items-center text-text-primary dark:text-text-light">
               <Phone className="w-3.5 h-3.5 text-brand-primary" />
-              <span className="ml-1.5 whitespace-nowrap">Phone Number</span>
+              <span className="ml-1.5 whitespace-nowrap font-semibold">Phone Number</span>
             </div>
-            <div className="text-text-primary dark:text-text-light whitespace-nowrap">
+            <div className="text-text-primary dark:text-text-light whitespace-nowrap font-semibold">
               Network Provider
             </div>
           </div>

@@ -186,7 +186,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <span className="font-medium text-sm text-text-primary dark:text-text-light truncate">
+                      <span className="font-semibold text-sm text-text-primary dark:text-text-light truncate">
                         {selectedTokenData.symbol}
                       </span>
                       <ChevronDown className="w-4 h-4 text-brand-primary shrink-0" />
@@ -202,14 +202,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                           className="w-full h-full object-contain"
                         />
                       </div>
-                      <span className="font-medium text-sm text-text-primary dark:text-text-light truncate">
+                      <span className="font-semibold text-sm text-text-primary dark:text-text-light truncate">
                         Select
                       </span>
                       <ChevronDown className="w-4 h-4 text-brand-primary shrink-0" />
                     </>
                   )
                 ) : (
-                  <span className="font-medium text-sm text-text-muted dark:text-text-muted/70 whitespace-nowrap">
+                  <span className="font-semibold text-sm text-text-muted dark:text-text-muted/70 whitespace-nowrap">
                     Connect Wallet
                   </span>
                 )}
@@ -221,9 +221,9 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
           <div className="flex items-center justify-between text-xs font-medium">
             <div className="flex items-center text-text-primary dark:text-text-light">
               <Coins className="w-3.5 h-3.5 text-brand-primary" />
-              <span className="ml-1.5 whitespace-nowrap">Amount</span>
+              <span className="ml-1.5 whitespace-nowrap font-semibold">Amount</span>
             </div>
-            <div className="text-text-primary dark:text-text-light whitespace-nowrap">
+            <div className="text-text-primary dark:text-text-light whitespace-nowrap font-semibold">
               Payment Token
             </div>
           </div>
@@ -269,11 +269,11 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                   </button>
 
                   <div className="p-6 bg-background-light dark:bg-background-dark-light">
-                    <h2 className="text-xl font-semibold text-text-primary dark:text-text-light flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-text-primary dark:text-text-light flex items-center gap-2">
                       <Coins className="w-5 h-5 text-brand-primary" />
                       Select Payment Token
                     </h2>
-                    <p className="text-sm text-text-muted dark:text-text-muted/70 mt-1">
+                    <p className="text-sm font-medium text-text-muted dark:text-text-muted/70 mt-1">
                       Choose your preferred token for payment
                     </p>
                   </div>
@@ -310,7 +310,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                                   />
                                 </div>
                                 <div className="text-left">
-                                  <span className="font-medium text-text-primary dark:text-text-light block">
+                                  <span className="font-semibold text-text-primary dark:text-text-light block">
                                     {network.chain.name}
                                   </span>
                                   <span className="text-xs text-text-muted dark:text-text-muted/70">
@@ -351,7 +351,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                                 />
                               </div>
                               <div className="text-left">
-                                <span className="font-medium block">
+                                <span className="font-semibold block">
                                   {token.token}
                                 </span>
                                 <span className="text-xs text-text-muted dark:text-text-muted/70">

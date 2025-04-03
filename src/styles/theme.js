@@ -75,8 +75,8 @@ const theme = {
   },
   typography: {
     fontFamily: {
-      sans: 'Inter, system-ui, -apple-system, sans-serif',
-      display: 'Inter, system-ui, -apple-system, sans-serif',
+      sans: 'Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      display: 'Manrope, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     },
     sizes: {
       xs: '0.75rem',
@@ -87,6 +87,13 @@ const theme = {
       '2xl': '1.5rem',
       '3xl': '1.875rem'
     },
+    weights: {
+      normal: '400',
+      medium: '500',
+      semibold: '600',
+      bold: '700',
+      extrabold: '800'
+    }
   },
   breakpoints: {
     sm: '640px',

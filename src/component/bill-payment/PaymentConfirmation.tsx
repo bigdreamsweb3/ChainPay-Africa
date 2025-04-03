@@ -338,7 +338,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-text-primary dark:text-text-dark-primary">
+              <h3 className="text-xl font-bold text-text-primary dark:text-text-dark-primary">
                 {transactionStatus === "error"
                   ? "Transaction Failed"
                   : "Review Transaction"}
@@ -388,7 +388,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                       </svg>
                     </div>
                     <div className="text-center space-y-2">
-                      <h4 className="text-lg font-semibold text-text-primary dark:text-text-dark-primary">
+                      <h4 className="text-lg font-bold text-text-primary dark:text-text-dark-primary">
                         Transaction Successful!
                       </h4>
                       <p className="text-sm text-text-muted dark:text-text-dark-muted">
@@ -405,18 +405,18 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             {transactionStatus !== "completed" && (
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
-                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Service</span>
-                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary capitalize">
+                  <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">Service</span>
+                  <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary capitalize">
                     {selectedService}
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
-                  <span className="text-xs text-text-muted dark:text-text-dark-muted">
+                  <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">
                     {selectedService === "electricity"
                       ? "Meter Number"
                       : "Phone Number"}
                   </span>
-                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                  <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary">
                     {selectedService === "electricity"
                       ? watch("meterNumber")
                       : watch("phoneNumber")}
@@ -426,21 +426,21 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   selectedService === "data") &&
                   carrier && (
                     <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
-                      <span className="text-xs text-text-muted dark:text-text-dark-muted">Network</span>
-                      <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                      <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">Network</span>
+                      <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary">
                         {carrier.name || "Unknown"}
                       </span>
                     </div>
                   )}
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
-                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Amount</span>
-                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                  <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">Amount</span>
+                  <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary">
                     {watch("amount")} Credits
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
-                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Pay Amount</span>
-                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                  <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">Pay Amount</span>
+                  <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary">
                     {isConverting ? (
                       <span className="flex items-center gap-1.5">
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />
@@ -454,8 +454,8 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
-                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Payment Token</span>
-                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary">
+                  <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">Payment Token</span>
+                  <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary">
                     {selectedTokenDetails ? (
                       <div className="flex items-center gap-2">
                         <div className="w-6 h-6 rounded-full bg-white dark:bg-background-dark flex items-center justify-center overflow-hidden">
@@ -483,8 +483,8 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
             {isProcessing && (
               <div className="mt-4 p-3 rounded-lg bg-background-light dark:bg-background-dark-light">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-text-muted dark:text-text-dark-muted">Status</span>
-                  <span className="text-sm font-medium text-text-primary dark:text-text-dark-primary flex items-center gap-2">
+                  <span className="text-xs font-semibold text-text-muted dark:text-text-dark-muted">Status</span>
+                  <span className="text-sm font-semibold text-text-primary dark:text-text-dark-primary flex items-center gap-2">
                     {transactionStatus === "initializing" && (
                       <>
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-primary" />

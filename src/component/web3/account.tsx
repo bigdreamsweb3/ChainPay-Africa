@@ -71,9 +71,9 @@ export function Account() {
         whileTap={{ scale: 0.98 }}
       >
         {isConnected && connector ? (
-          <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full bg-background-light dark:bg-background-dark-light flex items-center justify-center">
             <Image
-              src={walletIconSrc}
+              src={walletIconSrc?.trim() || "/default-wallet-icon.svg"}
               alt={`${connector.name} icon`}
               width={20}
               height={20}
@@ -82,9 +82,9 @@ export function Account() {
             />
           </div>
         ) : ensAvatar ? (
-          <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+          <div className="w-5 h-5 rounded-full bg-background-light dark:bg-background-dark-light flex items-center justify-center">
             <Image
-              src={ensAvatar || "/placeholder.svg"}
+              src={ensAvatar?.trim() || "/placeholder.svg"}
               alt="ENS Avatar"
               width={20}
               height={20}
@@ -92,8 +92,8 @@ export function Account() {
             />
           </div>
         ) : (
-          <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
-            <User className="w-4 h-4 text-white" />
+            <div className="w-5 h-5 rounded-full bg-background-light dark:bg-background-dark-light flex items-center justify-center">
+            <User className="w-4 h-4 text-text-primary dark:text-text-dark-primary" />
           </div>
         )}
         <span className="text-white hidden sm:inline">{ensName || shortenedAddress}</span>
@@ -131,7 +131,7 @@ export function Account() {
               <div className="flex items-center space-x-3">
                 {ensAvatar ? (
                   <Image
-                    src={ensAvatar || "/placeholder.svg"}
+                    src={ensAvatar?.trim() || "/placeholder.svg"}
                     alt="ENS Avatar"
                     width={40}
                     height={40}

@@ -40,8 +40,6 @@ const getRateWithFallbacks = async (): Promise<number> => {
   }
 };
 
-// 
-
 // Main rate fetching function
 export const fetchNGNtoUSDRate = async (): Promise<number> => {
   // Check cache first
@@ -77,12 +75,12 @@ export const formatTokenAmountDisplay = (amount: string, displayDecimals = 4): s
 };
 
 // Function to get conversion rate display
-export const getConversionRateDisplay = async (): Promise<string> => {
+export const getConversionRateDisplay = async (tokenSymbol: string = "USDT"): Promise<string> => {
   try {
     const rate = await fetchNGNtoUSDRate();
-    return `1 USD ≈ ${rate.toLocaleString()} NGN`;
+    return `1 ${tokenSymbol} ≈ ${rate.toLocaleString()} NGN`;
   } catch {
-    return `1 USD ≈ ${RATE_CONFIG.preferredRate.toLocaleString()} NGN`;
+    return `1 ${tokenSymbol} ≈ ${RATE_CONFIG.preferredRate.toLocaleString()} NGN`;
   }
 };
 

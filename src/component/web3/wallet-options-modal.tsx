@@ -165,7 +165,7 @@ export function WalletOptionsModal() {
                         <div className="flex items-center gap-3">
                           <div className="w-6 h-6 relative flex-shrink-0">
                             <Image
-                              src={getWalletIcon(connector)}
+                              src={getWalletIcon(connector)?.trim() || "/default-wallet-icon.svg"}
                               alt={`${connector.name} logo`}
                               width={24}
                               height={24}
