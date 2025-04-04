@@ -15,7 +15,7 @@ const NETWORK_TO_OPERATOR_ID = {
   0: "683", // MTN Nigeria (update with actual MTN Nigeria operator ID)
   1: "679", // Airtel Nigeria (update with actual Airtel Nigeria operator ID)
   2: "681", // Glo Nigeria (update with actual Glo Nigeria operator ID)
-  3: "680", // 9mobile Nigeria (formerly Etisalat)
+  3: "1100", // 9mobile Nigeria (formerly Etisalat)
 };
 
 // Helper function to convert blockchain network enum to Reloadly operator ID
@@ -150,27 +150,27 @@ function generateCustomIdentifier() {
 export { buyAirtime, generateCustomIdentifier };
 
 // Example usage with blockchain context
-async function main() {
-  try {
-    const networkEnum = 0; // MTN
-    const creditAmount = "10.00"; // Valid credit amount for this operator
-    const customIdentifier = generateCustomIdentifier(); // Generate random
-    const recipientPhone = { countryCode: "GB", number: "447951731337" }; // UK test number
-    const senderWallet = "0x1a2b3c4d5e6f7g8h9i0j"; // Example blockchain wallet address
+// async function main() {
+//   try {
+//     const networkEnum = 0; // MTN
+//     const creditAmount = "10.00"; // Valid credit amount for this operator
+//     const customIdentifier = generateCustomIdentifier(); // Generate random
+//     const recipientPhone = { countryCode: "GB", number: "447951731337" }; // UK test number
+//     const senderWallet = "0x1a2b3c4d5e6f7g8h9i0j"; // Example blockchain wallet address
 
-    console.log("Starting airtime purchase...");
-    const result = await buyAirtime(
-      networkEnum,
-      creditAmount,
-      recipientPhone,
-      senderWallet,
-      customIdentifier
-    );
-    console.log("Transaction Details:", result);
-  } catch (error) {
-    console.error("Main error:", error);
-  }
-}
+//     console.log("Starting airtime purchase...");
+//     const result = await buyAirtime(
+//       networkEnum,
+//       creditAmount,
+//       recipientPhone,
+//       senderWallet,
+//       customIdentifier
+//     );
+//     console.log("Transaction Details:", result);
+//   } catch (error) {
+//     console.error("Main error:", error);
+//   }
+// }
 
 // Run the example - uncomment to test
 // main();
