@@ -5,4 +5,5 @@ import { PaymentToken } from "./config";
 export interface ChainPayChain extends Chain {
   buyAiritimeContract?: `0x${string}`;
   payAcceptedTokens?: Record<string, PaymentToken>;
+  icon?: string;
 } 
