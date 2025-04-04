@@ -10,6 +10,9 @@ export interface PaymentToken {
   icon: string;
 }
 
+// Add a small console log to help debugging
+console.log("PaymentToken interface loaded from constants/token.ts");
+
 // Supported blockchain networks
 export const supportedNetworks = [
   {

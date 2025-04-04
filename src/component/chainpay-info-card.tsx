@@ -4,7 +4,7 @@ import { Zap } from "lucide-react";
 
 export default function ChainPayInfoCard() {
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full">
       <div className="relative rounded-lg overflow-hidden shadow-md">
         {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-chainpay-blue-dark to-chainpay-blue"></div>

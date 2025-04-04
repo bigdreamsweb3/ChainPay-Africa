@@ -9,7 +9,7 @@ import { AlertCircle, Coins, Check, ChevronDown, X, ChevronRight } from "lucide-
 import { motion, AnimatePresence } from "framer-motion";
 import { createPortal } from "react-dom";
 import type { PaymentToken } from "@/constants/token";
-import { baseSepolia, monadTestnet } from "@/utils/web3/chains";
+import { acceptedChains } from "@/utils/web3/chains";
 
 interface PaymentTokenSelectorProps {
   paymentTokens: PaymentToken[];
@@ -36,39 +36,63 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
 
   const selectedTokenData = paymentTokens.find(
     (token) => token.id === selectedToken
-  ) as PaymentToken | undefined;
+  );
 
   const creditAmount = watch("amount");
 
-  // Get networks with accepted tokens
+  // Calculate networks with their tokens
   const networksWithTokens = useMemo(() => {
-    return [
-      {
-        chain: baseSepolia,
-        tokens: paymentTokens.filter((token) => token.network === "Base Sepolia"),
-      },
-      {
-        chain: monadTestnet,
-        tokens: paymentTokens.filter((token) => token.network === "Monad Testnet"),
-      },
-    ];
+    const chainTokenMap = new Map<number, PaymentToken[]>();
+
+    // Match tokens to chains
+    paymentTokens.forEach((token) => {
+      const chainMatch = acceptedChains.find(
+        (chain) => chain.name.toLowerCase() === (token.network || "").toLowerCase()
+      );
+      if (chainMatch) {
+        const existingTokens = chainTokenMap.get(chainMatch.id) || [];
+        if (!existingTokens.some((t) => t.id === token.id)) {
+          chainTokenMap.set(chainMatch.id, [...existingTokens, token]);
+        }
+      }
+    });
+
+    // Include all accepted chains, even those without tokens
+    const networks = acceptedChains.map((chain) => {
+      const tokens = chainTokenMap.get(chain.id) || [];
+      return {
+        chain,
+        networkNameLower: chain.name.toLowerCase(),
+        tokens,
+        tokenCount: tokens.length,
+      };
+    });
+
+    return networks;
   }, [paymentTokens]);
 
-  // Check if current network has accepted tokens
-  const currentNetworkHasTokens = networksWithTokens.some(
-    (network) => network.chain.id === chain?.id && network.tokens.length > 0
+  // Check if current network has tokens
+  const currentNetworkHasTokens = useMemo(
+    () =>
+      networksWithTokens.some(
+        (network) => network.chain.id === chain?.id && network.tokenCount > 0
+      ),
+    [chain?.id, networksWithTokens]
   );
 
   // Get current network's tokens
-  const currentNetworkTokens = useMemo(() => 
-    networksWithTokens.find(
-      (network) => network.chain.id === chain?.id
-    )?.tokens || []
-  , [chain?.id, networksWithTokens]);
+  const currentNetworkTokens = useMemo(
+    () =>
+      networksWithTokens.find((network) => network.chain.id === chain?.id)?.tokens || [],
+    [chain?.id, networksWithTokens]
+  );
 
-  // Auto-select first token when network changes or when no token is selected
+  // Auto-select first token when network changes or no token selected
   useEffect(() => {
-    if (currentNetworkHasTokens && (!selectedToken || !currentNetworkTokens.some(token => token.id === selectedToken))) {
+    if (
+      currentNetworkHasTokens &&
+      (!selectedToken || !currentNetworkTokens.some((token) => token.id === selectedToken))
+    ) {
       const firstToken = currentNetworkTokens[0];
       if (firstToken) {
         setSelectedToken(firstToken.id);
@@ -79,46 +103,11 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
   const handleNetworkSwitch = async (chainId: number) => {
     try {
       await switchChain({ chainId: chainId as 84532 | 10143 });
-      // Don't close modal immediately to allow user to see the new tokens
-      setTimeout(() => {
-        setIsModalOpen(false);
-      }, 1000);
+      setTimeout(() => setIsModalOpen(false), 1000);
     } catch (error) {
       console.error("Failed to switch network:", error);
     }
   };
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    const fetchTokenIcons = async () => {
-      try {
-        const tokenIconMap: { [key: string]: string } = {};
-        
-        // Add icons from Base Sepolia
-        Object.values(baseSepolia.payAcceptedTokens).forEach(token => {
-          if (token.icon) {
-            tokenIconMap[`${token.network.toLowerCase()}-${token.token.toLowerCase()}`] = token.icon;
-          }
-        });
-
-        // Add icons from Monad Testnet
-        Object.values(monadTestnet.payAcceptedTokens).forEach(token => {
-          if (token.icon) {
-            tokenIconMap[`${token.network.toLowerCase()}-${token.token.toLowerCase()}`] = token.icon;
-          }
-        });
-
-        setTokenImages(tokenIconMap);
-      } catch (error) {
-        console.error("Error fetching token icons:", error);
-      }
-    };
-
-    fetchTokenIcons();
-  }, []);
 
   const handleTokenSelect = (token: PaymentToken) => {
     setSelectedToken(token.id);
@@ -130,13 +119,37 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
     return tokenImages[key] || "/network-icons/default-token.png";
   };
 
+  // Set client-side rendering flag
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Fetch token icons
+  useEffect(() => {
+    const fetchTokenIcons = async () => {
+      try {
+        const tokenIconMap: { [key: string]: string } = {};
+        acceptedChains.forEach((chain) => {
+          Object.values(chain.payAcceptedTokens || {}).forEach((token) => {
+            if (token.icon) {
+              tokenIconMap[`${token.network.toLowerCase()}-${token.token.toLowerCase()}`] =
+                token.icon;
+            }
+          });
+        });
+        setTokenImages(tokenIconMap);
+      } catch (error) {
+        console.error("Error fetching token icons:", error);
+      }
+    };
+    fetchTokenIcons();
+  }, []);
+
   return (
     <div className="w-full">
       <div className="flex flex-col gap-3 bg-background-light dark:bg-background-dark rounded-lg p-4 transition-colors duration-300">
         <div className="flex flex-col space-y-3">
-          {/* Input Row */}
           <div className="flex items-center justify-between gap-3">
-            {/* Amount Input */}
             <div className="flex-1 min-w-0 relative">
               <input
                 id="amount"
@@ -146,17 +159,12 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 placeholder="Enter amount"
                 {...register("amount", {
                   required: "Amount is required",
-                  min: {
-                    value: 50,
-                    message: "Minimum amount is 50 credit units",
-                  },
-                  validate: (value) =>
-                    !isNaN(Number(value)) || "Amount must be a number",
+                  min: { value: 50, message: "Minimum amount is 50 credit units" },
+                  validate: (value) => !isNaN(Number(value)) || "Amount must be a number",
                 })}
                 className="w-full text-base font-medium bg-transparent outline-none text-text-primary dark:text-text-light placeholder:text-text-muted dark:placeholder:text-text-muted/70 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none transition-colors duration-200"
                 onWheel={(e) => e.currentTarget.blur()}
               />
-
               {creditAmount && (
                 <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                   <span className="text-xs text-text-muted font-medium px-2 py-1 bg-white dark:bg-background-dark rounded-md transition-colors duration-200">
@@ -165,8 +173,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                 </div>
               )}
             </div>
-
-            {/* Token Selection */}
             <div className="shrink-0">
               <button
                 type="button"
@@ -181,8 +187,8 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                     <>
                       <div className="w-4 h-4 flex items-center justify-center">
                         <Image
-                          src={selectedTokenData?.icon || "/placeholder.svg"}
-                          alt={selectedTokenData?.symbol}
+                          src={selectedTokenData.icon || "/placeholder.svg"}
+                          alt={selectedTokenData.symbol}
                           width={16}
                           height={16}
                           className="w-full h-full object-contain"
@@ -218,8 +224,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
               </button>
             </div>
           </div>
-
-          {/* Labels Row */}
           <div className="flex items-center justify-between text-xs font-medium">
             <div className="flex items-center text-text-primary dark:text-text-light">
               <Coins className="w-3.5 h-3.5 text-brand-primary" />
@@ -230,17 +234,14 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
             </div>
           </div>
         </div>
-
-        {/* Error Message */}
         {errors.amount && (
           <div className="px-3 py-2 rounded-md bg-status-error/5 dark:bg-status-error/10 text-status-error text-xs flex items-center gap-1.5">
             <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-            <span className="font-medium">{errors.amount?.message?.toString()}</span>
+            <span className="font-medium">{errors.amount.message?.toString()}</span>
           </div>
         )}
       </div>
 
-      {/* Token Selection Modal */}
       {isModalOpen &&
         isClient &&
         createPortal(
@@ -260,7 +261,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.95, opacity: 0 }}
                   transition={{ duration: 0.2, ease: "easeOut" }}
-                  className="w-full max-w-md bg-white dark:bg-background-dark shadow-xl rounded-lg overflow-hidden relative"
+                  className="w-full max-w-md bg-white dark:bg-background-dark shadow-xl rounded-lg overflow-hidden relative max-h-[80vh] overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <button
@@ -269,7 +270,6 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                   >
                     <X className="w-5 h-5" />
                   </button>
-
                   <div className="p-6 bg-background-light dark:bg-background-dark-light">
                     <h2 className="text-xl font-bold text-text-primary dark:text-text-light flex items-center gap-2">
                       <Coins className="w-5 h-5 text-brand-primary" />
@@ -279,13 +279,12 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                       Choose your preferred token for payment
                     </p>
                   </div>
-
                   <div className="p-4">
                     {!currentNetworkHasTokens ? (
                       <div className="space-y-4">
                         <div className="p-4 bg-status-warning/5 dark:bg-status-warning/10 rounded-lg">
-                          <p className="text-sm text-status-warning">
-                            Your current network doesn&apos;t support any payment tokens. Please switch to a supported network.
+                          <p className="text-sm text-status-warning font-medium">
+                            Your current network doesn&apos;t support any payment tokens. Switch to a supported network.
                           </p>
                         </div>
                         <div className="space-y-2">
@@ -293,13 +292,15 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                             <motion.button
                               key={network.chain.id}
                               onClick={() => handleNetworkSwitch(network.chain.id)}
-                              disabled={switchStatus === "pending"}
+                              disabled={
+                                switchStatus === "pending" || network.chain.id === chain?.id
+                              }
                               className={`w-full p-3 flex items-center justify-between rounded-lg transition-colors ${
-                                switchStatus === "pending"
+                                switchStatus === "pending" || network.chain.id === chain?.id
                                   ? "bg-background-light dark:bg-background-dark-light cursor-not-allowed opacity-50"
                                   : "hover:bg-background-light dark:hover:bg-background-dark-light"
                               }`}
-                              whileTap={{ scale: 0.98 }}
+                              whileTap={{ scale: network.chain.id === chain?.id ? 1 : 0.98 }}
                             >
                               <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-background-dark-medium">
@@ -316,12 +317,15 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                                     {network.chain.name}
                                   </span>
                                   <span className="text-xs text-text-muted dark:text-text-muted/70">
-                                    {network.tokens.length} tokens available
+                                    Switch network
                                   </span>
                                 </div>
                               </div>
-                              {switchStatus === "pending" ? (
+                              {switchStatus === "pending" &&
+                              network.chain.id === chain?.id ? (
                                 <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
+                              ) : network.chain.id === chain?.id ? (
+                                <Check className="w-4 h-4 text-brand-primary" />
                               ) : (
                                 <ChevronRight className="w-4 h-4 text-brand-primary" />
                               )}
@@ -331,7 +335,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {currentNetworkTokens.map((token: PaymentToken) => (
+                        {currentNetworkTokens.map((token) => (
                           <motion.button
                             key={token.id}
                             onClick={() => handleTokenSelect(token)}
@@ -353,9 +357,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                                 />
                               </div>
                               <div className="text-left">
-                                <span className="font-semibold block">
-                                  {token.token}
-                                </span>
+                                <span className="font-semibold block">{token.token}</span>
                                 <span className="text-xs text-text-muted dark:text-text-muted/70">
                                   {token.network}
                                 </span>

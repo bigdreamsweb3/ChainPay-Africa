@@ -1,4 +1,4 @@
-const { url } = require("inspector");
+import { url } from "inspector";
 
 const crossfiTestnetParams = (accounts) => ({
     url: "https://rpc.testnet.ms",  // Updated RPC URL
@@ -20,6 +20,6 @@ const crossfiTestnetParams = (accounts) => ({
     }
 });
 
-module.exports = {
+export {
     crossfiTestnetParams,
 };

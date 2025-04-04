@@ -2,14 +2,10 @@ import { http, createConfig } from "wagmi";
 import { mainnet } from "wagmi/chains";
 import { injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 
-import { baseSepolia, monadTestnet } from "./chains";
+import { acceptedChains } from "./chains";
 import { useAccount } from "wagmi";
 
-export const SUPPORTED_CHAIN_IDS = [
-  mainnet,
-  baseSepolia,
-  monadTestnet,
-];
+export const SUPPORTED_CHAIN_IDS = [mainnet, ...acceptedChains];
 
 declare module "wagmi" {
   interface Register {
@@ -18,7 +14,7 @@ declare module "wagmi" {
 }
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, baseSepolia, monadTestnet],
+  chains: [mainnet, ...acceptedChains],
   connectors: [
     injected(),
     walletConnect({
@@ -27,11 +23,10 @@ export const wagmiConfig = createConfig({
     metaMask(),
     safe(),
   ],
-  transports: {
-    [mainnet.id]: http(),
-    [baseSepolia.id]: http(),
-    [monadTestnet.id]: http(),
-  },
+  transports: Object.fromEntries([
+    [mainnet.id, http()],
+    ...acceptedChains.map(chain => [chain.id, http()])
+  ]),
 });
 
 export interface PaymentToken {
@@ -54,11 +49,8 @@ export const useAcceptedTokens = (): PaymentToken[] => {
   if (!chain) return []; // Return empty if no chain is connected
 
   const acceptedTokens =
-    chain.id === baseSepolia.id
-      ? baseSepolia.payAcceptedTokens
-      : monadTestnet.payAcceptedTokens;
-      {}
-
+    acceptedChains.find(c => c.id === chain.id)?.payAcceptedTokens || {};
+     
   return Object.values(acceptedTokens) as PaymentToken[]; // Cast to PaymentToken[]
 };
 

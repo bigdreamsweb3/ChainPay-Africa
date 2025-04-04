@@ -239,6 +239,7 @@ const PaymentConfirmation: React.FC<PaymentConfirmationProps> = ({
         carrier.enum_value as 0 | 1 | 2 | 3,
         selectedTokenDetails.contractAddress as `0x${string}`,
         selectedTokenDetails.symbol,
+        watch("amount"),
         (status: TransactionStatus) => {
           setTransactionStatus(status);
           switch (status) {

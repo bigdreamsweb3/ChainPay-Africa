@@ -1,5 +1,11 @@
-import { defineChain } from "viem";
-import { PaymentToken } from "../config";
+import { baseSepolia } from "./BaseChain";
+import { monadTestnet } from "./MonadChain";
+import { ChainPayChain } from "../types";
+
+export const acceptedChains = [baseSepolia, monadTestnet] as ChainPayChain[];
+
+export { baseSepolia, monadTestnet };
+// export default baseSepolia;
 
 // export const crossfiTestnet = defineChain({
 //   id: 4157,
@@ -71,92 +77,47 @@ import { PaymentToken } from "../config";
 //   } as Record<string, PaymentToken>,
 // });
 
-export const monadTestnet = defineChain({
-  id: 10143,
-  name: "Monad Testnet",
-  nativeCurrency: {
-    decimals: 18,
-    name: "MON",
-    symbol: "MON",
-  },
-  icon: "/icons/monad.webp",
-  rpcUrls: {
-    default: {
-      http: ["https://testnet-rpc.monad.xyz/"],
-    },
-  },
-  blockExplorers: {
-    default: { name: "Explorer", url: "http://testnet.monadexplorer.com/" },
-  },
-  payAcceptedTokens: {
-    USDC: {
-      id: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
-      name: "USD Coin",
-      symbol: "USDC",
-      decimals: 6,
-      contractAddress: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
-      image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-      icon: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-      network: "Monad Testnet",
-      token: "USDC",
-      address: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
-    },
-    USDT: {
-      id: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
-      name: "Tether USD",
-      symbol: "USDT",
-      decimals: 6,
-      contractAddress: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
-      image: "https://cryptologos.cc/logos/tether-usdt-logo.png",
-      icon: "https://cryptologos.cc/logos/tether-usdt-logo.png",
-      network: "Monad Testnet",
-      token: "USDT",
-      address: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
-    },
-  } as Record<string, PaymentToken>,
-});
-
-export const baseSepolia = defineChain({
-  id: 84532,
-  name: "Base Sepolia",
-  nativeCurrency: {
-    decimals: 18,
-    name: "ETH",
-    symbol: "ETH",
-  },
-  icon: "https://logosarchive.com/wp-content/uploads/2021/12/Coinbase-icon-symbol-1.svg",
-  rpcUrls: {
-    default: {
-      http: ["https://sepolia.base.org"],
-    },
-  },
-  blockExplorers: {
-    default: { name: "BaseScan", url: "https://sepolia.basescan.org" },
-  },
-  payAcceptedTokens: {
-    USDC: {
-      id: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
-      name: "USD Coin",
-      symbol: "USDC",
-      decimals: 6,
-      contractAddress: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
-      image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-      icon: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-      network: "Base Sepolia",
-      token: "USDC",
-      address: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
-    },
-    USDT: {
-      id: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
-      name: "Tether USD",
-      symbol: "USDT",
-      decimals: 6,
-      contractAddress: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
-      image: "https://cryptologos.cc/logos/tether-usdt-logo.png",
-      icon: "https://cryptologos.cc/logos/tether-usdt-logo.png",
-      network: "Base Sepolia",
-      token: "USDT",
-      address: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
-    },
-  } as Record<string, PaymentToken>,
-});
+// export const baseSepolia = defineChain({
+//   id: 84532,
+//   name: "Base Sepolia",
+//   nativeCurrency: {
+//     decimals: 18,
+//     name: "ETH",
+//     symbol: "ETH",
+//   },
+//   icon: "https://logosarchive.com/wp-content/uploads/2021/12/Coinbase-icon-symbol-1.svg",
+//   rpcUrls: {
+//     default: {
+//       http: ["https://sepolia.base.org"],
+//     },
+//   },
+//   blockExplorers: {
+//     default: { name: "BaseScan", url: "https://sepolia.basescan.org" },
+//   },
+//   payAcceptedTokens: {
+//     USDC: {
+//       id: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
+//       name: "USD Coin",
+//       symbol: "USDC",
+//       decimals: 6,
+//       contractAddress: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
+//       image: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+//       icon: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
+//       network: "Base Sepolia",
+//       token: "USDC",
+//       address: "0x6Ac3aB54Dc5019A2e57eCcb214337FF5bbD52897",
+//     },
+//     USDT: {
+//       id: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
+//       name: "Tether USD",
+//       symbol: "USDT",
+//       decimals: 6,
+//       contractAddress: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
+//       image: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+//       icon: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+//       network: "Base Sepolia",
+//       token: "USDT",
+//       address: "0xd7e9C75C6C05FdE929cAc19bb887892de78819B7",
+//     },
+//   } as Record<string, PaymentToken>,
+// });

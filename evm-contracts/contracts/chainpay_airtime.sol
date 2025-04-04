@@ -36,6 +36,7 @@ contract ChainPay_Airtime is Ownable, ReentrancyGuard {
         address token;
         uint256 timestamp;
         bool completed;
+        string creditAmount;
     }
 
     // Storage for transactions
@@ -52,7 +53,8 @@ contract ChainPay_Airtime is Ownable, ReentrancyGuard {
         uint256 amount,
         Network network,
         address token,
-        uint256 timestamp
+        uint256 timestamp,
+        string creditAmount
     );
     event Withdrawal(address indexed admin, address token, uint256 amount, uint256 timestamp);
 
@@ -103,7 +105,8 @@ contract ChainPay_Airtime is Ownable, ReentrancyGuard {
         string calldata phoneNumber,
         uint256 amount,
         Network network,
-        address token
+        address token,
+        string calldata creditAmount
     ) external nonReentrant {
         processPayment(token, amount);
 
@@ -118,7 +121,8 @@ contract ChainPay_Airtime is Ownable, ReentrancyGuard {
             network,
             token,
             block.timestamp,
-            false
+            false,
+            creditAmount
         );
 
         emit AirtimePurchase(
@@ -128,7 +132,8 @@ contract ChainPay_Airtime is Ownable, ReentrancyGuard {
             amount,
             network,
             token,
-            block.timestamp
+            block.timestamp,
+            creditAmount
         );
     }
 

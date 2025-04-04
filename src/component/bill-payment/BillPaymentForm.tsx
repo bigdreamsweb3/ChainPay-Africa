@@ -30,6 +30,7 @@ import ConversionRate from "./ConversionRate";
 
 // Adapter to convert between PaymentToken interfaces
 const adaptPaymentTokens = (tokens: PaymentToken[]): TokenSelectorToken[] => {
+  console.log("Adapting payment tokens:", tokens);
   return tokens.map((token) => ({
     id: token.id,
     network: token.network,
@@ -319,14 +320,14 @@ const BillPaymentForm: React.FC = () => {
           preserveCalculation={true}
         />
 
-        <div className="w-full">
+       
           {selectedService && (
             <div className="w-full">
               {unavailableServiceMessage ? (
                 <UnavailableServiceMessage serviceName={selectedService} />
               ) : (
                 <div className="w-full">
-                  <div className="max-w-md mx-auto">
+                  <div className="">
                     <form onSubmit={handleSubmitForm} className="w-full">
                       {step === 1 && (
                         <div className="space-y-4">
@@ -466,7 +467,7 @@ const BillPaymentForm: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      
     </FormProvider>
   );
 };

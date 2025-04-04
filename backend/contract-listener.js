@@ -1,7 +1,12 @@
-const { ethers } = require("ethers");
-const { buyAirtime } = require("./airtime/reloadly-airtime-sandbox");
-const fs = require("fs");
-const path = require("path");
+import { ethers } from "ethers";
+import { buyAirtime } from "./airtime/reloadly-airtime-sandbox.js";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory name using ES module approach
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Read contract artifact
 const contractArtifact = JSON.parse(
@@ -18,7 +23,7 @@ const contractArtifact = JSON.parse(
 const CONTRACT_ABI = contractArtifact.abi;
 
 // Contract address (replace with your deployed contract address on Base Sepolia    )
-const CONTRACT_ADDRESS = "0x63d25E6a30c30F2499c8f3d52bEf5fDE8e804066";
+const CONTRACT_ADDRESS = "0xA124c1f8219068b4783424409518E4Ea014e4DD0";
 
 // Base Goerli RPC URL using Alchemy
 const RPC_URL =
@@ -117,6 +122,7 @@ async function startEventListener() {
         network,
         token,
         timestamp,
+        creditAmount,
         event
       ) => {
         try {
@@ -128,6 +134,7 @@ async function startEventListener() {
             network: network.toString(),
             token,
             timestamp: timestamp.toString(),
+            creditAmount,
             transactionHash: event.log.transactionHash,
           });
 
@@ -149,8 +156,8 @@ async function startEventListener() {
 
           // Call the Reloadly API to purchase airtime
           const result = await buyAirtime(
-            operatorId,
-            amount.toString(),
+            network,  // Pass the network enum directly
+            creditAmount, // Use creditAmount instead of amount.toString()
             recipientPhone,
             user, // Use the user's address as senderWallet
             customIdentifier

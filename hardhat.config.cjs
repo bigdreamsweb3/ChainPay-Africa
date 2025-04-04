@@ -1,12 +1,14 @@
 /** @type import('hardhat/config').HardhatUserConfig */
-import { crossfiTestnetParams } from "./evm-contracts/chains/crossfiChain.js";
-import { baseSepoliaParams } from "./evm-contracts/chains/baseChain.js";
-import "@nomicfoundation/hardhat-toolbox";
-import dotenv from "dotenv";
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
+const {
+    crossfiTestnetParams,
+} = require("./evm-contracts/chains/crossfiChain.js");
+const {
+    baseSepoliaParams,
+} = require("./evm-contracts/chains/baseChain.js");
 
-dotenv.config();
-
-export default {
+module.exports = {
     solidity: {
         version: "0.8.28",
         settings: {

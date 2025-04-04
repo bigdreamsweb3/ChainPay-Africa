@@ -5,8 +5,11 @@ import {
   useWalletClient,
   useWriteContract,
   usePublicClient,
+  useAccount,
 } from "wagmi";
 import contractArtifact from "../../../evm-contracts/artifacts/evm-contracts/contracts/chainpay_airtime.sol/ChainPay_Airtime.json";
+import { acceptedChains } from "@/utils/web3/chains";
+import { ChainPayChain } from "@/utils/web3/types";
 
 // ERC20 Standard token ABI
 const defaultTokenABI = [
@@ -41,9 +44,7 @@ const defaultTokenABI = [
 
 const abi = contractArtifact.abi;
 
-// Contract address exports
-export const AIRTIME_CONTRACT_ADDRESS = process.env
-  .NEXT_PUBLIC_AIRTIME_CONTRACT_ADDRESS as `0x${string}`;
+// Token addresses from env
 export const USDC_TOKEN_ADDRESS = process.env
   .NEXT_PUBLIC_USDC_TOKEN_ADDRESS as `0x${string}`;
 export const USDT_TOKEN_ADDRESS = process.env
@@ -75,13 +76,17 @@ type ContractError = {
 
 // Hook to check if token is accepted
 export const useIsTokenAccepted = (tokenAddress: `0x${string}` | undefined) => {
+  const { chain } = useAccount();
+  const currentChain = (acceptedChains as ChainPayChain[]).find(c => c.id === chain?.id);
+  const contractAddress = currentChain?.buyAiritimeContract;
+
   const { data, error, isLoading } = useReadContract({
     abi,
-    address: AIRTIME_CONTRACT_ADDRESS,
+    address: contractAddress,
     functionName: "acceptedTokens",
     args: [tokenAddress],
     query: {
-      enabled: !!tokenAddress,
+      enabled: !!tokenAddress && !!contractAddress,
     },
   });
 
@@ -115,6 +120,7 @@ export const useTokenAllowance = (
 
 // Custom hook to buy airtime
 export function useBuyAirtime() {
+  const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
   const {
     writeContractAsync,
@@ -130,11 +136,20 @@ export function useBuyAirtime() {
     network: Network,
     tokenAddress: `0x${string}`,
     tokenSymbol: string,
+    creditAmount: string,
     onStatusUpdate?: (status: Status) => void
   ) => {
     if (!walletClient || !publicClient) {
       throw new Error("Wallet or public client not connected");
     }
+
+    // Get contract address from the connected chain
+    const currentChain = (acceptedChains as ChainPayChain[]).find(c => c.id === chain?.id);
+    if (!currentChain || !currentChain.buyAiritimeContract) {
+      throw new Error("Airtime contract not available on this chain");
+    }
+    
+    const contractAddress = currentChain.buyAiritimeContract;
 
     try {
       // Request approval first
@@ -143,7 +158,7 @@ export function useBuyAirtime() {
         abi: defaultTokenABI,
         address: tokenAddress,
         functionName: "approve",
-        args: [AIRTIME_CONTRACT_ADDRESS, BigInt(amount)],
+        args: [contractAddress, BigInt(amount)],
       });
 
       // Wait for approval transaction to be confirmed
@@ -160,9 +175,9 @@ export function useBuyAirtime() {
       onStatusUpdate?.("purchasing");
       const purchaseTxHash = await writeContractAsync({
         abi,
-        address: AIRTIME_CONTRACT_ADDRESS,
+        address: contractAddress,
         functionName: "buyAirtime",
-        args: [phoneNumber, BigInt(amount), network, tokenAddress],
+        args: [phoneNumber, BigInt(amount), network, tokenAddress, creditAmount],
       });
 
       // Wait for purchase transaction to be confirmed
@@ -202,6 +217,7 @@ export function useBuyAirtime() {
 
 // Custom hook for token approval
 export function useTokenApproval() {
+  const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
   const {
     writeContractAsync,
