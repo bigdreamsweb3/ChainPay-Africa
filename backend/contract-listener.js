@@ -31,10 +31,10 @@ const RPC_URL =
 
 // Network mapping from contract to Reloadly operator IDs
 const NETWORK_TO_OPERATOR = {
-  0: "535", // MTN
-  1: "536", // Airtel
-  2: "537", // Glo
-  3: "538", // Etisalat
+  0: "683", // MTN Nigeria
+  1: "679", // Airtel Nigeria
+  2: "681", // Glo Nigeria
+  3: "680", // 9mobile Nigeria (formerly Etisalat)
 };
 
 async function verifyContract(contract) {

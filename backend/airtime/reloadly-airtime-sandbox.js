@@ -12,10 +12,10 @@ const topupUrl = "https://topups-sandbox.reloadly.com";
 // Mapping from blockchain network enum to Reloadly operator IDs
 // From chainpay_airtime.sol: MTN=0, Airtel=1, Glo=2, Etisalat=3
 const NETWORK_TO_OPERATOR_ID = {
-  0: "535", // MTN (using placeholder value 535, update with actual MTN operator ID)
-  1: "536", // Airtel (using placeholder value, update with actual Airtel operator ID)
-  2: "537", // Glo (using placeholder value, update with actual Glo operator ID)
-  3: "538", // Etisalat (using placeholder value, update with actual Etisalat operator ID)
+  0: "683", // MTN Nigeria (update with actual MTN Nigeria operator ID)
+  1: "679", // Airtel Nigeria (update with actual Airtel Nigeria operator ID)
+  2: "681", // Glo Nigeria (update with actual Glo Nigeria operator ID)
+  3: "680", // 9mobile Nigeria (formerly Etisalat)
 };
 
 // Helper function to convert blockchain network enum to Reloadly operator ID

@@ -217,7 +217,6 @@ export function useBuyAirtime() {
 
 // Custom hook for token approval
 export function useTokenApproval() {
-  const { chain } = useAccount();
   const { data: walletClient } = useWalletClient();
   const {
     writeContractAsync,
