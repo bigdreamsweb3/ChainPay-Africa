@@ -305,7 +305,7 @@ const PaymentTokenSelector: React.FC<PaymentTokenSelectorProps> = ({
                               <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 dark:bg-background-dark-medium">
                                   <Image
-                                    src={network.chain.icon}
+                                    src={network.chain.icon || "/placeholder.svg"}
                                     alt={network.chain.name}
                                     width={32}
                                     height={32}
