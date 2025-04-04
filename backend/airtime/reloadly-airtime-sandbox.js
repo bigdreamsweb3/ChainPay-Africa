@@ -1,4 +1,5 @@
 import axios from "axios";
+import NETWORK_TO_OPERATOR_ID from "./operator-mapping.js";
 
 // Your Reloadly sandbox credentials
 const clientId = "Sty4FSmbTndq8CZYVWnQVQ2PZV1gq8A5";
@@ -9,14 +10,8 @@ const clientSecret =
 const authUrl = "https://auth.reloadly.com/oauth/token";
 const topupUrl = "https://topups-sandbox.reloadly.com";
 
-// Mapping from blockchain network enum to Reloadly operator IDs
+// Mapping from blockchain network enum to Reloadly operator IDs now imported from operator-mapping.js
 // From chainpay_airtime.sol: MTN=0, Airtel=1, Glo=2, Etisalat=3
-const NETWORK_TO_OPERATOR_ID = {
-  0: "683", // MTN Nigeria (update with actual MTN Nigeria operator ID)
-  1: "679", // Airtel Nigeria (update with actual Airtel Nigeria operator ID)
-  2: "681", // Glo Nigeria (update with actual Glo Nigeria operator ID)
-  3: "1100", // 9mobile Nigeria (formerly Etisalat)
-};
 
 // Helper function to convert blockchain network enum to Reloadly operator ID
 function getOperatorIdFromNetwork(networkEnum) {
@@ -28,7 +23,7 @@ function getOperatorIdFromNetwork(networkEnum) {
 }
 
 // Function to get access token
-async function getAccessToken() {
+export async function getAccessToken() {
   try {
     console.log("Attempting to get access token...");
     const response = await axios.post(
@@ -174,3 +169,21 @@ export { buyAirtime, generateCustomIdentifier };
 
 // Run the example - uncomment to test
 // main();
+
+// Get operators
+// const getOperators = async () => {
+//   const accessToken = await getAccessToken();
+//   const url = "https://topups-sandbox.reloadly.com/operators";
+//   const options = {
+//     method: "GET",
+//     headers: {
+//       Accept: "application/com.reloadly.topups-v1+json",
+//       Authorization: `Bearer ${accessToken}`,
+//     },
+//   };
+//   const response = await fetch(url, options);
+//   const data = await response.json();
+//   console.log(data);
+// };
+
+// getOperators();

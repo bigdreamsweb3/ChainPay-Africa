@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { buyAirtime } from "./airtime/reloadly-airtime-sandbox.js";
+import NETWORK_TO_OPERATOR from "./airtime/operator-mapping.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -28,14 +29,6 @@ const CONTRACT_ADDRESS = "0xA124c1f8219068b4783424409518E4Ea014e4DD0";
 // Base Goerli RPC URL using Alchemy
 const RPC_URL =
   "https://base-sepolia.g.alchemy.com/v2/yVdus-sqxJkzkimp3MZ2B29ViIL7Y-FL";
-
-// Network mapping from contract to Reloadly operator IDs
-const NETWORK_TO_OPERATOR = {
-  0: "683", // MTN Nigeria
-  1: "679", // Airtel Nigeria
-  2: "681", // Glo Nigeria
-  3: "680", // 9mobile Nigeria (formerly Etisalat)
-};
 
 async function verifyContract(contract) {
   try {

@@ -1,0 +1,51 @@
+{
+  "340": {
+    "name": "9Mobile (Etisalat) Nigeria",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": false,
+    "denominationType": "RANGE"
+  },
+  "342": {
+    "name": "Airtel Nigeria",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": false,
+    "denominationType": "RANGE"
+  },
+  "645": {
+    "name": "9Mobile (Etisalat) Nigeria Data",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": false,
+    "denominationType": "FIXED"
+  },
+  "646": {
+    "name": "Airtel Nigeria Data",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": false,
+    "denominationType": "FIXED"
+  },
+  "1214": {
+    "name": "Airtel Nigeria Special Bundle",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": false,
+    "denominationType": "FIXED"
+  },
+  "1215": {
+    "name": "9Mobile Nigeria Special Bundle",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": false,
+    "denominationType": "FIXED"
+  },
+  "1256": {
+    "name": "Airtel Nigeria Bundle",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "bundle": true,
+    "denominationType": "FIXED"
+  }
+}
