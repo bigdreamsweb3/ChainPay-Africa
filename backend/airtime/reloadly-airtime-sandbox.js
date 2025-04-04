@@ -86,7 +86,7 @@ async function buyAirtime(
     const operatorId = getOperatorIdFromNetwork(networkEnum);
 
     // Dummy senderPhone required by Reloadly API
-    const senderPhone = { countryCode: "CA", number: "11231231231" };
+    const senderPhone = { countryCode: "NG", number: "08037161029" };
     const uniqueCustomIdentifier = `ChainPay-Blockchain-${customIdentifier}-${Date.now()}`; // Ensure uniqueness with timestamp
 
     console.log("Sending top-up request with payload:", {

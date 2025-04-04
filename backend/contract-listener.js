@@ -140,7 +140,7 @@ async function startEventListener() {
 
           // Format phone number for Reloadly API
           const recipientPhone = {
-            countryCode: "CA", // Nigeria
+            countryCode: "NG", // Nigeria
             number: phoneNumber.replace(/^\+/, ""), // Remove + if present
           };
 

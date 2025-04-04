@@ -1,9 +1,0 @@
-Operator ID	Name	Country	Bundle
-----------------------------------------
-340	9Mobile (Etisalat) Nigeria	Nigeria	No
-645	9Mobile (Etisalat) Nigeria Data	Nigeria	No
-1215	9Mobile Nigeria Special Bundle	Nigeria	No
-342	Airtel Nigeria	Nigeria	No
-1256	Airtel Nigeria Bundle	Nigeria	Yes
-646	Airtel Nigeria Data	Nigeria	No
-1214	Airtel Nigeria Special Bundle	Nigeria	No
