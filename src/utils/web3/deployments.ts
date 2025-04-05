@@ -6,7 +6,9 @@ import { getContractAddress, getTokenAddresses } from './contracts';
 export { getContractAddress, getTokenAddresses };
 
 // For backward compatibility
-export default {
+const deploymentUtils = {
   getContractAddress,
   getTokenAddresses
-}; 
+};
+
+export default deploymentUtils; 

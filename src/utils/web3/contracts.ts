@@ -1,22 +1,28 @@
-import { defineChain, Chain } from 'viem';
+import { Chain } from 'viem';
 
-// Import deployments from the evm-contracts directory
-// We're dynamically requiring the file and then mapping the values to TypeScript types
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const contractDeployments = require('../../../evm-contracts/deployments/index');
+// Import from the types file to avoid duplicate definitions
+import { ContractDeployment as IContractDeployment } from './types';
 
-// Define the deployment structure in TypeScript
-export interface ContractDeployment {
-  address: `0x${string}`;
-  deployedAt: string;
-  version: string;
-  tokenAddresses: {
-    [tokenSymbol: string]: `0x${string}`;
-  };
+// Import deployments - use dynamic import with webpack
+const contractDeployments = {
+  // Default empty implementation in case the import fails
+  deployments: {},
+  getContractAddress: () => '0x0000000000000000000000000000000000000000',
+  getTokenAddresses: () => ({})
+};
+
+// Try to load the actual deployments
+try {
+  // This is wrapped in try/catch to handle server/client side rendering differences
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const deploymentModule = require('../../../evm-contracts/deployments/index');
+  Object.assign(contractDeployments, deploymentModule);
+} catch (error) {
+  console.warn('Failed to load contract deployments:', error);
 }
 
 export interface ChainDeployments {
-  [contractName: string]: ContractDeployment;
+  [contractName: string]: IContractDeployment;
 }
 
 export interface AllDeployments {
@@ -25,6 +31,17 @@ export interface AllDeployments {
 
 // Type-cast the deployments to our TypeScript interface
 export const deployments = contractDeployments.deployments as AllDeployments;
+
+// Type-cast the methods to have the correct signature types
+const getContractAddressImpl = contractDeployments.getContractAddress as (
+  chainId: number | string,
+  contractName?: string
+) => string | null;
+
+const getTokenAddressesImpl = contractDeployments.getTokenAddresses as (
+  chainId: number | string,
+  contractName?: string
+) => Record<string, string>;
 
 /**
  * Get the address of a deployed contract
@@ -36,7 +53,7 @@ export function getContractAddress(
   chainId: number | string,
   contractName = 'ChainPay_Airtime'
 ): `0x${string}` {
-  const address = contractDeployments.getContractAddress(chainId, contractName);
+  const address = getContractAddressImpl(chainId, contractName);
   return address as `0x${string}` || '0x0000000000000000000000000000000000000000';
 }
 
@@ -50,7 +67,7 @@ export function getTokenAddresses(
   chainId: number | string,
   contractName = 'ChainPay_Airtime'
 ): { [tokenSymbol: string]: `0x${string}` } {
-  return contractDeployments.getTokenAddresses(chainId, contractName) as {
+  return getTokenAddressesImpl(chainId, contractName) as {
     [tokenSymbol: string]: `0x${string}`;
   };
 }

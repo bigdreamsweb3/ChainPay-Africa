@@ -1,6 +1,6 @@
 import { defineChain } from "viem";
 import { PaymentToken } from "../../config";
-import { getContractAddress, getTokenAddresses } from "../../contracts";
+import { getTokenAddresses } from "../../contracts";
 
 // Define base chain without contract addresses
 const baseMonadTestnet = defineChain({
@@ -22,8 +22,7 @@ const baseMonadTestnet = defineChain({
   },
 });
 
-// Get contract addresses from deployments
-const contractAddress = getContractAddress(10143);
+// Get token addresses from deployments
 const tokenAddresses = getTokenAddresses(10143);
 
 // Add contract addresses to chain definition

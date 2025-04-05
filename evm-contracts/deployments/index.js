@@ -29,7 +29,7 @@ const deployments = {
   },
   "84532": {
     "ChainPay_Airtime": {
-      "address": "0xEf5A24b6527417EED9a5FAa192b5Cfe4580366F2",
+      "address": "0x85d379517AA742B5E293D3c55f88d27B80228204",
       "deployedAt": "2025-04-05",
       "version": "1.0.0",
       "tokenAddresses": {

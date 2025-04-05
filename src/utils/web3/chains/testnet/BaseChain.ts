@@ -29,7 +29,7 @@ const tokenAddresses = getTokenAddresses(84532);
 // Add contract addresses to chain definition
 export const baseSepolia = {
   ...baseBaseSepolia,
-  buyAiritimeContract: "0xEf5A24b6527417EED9a5FAa192b5Cfe4580366F2",
+  buyAiritimeContract: "0x85d379517AA742B5E293D3c55f88d27B80228204",
   payAcceptedTokens: {
     USDC: {
       id:
