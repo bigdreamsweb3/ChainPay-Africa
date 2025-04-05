@@ -196,6 +196,11 @@ body {
   @apply rounded-full bg-border-medium transition-colors hover:bg-border-dark;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: var(--chainpay-gold);
+  border-radius: 4px;
+}
+
 /* Animations */
 .animate-fade-in {
   @apply animate-[fadeIn_0.3s_ease-in-out];
@@ -277,25 +282,6 @@ body {
 .status-bar-dark {
   background-color: var(--chainpay-dark);
   color: var(--chainpay-light);
-}
-
-/* Add custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--chainpay-primary);
-  border-radius: 4px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: var(--chainpay-gold);
 }
 
 /* Smooth appearance transitions */

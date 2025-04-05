@@ -8,9 +8,14 @@
  * Run it with: node scripts/generate-pwa-assets.js
  */
 
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp'); // You may need to install this: npm install --save-dev sharp
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import sharp from 'sharp'; // You may need to install this: npm install --save-dev sharp
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Base paths
 const SOURCE_ICON = path.join(__dirname, '../public/logo.svg'); // Using SVG instead of PNG

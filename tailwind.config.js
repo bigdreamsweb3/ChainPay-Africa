@@ -1,7 +1,7 @@
-const { theme } = require("./src/styles/theme");
+import { theme } from "./src/styles/theme.js";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/component/**/*.{js,ts,jsx,tsx,mdx}",
@@ -96,8 +96,17 @@ module.exports = {
         },
     },
     plugins: [
-        require('@tailwindcss/forms')({
-            strategy: 'class',
-        }),
+        // Use import() to dynamically import the plugin
+        // This will be evaluated at runtime
+        ({ addBase, addComponents }) => {
+            import('@tailwindcss/forms')
+                .then(formsPlugin => {
+                    const plugin = formsPlugin.default({ strategy: 'class' });
+                    plugin({ addBase, addComponents });
+                })
+                .catch(err => {
+                    console.error('Error loading @tailwindcss/forms plugin:', err);
+                });
+        }
     ],
 }
