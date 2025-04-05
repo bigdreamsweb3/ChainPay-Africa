@@ -20,13 +20,6 @@
   /* Font Update */
   --font-sans: "Manrope", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
-  /* PWA enhancements */
-  --status-bar-height: 0px;
-  --chainpay-primary: #0066FF;
-  --chainpay-gold: #FFC107;
-  --chainpay-dark: #0A1025;
-  --chainpay-light: #FFFFFF;
 }
 
 @layer base {
@@ -196,11 +189,6 @@ body {
   @apply rounded-full bg-border-medium transition-colors hover:bg-border-dark;
 }
 
-.dark ::-webkit-scrollbar-thumb {
-  background: var(--chainpay-gold);
-  border-radius: 4px;
-}
-
 /* Animations */
 .animate-fade-in {
   @apply animate-[fadeIn_0.3s_ease-in-out];
@@ -212,89 +200,4 @@ body {
 
 .animate-slide-down {
   @apply animate-[slideDown_0.3s_ease-in-out];
-}
-
-/* Handle safe areas on iOS devices */
-@supports (padding-top: env(safe-area-inset-top)) {
-  body {
-    padding-top: var(--status-bar-height);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  /* Adjust navbar for notch areas */
-  .navbar-safe-area {
-    padding-top: max(0.5rem, env(safe-area-inset-top));
-    padding-left: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-  }
-
-  /* Ensure bottom navigation doesn't get hidden behind home indicator */
-  .footer-safe-area {
-    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-  }
-}
-
-/* Improve tap target sizes for mobile */
-@media (max-width: 640px) {
-  button, 
-  a, 
-  input, 
-  select, 
-  textarea {
-    min-height: 44px;
-    min-width: 44px;
-  }
-}
-
-/* Disable pull-to-refresh when installed as PWA */
-@media all and (display-mode: standalone) {
-  body {
-    overscroll-behavior-y: none;
-  }
-  
-  /* Adjust header for standalone mode */
-  .standalone-header {
-    padding-top: var(--status-bar-height);
-    background-color: var(--chainpay-primary);
-  }
-  
-  .dark .standalone-header {
-    background-color: var(--chainpay-dark);
-  }
-}
-
-/* Disable text selection when in PWA mode */
-@media all and (display-mode: standalone) {
-  .no-select-pwa {
-    -webkit-user-select: none;
-    user-select: none;
-  }
-}
-
-/* Status bar customization */
-.status-bar-light {
-  background-color: var(--chainpay-light);
-  color: var(--chainpay-primary);
-}
-
-.status-bar-dark {
-  background-color: var(--chainpay-dark);
-  color: var(--chainpay-light);
-}
-
-/* Smooth appearance transitions */
-@media (prefers-reduced-motion: no-preference) {
-  .smooth-transition {
-    transition: all 0.3s ease;
-  }
-}
-
-/* Stylized backdrop for PWA */
-@media all and (display-mode: standalone) {
-  .app-backdrop {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
 }

@@ -4,17 +4,12 @@ import { Header } from "./Header";
 import { WagmiProvider } from "wagmi";
 import { wagmiConfig } from "@/utils/web3/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import NetworkSwitchNotification from "../web3/network-switch-notification";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WalletModalProvider } from "@/context/WalletModalContext";
 import { WalletOptionsModal } from "@/component/web3/wallet-options-modal";
 import ChainPayInfoCard from "../chainpay-info-card";
-
-// Define a type for the iOS navigator extension
-interface NavigatorWithStandalone extends Navigator {
-  standalone?: boolean;
-}
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,42 +17,6 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const [queryClient] = useState(() => new QueryClient());
-
-  // Detect theme changes and update meta tags
-  useEffect(() => {
-    // Get initial color scheme
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const isDarkMode = darkModeMediaQuery.matches;
-
-    // Listen for changes
-    const handleColorSchemeChange = (e: MediaQueryListEvent) => {
-      updateThemeColor(e.matches);
-    };
-
-    // Update theme color meta tag
-    const updateThemeColor = (isDark: boolean) => {
-      const themeColorMetaTag = document.querySelector('meta[name="theme-color"]:not([media])');
-      if (themeColorMetaTag) {
-        themeColorMetaTag.setAttribute('content', isDark ? '#0A1025' : '#FFFFFF');
-      }
-      
-      // Update status bar on iOS if in standalone mode
-      const isIOSStandalone = 'standalone' in window.navigator && 
-                              (window.navigator as NavigatorWithStandalone).standalone === true;
-      const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || isIOSStandalone;
-      
-      if (isStandaloneMode) {
-        document.documentElement.style.setProperty('--status-bar-height', 'env(safe-area-inset-top)');
-      }
-    };
-
-    darkModeMediaQuery.addEventListener('change', handleColorSchemeChange);
-    updateThemeColor(isDarkMode);
-
-    return () => {
-      darkModeMediaQuery.removeEventListener('change', handleColorSchemeChange);
-    };
-  }, []);
 
   return (
     <ThemeProvider>

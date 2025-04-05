@@ -1,7 +1,7 @@
-import { theme } from "./src/styles/theme.js";
+const { theme } = require("./src/styles/theme");
 
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
     content: [
         "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
         "./src/component/**/*.{js,ts,jsx,tsx,mdx}",
@@ -45,15 +45,6 @@ export default {
                         600: '#0A0F1E',
                     }
                 },
-                // PWA theme-specific colors
-                'pwa': {
-                    'light': '#FFFFFF',
-                    'dark': '#0A1025',
-                    'primary': '#0066FF',
-                    'accent': '#FFB800',
-                    'status-light': 'rgba(255, 255, 255, 0.9)',
-                    'status-dark': 'rgba(10, 16, 37, 0.9)',
-                },
             },
             fontFamily: theme.typography.fontFamily,
             fontSize: theme.typography.sizes,
@@ -96,17 +87,8 @@ export default {
         },
     },
     plugins: [
-        // Use import() to dynamically import the plugin
-        // This will be evaluated at runtime
-        ({ addBase, addComponents }) => {
-            import('@tailwindcss/forms')
-                .then(formsPlugin => {
-                    const plugin = formsPlugin.default({ strategy: 'class' });
-                    plugin({ addBase, addComponents });
-                })
-                .catch(err => {
-                    console.error('Error loading @tailwindcss/forms plugin:', err);
-                });
-        }
+        require('@tailwindcss/forms')({
+            strategy: 'class',
+        }),
     ],
 }

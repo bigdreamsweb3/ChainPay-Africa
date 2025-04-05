@@ -113,4 +113,4 @@ const theme = {
   }
 };
 
-export { theme };
+module.exports = { theme };
