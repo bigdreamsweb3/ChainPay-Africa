@@ -4,6 +4,4 @@ const baseSepoliaParams = (accounts) => ({
     accounts: accounts,
 });
 
-export {
-    baseSepoliaParams,
-}; 
+module.exports = { baseSepoliaParams }; 

@@ -149,7 +149,7 @@ async function startEventListener() {
 
           // Call the Reloadly API to purchase airtime
           const result = await buyAirtime(
-            network,  // Pass the network enum directly
+            network, // Pass the network enum directly
             creditAmount, // Use creditAmount instead of amount.toString()
             recipientPhone,
             user, // Use the user's address as senderWallet

@@ -448,6 +448,58 @@
       "artifacts": [
         "ChainPay_Airtime"
       ]
+    },
+    "C:\\Users\\codepara\\Desktop\\ChainPay-Africa\\evm-contracts\\contracts\\chainpay_airtime_Flattened.sol": {
+      "lastModificationDate": 1743863547529,
+      "contentHash": "9a59588ef5356f0829419e6cb3420f3e",
+      "sourceName": "evm-contracts/contracts/chainpay_airtime_Flattened.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 1000
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20",
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ChainPay_Airtime_Flat",
+        "Context",
+        "IERC1363",
+        "IERC165",
+        "IERC20",
+        "Ownable",
+        "ReentrancyGuard",
+        "SafeERC20"
+      ]
     }
   }
 }

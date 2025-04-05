@@ -1,5 +1,5 @@
 import axios from "axios";
-import NETWORK_TO_OPERATOR_ID from "./operator-mapping.js";
+import NETWORK_TO_RELOADLY_OPERATOR_ID from "./operator-mapping.js";
 
 // Your Reloadly sandbox credentials
 const clientId = "Sty4FSmbTndq8CZYVWnQVQ2PZV1gq8A5";
@@ -15,7 +15,7 @@ const topupUrl = "https://topups-sandbox.reloadly.com";
 
 // Helper function to convert blockchain network enum to Reloadly operator ID
 function getOperatorIdFromNetwork(networkEnum) {
-  const operatorId = NETWORK_TO_OPERATOR_ID[networkEnum];
+  const operatorId = NETWORK_TO_RELOADLY_OPERATOR_ID[networkEnum];
   if (!operatorId) {
     throw new Error(`Unsupported network enum value: ${networkEnum}`);
   }
@@ -89,8 +89,11 @@ async function buyAirtime(
     const senderPhone = { countryCode: "NG", number: "08037161029" };
     const uniqueCustomIdentifier = `ChainPay-Blockchain-${customIdentifier}-${Date.now()}`; // Ensure uniqueness with timestamp
 
+    transactionId: ,
+
     console.log("Sending top-up request with payload:", {
       operatorId,
+      transactionId: 132221,
       amount: creditAmount,
       useLocalAmount: true,
       customIdentifier: uniqueCustomIdentifier,

@@ -1,6 +1,6 @@
 // Nigerian mobile operator IDs from Reloadly
 // These are the standard IDs for the major Nigerian mobile networks
-export const NETWORK_TO_OPERATOR_ID = {
+export const NETWORK_TO_RELOADLY_OPERATOR_ID = {
   0: "535", // MTN
   1: "536", // Airtel
   2: "537", // Glo
@@ -8,4 +8,4 @@ export const NETWORK_TO_OPERATOR_ID = {
 };
 
 // Export the mapping
-export default NETWORK_TO_OPERATOR_ID;
+export default NETWORK_TO_RELOADLY_OPERATOR_ID ;
