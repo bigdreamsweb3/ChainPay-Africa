@@ -1,0 +1,5 @@
+Documentation of what i learnt while building...
+
+## Check for ESLint warnings or errors
+
+Run: npm run lint
