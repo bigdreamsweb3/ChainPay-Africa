@@ -2,6 +2,7 @@
   "name": "chainpay-africa",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "// Development": "---------------------------------------",
     "dev": "next dev",
@@ -31,7 +32,10 @@
     "deploy-mainnet-monad": "CHAIN_TYPE=mainnet npx hardhat run evm-contracts/scripts/deploy.js --network monadMainnet",
     "// Utilities": "---------------------------------------",
     "test-rpc": "curl -X POST https://rpc.testnet.ms -H \"Content-Type: application/json\" --data \"{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"method\\\":\\\"eth_blockNumber\\\",\\\"params\\\":[],\\\"id\\\":1}\"",
-    "start-contract-listener": "node backend/contract-listener.js"
+    "start-contract-listener": "node backend/contract-listener.js",
+    "// PWA": "---------------------------------------",
+    "generate-pwa-assets": "node scripts/generate-pwa-assets.js",
+    "pwa-setup": "npm install --save-dev sharp && npm run generate-pwa-assets"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",

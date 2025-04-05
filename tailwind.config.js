@@ -45,6 +45,15 @@ module.exports = {
                         600: '#0A0F1E',
                     }
                 },
+                // PWA theme-specific colors
+                'pwa': {
+                    'light': '#FFFFFF',
+                    'dark': '#0A1025',
+                    'primary': '#0066FF',
+                    'accent': '#FFB800',
+                    'status-light': 'rgba(255, 255, 255, 0.9)',
+                    'status-dark': 'rgba(10, 16, 37, 0.9)',
+                },
             },
             fontFamily: theme.typography.fontFamily,
             fontSize: theme.typography.sizes,
