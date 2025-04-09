@@ -2,10 +2,24 @@
 
 import { WalletButton } from "../web3/wallet-options";
 import { ThemeToggle } from "../ui/ThemeToggle";
+import { useEffect, useState } from "react";
 
 export function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const handleScroll = () => {
+    setIsScrolled(window.scrollY > 50); // Change 30 to your desired scroll threshold
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 border-t border-border-light dark:border-border-dark bg-white dark:bg-background-dark transition-all duration-300">
+    <header className={`fixed top-0 left-0 right-0 z-30 border-t border-border-light dark:border-border-dark ${isScrolled ? 'bg-white dark:bg-background-dark' : 'bg-background-light dark:bg-background-dark'} transition-all duration-300`}>
       <div className="container mx-auto px-3 sm:px-4">
         <div className="h-16 flex items-center justify-between">
           {/* Left Section: Brand Name */}
@@ -31,7 +45,7 @@ export function Header() {
       </div>
 
       {/* Bottom Accent Line */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-primary/10 to-transparent"></div>
+      {isScrolled && <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand-primary/10 to-transparent"></div>}
     </header>
   );
 }
