@@ -39,7 +39,7 @@ This project includes a **Solidity** smart contract deployed on multiple chains:
 
 - **Frontend**: **Next.js**, **TypeScript**
 - **Smart Contracts**: **Solidity**, **EVM-compatible chains**
-- **Wallet Integration**: **MetaMask**, **WalletConnect**
+- **Wallet Integration**: **Wagmi**, **WalletConnect**
 - **API Integration**: **Reloadly API** for airtime purchases
 
 ---
